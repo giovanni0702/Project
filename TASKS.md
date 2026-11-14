@@ -7,31 +7,30 @@ Stati: Backlog · In corso (con nome del proprietario) · Bloccato · Fatto.
 
 ## Decisioni richieste al fondatore
 
-1. **Rete della sessione:** abilitare i domini ufficiali non raggiungibili (`dati.comune.milano.it`, `support.google.com`, `developers.google.com`, `cloud.google.com`, `apps.apple.com`, `play.google.com`, `pub.dev`, pagine prezzi dei fornitori). Raccomandazione: sì. Sblocca T-001–T-004.
-2. **Stack (D-003):** A) Flutter + FastAPI + PostGIS su un server UE, 5–15 €/mese stimati; B) Postgres gestito a consumo. Raccomandazione: A. Nessuna spesa prima dell'iterazione 1.
-3. **Mappa (D-010):** A) MapLibre + OpenStreetMap, dopo la prova T-020; B) Google Maps. Raccomandazione: A.
-4. **Rilevazioni sul campo e 5 interviste** (iterazione 1, poche ore, le fai tu): sì o no. Raccomandazione: sì; senza, il modello non si può validare.
+Decise il 2026-11-14 (→ `docs/05-decisioni.md` D-003, D-010, D-014, D-015): rete abilitata; nessuna spesa fino al lancio; MapLibre ora e Google Maps previsto; nessuna rilevazione sul campo.
+
+1. **Beta su iPhone (iterazione 2):** TestFlight richiede l'account Apple a pagamento (99 USD l'anno). Con D-014: A) beta solo Android, con installazione diretta e gratuita del file dell'app; B) eccezione per l'account Apple. Raccomandazione: A. Non urgente.
 
 ## Iterazione 0 — verifiche
 
 ### T-001 — Open data del Comune di Milano
-data-engineer | Bloccato (rete) | alta | M | —
+data-engineer | Backlog (rete abilitata, da riprovare) | alta | M | —
 Criteri: [x] esito su stalli e sensori (non esistono, confidenza media) · [ ] riconferma sul catalogo · [ ] Area B/C, lavaggio strade, mercati, strutture · [x] `docs/06-dati.md` aggiornato
 
 ### T-002 — Termini Google Maps Platform e norme
-privacy-compliance | Bloccato (rete) | alta | M | —
+privacy-compliance | Backlog (rete abilitata, da riprovare) | alta | M | —
 Criteri: [x] parere prudenziale (D-004) · [ ] testo corrente dei termini, sez. 3.2.3 · [ ] deep link Google/Waze · [ ] DSA su Google Play, testo EAA
 
 ### T-003 — Requisiti store
-release-manager | Bloccato (rete) | alta | M | —
+release-manager | Backlog (rete abilitata, da riprovare) | alta | M | —
 Criteri: [x] requisiti Apple in `docs/10-release.md` · [ ] pagine Google Play (posizione, Data safety, tester chiusi, costo)
 
 ### T-004 — Concorrenti sugli store
-competitor-analyst | Bloccato (rete) | alta | M | —
+competitor-analyst | Backlog (rete abilitata, da riprovare) | alta | M | —
 Criteri: [x] `docs/02-concorrenza.md` aggiornato da fonti web · [ ] recensioni sugli store · [ ] Find & Park in app a Milano · [ ] SpotAngels e PuliAMO in Italia
 
 ### T-005 — Stack e costi
-backend-engineer | Fatto (attende decisione 2) | media | S | —
+backend-engineer | Fatto | media | S | —
 Note: D-003 aggiornata. Prezzi **[verificare]** sulle pagine ufficiali prima di attivare.
 
 ### T-007 — Primo ciclo watchdog
@@ -79,12 +78,12 @@ backend-engineer | Backlog | media | M | T-018
 Criteri: [ ] `docs/12-sicurezza.md` completato · [ ] limiti di frequenza e controlli di plausibilità definiti · [ ] attestazione del dispositivo valutata con `privacy-compliance`
 
 ### T-020 — Prova tecnica della mappa (MapLibre + PMTiles in Flutter)
-mobile-engineer | Backlog | alta | M | decisione 2
-Criteri: [ ] maturità del pacchetto verificata · [ ] prototipo con celle colorate su Milano · [ ] dimensione dei tasselli e costo stimato · [ ] D-010 confermata o cambiata
+mobile-engineer | Backlog | alta | M | —
+Criteri: [ ] mappa dietro un'interfaccia unica, sostituibile con Google Maps (D-010) · [ ] maturità del pacchetto verificata · [ ] prototipo con celle colorate su Milano · [ ] dimensione dei tasselli e costo stimato · [ ] D-010 confermata o cambiata
 
 ### T-006 — Scaffold del repository per l'iterazione 1
-backend-engineer | Backlog | media | S | decisione 2, T-026
-Criteri: [ ] cartelle `backend/`, `model/`, `app/`, `tests/` · [ ] contratto OpenAPI iniziale · [ ] test eseguiti da `make check`
+backend-engineer | Backlog | media | S | T-026
+Criteri: [ ] tutto eseguibile in locale, senza servizi a pagamento (D-014) · [ ] cartelle `backend/`, `model/`, `app/`, `tests/` · [ ] contratto OpenAPI iniziale · [ ] test eseguiti da `make check`
 
 ## Backlog — modello e dati
 
@@ -92,16 +91,16 @@ Criteri: [ ] cartelle `backend/`, `model/`, `app/`, `tests/` · [ ] contratto Op
 data-scientist | Backlog | alta | M | —
 Criteri: [ ] definizioni operative in `docs/09-modello.md` §6 · [ ] N minimo per dichiarare una metrica · [ ] metodo di test con dati sintetici etichettati
 
-### T-021 — Protocollo di rilevazione sul campo e traccia interviste
-data-scientist | Backlog | alta | S | decisione 4
-Criteri: [ ] protocollo di una pagina: zone, orari, cosa annotare, quante ripetizioni · [ ] modulo senza dati personali · [ ] 5 domande per le interviste (con `product-manager`)
+### T-021 — Validazione senza rilevazioni sul campo
+data-scientist | Backlog | alta | M | T-010
+Criteri: [ ] piano di validazione basato solo sugli esiti dei tester (D-015) · [ ] "missioni" per i tester: zone e orari da coprire, senza dati personali · [ ] quota di esiti tenuta da parte per la sola validazione · [ ] ricerca di dati pubblici di riferimento (studi, altre città) · [ ] `docs/09-modello.md` §2 aggiornato
 
 ### T-022 — Risoluzione della griglia H3 (9 o 10)
 data-scientist | Backlog | media | S | T-006
 Criteri: [ ] confronto su numero di celle, eventi attesi per cella, effetto sulla soglia k · [ ] decisione in `docs/05-decisioni.md`
 
 ### T-024 — Licenze e standard per fornire il dato a terzi
-privacy-compliance | Backlog | media | M | decisione 1
+privacy-compliance | Backlog | media | M | —
 Criteri: [ ] vincoli ODbL sui dati derivati da OSM, con fonte ufficiale · [ ] standard di scambio dei dati di sosta esistenti · [ ] regole per tenere separata l'origine dei dati · [ ] esito in `docs/06-dati.md`
 
 ### T-025 — Strade verso le app di mappe e mercato del dato di sosta
@@ -109,7 +108,7 @@ competitor-analyst | Backlog | bassa | M | T-004
 Criteri: [ ] chi fornisce oggi dati di sosta a mappe e case auto, e come · [ ] programmi per partner di Google, Apple, Waze · [ ] cosa chiedono (copertura, prove di qualità) · [ ] sezione in `docs/02-concorrenza.md` · [ ] nessun contatto esterno
 
 ### T-026 — Schema "città come configurazione" e adattatori
-backend-engineer | Backlog | alta | M | decisione 2
+backend-engineer | Backlog | alta | M | —
 Criteri: [ ] schema del file di città e dell'interfaccia degli adattatori · [ ] `cities/milano` come primo caso · [ ] test che fallisce se il nucleo contiene valori di Milano · [ ] con `data-scientist`: variabili del modello definite in modo indipendente dalla città
 
 ### T-023 — Modello a tassi con concorrenza e penetrazione (ricerca)

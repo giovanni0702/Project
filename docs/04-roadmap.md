@@ -5,8 +5,8 @@ Ogni iterazione produce qualcosa di usabile e misurabile, e ha un criterio di **
 ## Iterazione 0 — Fondamenta (in chiusura)
 - [x] Regole, team di agenti, documenti 01–13, board, `make check`, CI
 - [x] Prima verifica di open data, termini Google, store, concorrenti, costi (parziale: → `STATO.md`)
-- [ ] Verifiche bloccate dalla rete completate (T-001–T-004)
-- [ ] Stack (D-003) e mappa (D-010) confermati dal fondatore
+- [ ] Verifiche da riprovare con la rete abilitata (T-001–T-004)
+- [x] Stack (D-003) e mappa (D-010) confermati dal fondatore; nessuna spesa fino al lancio (D-014)
 
 **Uscita:** documenti approvati dal fondatore, board pronto.
 
@@ -16,22 +16,25 @@ Ogni iterazione produce qualcosa di usabile e misurabile, e ha un criterio di **
 - Griglia H3 su tutta Milano; regole di sosta per cella (tariffe, orari, lavaggio strade se disponibili).
 - Modelli 1 e 2 di [`09-modello.md`](09-modello.md); pubblicazione statica (D-011); pagina interna con mappa.
 - Test di calibrazione su dati sintetici, etichettati come test tecnici.
-- **Prova a basso costo dell'ipotesi:** protocollo di rilevazione sul campo e traccia per 5 interviste (T-021). Le esegue il fondatore.
+- Tutto in locale, senza servizi a pagamento (D-014).
+- Piano di validazione senza rilevazioni sul campo (T-021, D-015).
 
 **Uscita:** test automatico che fallisce se il nucleo contiene valori specifici di Milano; ≥ 90% delle strade con sosta coperte da una stima; pipeline riproducibile con un comando; `make check` verde; nessun segreto o dato personale nel repository.
-**Abbandono o cambio di rotta:** se sul campo il prior non fa meglio del caso, il prodotto principale diventa "regole di sosta e lavaggio strade" e il modello si rivede.
+**Limite dichiarato:** a fine iterazione il prior non è validato su dati reali.
 
 ## Iterazione 2 — Beta chiusa (centro)
 - App Flutter IT/EN: onboarding con consenso, mappa, affidabilità, contributi a un tap.
 - Regole della zona e avviso lavaggio strade (T-011); "ricorda dove ho parcheggiato" e timer (T-012); funzionamento offline (T-016); contatore locale (T-015); regole di sicurezza alla guida (T-014).
 - Rilevamento automatico solo opzionale e solo dopo DPIA.
-- 10–30 tester via TestFlight e Play internal testing.
+- 10–30 tester. Con D-014: prima Android con installazione diretta; TestFlight e Play internal testing solo con decisione del fondatore. Server su piano gratuito.
+- Missioni di copertura per i tester e quota di esiti riservata alla validazione.
 
 **Uscita:** ≥ 500 esiti reali in centro; calibrazione misurata e documentata; app compresa in meno di 1 minuto; ≥ 30% dei tester contribuisce almeno una volta a settimana; privacy policy e DPIA pronte per la firma; test di re-identificazione superato.
-**Abbandono:** se i tester non contribuiscono, si rivede il meccanismo di contributo prima di qualsiasi lancio.
+**Abbandono o cambio di rotta:** se i tester non contribuiscono, si rivede il meccanismo di contributo prima di qualsiasi lancio. Se sugli esiti reali il prior non fa meglio del caso, il prodotto principale diventa "regole di sosta e lavaggio strade" e il modello si rivede.
 
 ## Iterazione 3 — Pilota pubblico
-- Release sugli store, tutto il Comune, strisce bianche.
+- Conto completo dei costi presentato al fondatore prima di qualsiasi attivazione (D-014).
+- Release sugli store, tutto il Comune, strisce bianche. Google Maps come motore della mappa, se costi e termini lo permettono (D-010).
 - Nome e verifica marchi; marketing e ASO; opzioni di ricavo presentate al fondatore (T-017).
 
 **Uscita:** rating ≥ 4,0 (da confermare); calibrazione entro tolleranza; nessun incidente privacy aperto.

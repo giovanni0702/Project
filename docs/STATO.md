@@ -17,13 +17,18 @@ Aggiornato: 2026-11-14 · Iterazione **0 — Fondamenta (in chiusura)**
 - Apple richiede il consenso anche per dati anonimi.
 - Dati Google: non usabili nel modello, per prudenza (D-004).
 
+## Decisioni del fondatore (2026-11-14)
+- Rete: creato l'ambiente "Project" con i siti ufficiali abilitati.
+- Stack approvato; **nessuna spesa fino al lancio** (D-014).
+- Mappa: MapLibre ora, Google Maps previsto per il prodotto sul mercato (D-010).
+- **Nessuna rilevazione sul campo** (D-015): il prior resta non validato fino alla beta.
+
 ## Prossimi passi
-1. Decisioni 1–4 del fondatore (`TASKS.md`).
-2. Con la rete abilitata: chiudere T-001–T-004.
-3. Poi, senza attese: T-018 (parere privacy), T-010 (metriche), T-014 (sicurezza alla guida), T-009 (flussi).
+1. Riprovare T-001–T-004 con la rete abilitata (in parallelo).
+2. T-018 (parere privacy), T-010 (metriche), T-021 (validazione senza campo), T-026 (schema città).
+3. Conferma del fondatore per chiudere l'iterazione 0 e aprire la 1.
 
 ## Blocchi
-- T-001–T-004: domini ufficiali non raggiungibili.
-- T-006, T-020: attendono la conferma dello stack.
+- Nessuno. Decisione aperta non urgente: beta su iPhone (`TASKS.md`).
 
 ## Non iniziare l'iterazione 1 senza conferma del fondatore.

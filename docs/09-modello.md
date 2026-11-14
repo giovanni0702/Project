@@ -13,7 +13,9 @@ Senza un Y osservabile non esiste calibrazione: ogni fonte di dati deve produrre
 |---|---|---|---|
 | Contributo manuale a un tap: "trovato subito" / "trovato dopo un po'" / "non trovato" | Y diretto | Addestramento | Iterazione 2 |
 | Rilevamento sul dispositivo: tempo tra arrivo in zona e sosta | Y derivato | Addestramento | Solo dopo DPIA |
-| Rilevazioni sul campo del fondatore (protocollo in T-021) | Y diretto, alta qualità | **Solo validazione**, mai addestramento | Iterazione 1 |
+| Quota di esiti dei tester tenuta da parte, più "missioni" di copertura (T-021, D-015) | Y diretto | **Solo validazione**, mai addestramento | Iterazione 2 |
+
+Non sono previste rilevazioni sul campo: **fino alla beta il prior non è validato** e si mostra sempre con affidabilità bassa.
 
 Gli eventi "ho parcheggiato" e "ho lasciato" senza esito di ricerca alimentano solo il modello a tassi (§3.3).
 
@@ -41,7 +43,7 @@ Fonti e licenze: [`06-dati.md`](06-dati.md). Una variabile entra solo se la font
 
 | Distorsione | Mitigazione |
 |---|---|
-| Chi non trova posto segnala con frequenza diversa da chi lo trova | Confronto con le rilevazioni sul campo; correzione stimata e documentata |
+| Chi non trova posto segnala con frequenza diversa da chi lo trova | Missioni di copertura assegnate ai tester (zone e orari scelti da noi, non da loro); correzione stimata e documentata |
 | I contributori non sono un campione degli automobilisti | Dichiarato nei limiti; nessuna estrapolazione a zone senza dati |
 | Pochi contributori dominano una cella | Peso massimo per contributore per cella e fascia |
 | Segnalazioni false o automatiche | Controlli di plausibilità → [`12-sicurezza.md`](12-sicurezza.md) |

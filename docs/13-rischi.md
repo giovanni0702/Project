@@ -5,7 +5,7 @@ P = probabilità, I = impatto (A alta, M media, B bassa). Rivisto da `ops-watchd
 | Id | Rischio | P | I | Mitigazione | Proprietario |
 |---|---|---|---|---|---|
 | R-01 | **Partenza a freddo:** senza utenti non ci sono dati, senza dati l'app non serve | A | A | Valore dal giorno zero con regole di sosta e lavaggio strade (T-011); contributo come effetto di "ricorda dove ho parcheggiato" (T-012) | product-manager |
-| R-02 | Il prior non fa meglio del caso | M | A | Rilevazioni sul campo in iterazione 1 (T-021); criterio di abbandono in `04-roadmap.md` | data-scientist |
+| R-02 | Il prior non fa meglio del caso, e lo scopriamo solo in beta (nessuna rilevazione sul campo, D-015) | M | A | Affidabilità bassa dichiarata; validazione sugli esiti dei tester (T-021); criterio di abbandono in iterazione 2 | data-scientist |
 | R-03 | Mancano dati aperti su stalli e regole di sosta | M | A | Verifica T-001; ripiego su OSM e rilevazioni proprie | data-engineer |
 | R-04 | I tester non contribuiscono | M | A | Contributo a un tap e come effetto di funzioni utili; soglia di abbandono in iterazione 2 | ux-designer |
 | R-05 | Re-identificazione dagli aggregati | B | A | Soglia k, pubblicazione a intervalli fissi, test di re-identificazione (T-018) | privacy-compliance |
@@ -22,3 +22,4 @@ P = probabilità, I = impatto (A alta, M media, B bassa). Rivisto da `ops-watchd
 | R-16 | La licenza ODbL limita la cessione a terzi di dati derivati da OSM | M | A | Origine dei dati separata; verifica T-024 prima di qualsiasi proposta commerciale | privacy-compliance |
 | R-17 | Le grandi app di mappe non integrano dati di terzi, o li sviluppano da sole | A | M | Il prodotto deve reggersi da solo; il dato in licenza è un'opzione, non il piano unico | product-manager |
 | R-18 | Ogni città ha regole e fonti diverse: costo di ingresso alto | A | M | Adattatori per fonte; OSM come base comune; misura del costo sulla seconda città | data-engineer |
+| R-19 | Senza spesa prima del lancio (D-014) la beta su iPhone non è possibile e i piani gratuiti possono non bastare | M | M | Beta da Android con installazione diretta; verifica dei piani gratuiti prima dell'iterazione 2 | release-manager |

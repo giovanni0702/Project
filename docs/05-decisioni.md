@@ -19,7 +19,7 @@ Formato: ogni decisione ha data, stato, contesto, scelta e conseguenze. Le decis
 
 ## D-003 — Stack tecnico
 - **Data:** 2026-11-14
-- **Stato:** **proposta, da confermare dal fondatore**
+- **Stato:** approvata dal fondatore il 2026-11-14 per lo sviluppo; **hosting rinviato al lancio** (D-014)
 - **Scelta:** app **Flutter**; backend **Python + FastAPI** con contratto OpenAPI come fonte unica; modello in Python (pandas, NumPy, SciPy, statsmodels; PyMC solo se serve); **PostgreSQL + PostGIS**, griglia **H3**; hosting UE.
 - **Hosting raccomandato:** un server virtuale in UE (es. Hetzner) con tutto in Docker, più archivio statico con CDN (es. Cloudflare R2) per griglia e tasselli. Stima **5–15 €/mese fino a 10.000 utenti** **[verificare]**: prezzi presi da fonti secondarie, da rileggere sulle pagine ufficiali prima di attivare (→ `fonti.md`).
 - **Alternative:** Postgres gestito (Neon, Supabase): gratuito all'inizio ma a consumo e con PostGIS e regione UE da verificare. Fly.io: prezzi non verificati. React Native: nessun vantaggio strutturale su mappe e localizzazione.
@@ -61,7 +61,7 @@ Formato: ogni decisione ha data, stato, contesto, scelta e conseguenze. Le decis
 
 ## D-010 — Mappa: MapLibre con dati OpenStreetMap
 - **Data:** 2026-11-14
-- **Stato:** **proposta, da confermare** dopo la prova tecnica T-020
+- **Stato:** approvata dal fondatore il 2026-11-14 per lo sviluppo e la beta. **Google Maps è previsto in seguito**: il fondatore lo vuole nel prodotto sul mercato. La mappa sta quindi dietro un'interfaccia unica, così il motore si cambia senza toccare il resto. Costi e termini di Google si valutano prima del lancio (T-002)
 - **Contesto:** la mappa di Google non ha un tetto di spesa automatico e porta vincoli sui termini; un fornitore di tasselli commerciale costa da circa 25 $/mese **[verificare]**.
 - **Scelta proposta:** MapLibre con tasselli vettoriali OSM della sola area di Milano (PMTiles) serviti come file statico. Attribuzione ODbL obbligatoria.
 - **Rischio:** maturità del pacchetto MapLibre per Flutter non verificata. Ripiego: fornitore di tasselli UE oppure Google Maps.
@@ -94,3 +94,19 @@ Formato: ogni decisione ha data, stato, contesto, scelta e conseguenze. Le decis
   9. **Privacy che regge una verifica esterna:** nessun dato personale negli aggregati forniti a terzi; soglia k applicata anche all'API.
 - **Cosa NON facciamo ora:** nessuna infrastruttura multi-regione, nessun dato di altre città, nessuna traduzione oltre IT/EN, nessun contatto con partner. Costruire per scalare non significa costruire in grande.
 - **Da verificare (T-024, T-025):** vincoli della licenza ODbL sulla cessione di dati derivati da OSM; standard di scambio dei dati di sosta; programmi per partner delle app di mappe; norme sulla posizione fuori dall'UE.
+
+## D-014 — Nessuna spesa fino a quando il prodotto è pronto per il mercato
+- **Data:** 2026-11-14
+- **Stato:** decisa dal fondatore
+- **Scelta:** fino al lancio pubblico non si attiva nessun servizio a pagamento. Sviluppo, modello e pagina interna girano in locale (Docker) e sulla CI gratuita.
+- **Conseguenze:**
+  - Iterazione 1: nessun impatto, è tutta in locale.
+  - Iterazione 2 (beta): serve un server raggiungibile dai tester. Solo piani gratuiti, da verificare; creare l'account resta un'azione del fondatore.
+  - TestFlight richiede l'account Apple a pagamento: la beta parte da Android con installazione diretta, salvo eccezione (decisione 1 in `TASKS.md`).
+  - Prima del lancio si presenta al fondatore il conto completo: account store, hosting, mappa.
+
+## D-015 — Nessuna rilevazione sul campo del fondatore
+- **Data:** 2026-11-14
+- **Stato:** decisa dal fondatore
+- **Scelta:** il fondatore non può fare rilevazioni in strada. I primi dati reali sono gli esiti dei tester della beta.
+- **Conseguenze:** fino alla beta il prior **non è validato** e va mostrato sempre con affidabilità bassa. La validazione usa una quota di esiti dei tester tenuta da parte e "missioni" di copertura (T-021). Il criterio di abbandono sul prior si sposta dall'iterazione 1 alla 2.
