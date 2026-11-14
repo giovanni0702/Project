@@ -3,17 +3,12 @@
 Aggiornato: 2026-11-14 · Iterazione **1 — Dati e modello v0 (in corso)** · Iterazione 0 chiusa con conferma del fondatore.
 
 ## Ultimi fatti
-1. Nucleo indipendente dalla città: `cities/milano/city.yaml`, `parking_core/` (griglia H3, fasce, modello Beta-Binomiale con soglia k, metriche), 12 test su dati sintetici in `make check`.
-2. Testi ufficiali letti: termini Google (D-004 confermata), Google Play, verifica sviluppatore Android, ODbL, catalogo del Comune.
-3. Decisioni: beta solo Android a costo zero (D-017); beta su dati reali e attuali (D-016); nessuna spesa fino al lancio (D-014); nessuna rilevazione sul campo (D-015); visione multi-città (D-013).
-4. Decisioni del fondatore: l'app impara da sola con rilevamento automatico tramite posizione, **solo dopo DPIA firmata** (D-018); aggiornamento ogni 5 minuti (D-019). Nel codice: componente "adesso", tempo di ricerca come bersaglio, `scripts/publish_grid.py` (griglia statica).
-5. `scripts/fetch_text.py` legge i siti consentiti quando WebFetch non li raggiunge.
-
-6. Prima bozza grafica: 4 schermate (`docs/16-grafica.md`), nuovo agente `visual-designer`; valutazione degli agenti in `docs/14-valutazione-agenti.md` (D-020).
-
-7. **Parere privacy:** veto sul rilevamento automatico com'è in D-018; approvato con condizioni C1–C12 (`docs/15-dpia-bozza.md`). Attende la decisione del fondatore; poi T-034.
-
-8. Decisioni del fondatore: C1–C12 accettate; **mappa per strada** (D-021); **vista sempre live**, altri orari come stime (D-022); **taglia del veicolo e moto** (D-023); **direzione grafica approvata** (D-024). Bozza aggiornata a 5 schermate; correzione per taglia nel codice (valori provvisori).
+1. Nucleo indipendente dalla città (`cities/milano`, `parking_core/`): modello, componente "adesso", taglia del veicolo (valori provvisori), griglia statica.
+2. **Privacy nel codice (C1, C2, C6):** pseudonimo per cella, griglia a classi senza conteggi, ammissione a blocchi; `make reid` verde (attacchi A e B, dati sintetici).
+3. **Strade (D-021):** `scripts/fetch_osm.py` e `scripts/build_streets.py` pronti; scarico reale da riprovare (siti OSM abilitati ma non ancora raggiungibili).
+4. **Team privacy (D-025):** `privacy-engineer`, `privacy-redteam`, `legal-analyst` sotto `privacy-compliance`.
+5. Grafica: direzione approvata (D-024), linee sottili e continue (D-026), 5 schermate in `docs/16-grafica.md`.
+6. Decisioni recenti: D-018 con C1–C12, D-021 strade, D-022 live e stime, D-023 veicolo e moto.
 
 ## Cosa sappiamo
 - **Nessuna fonte pubblica in tempo reale sull'occupazione della sosta su strada a Milano.** I dati reali sono solo i contributi dei tester.
@@ -22,9 +17,9 @@ Aggiornato: 2026-11-14 · Iterazione **1 — Dati e modello v0 (in corso)** · I
 - Con pochi tester la soglia k non si raggiunge: problema aperto (T-029, R-20).
 
 ## Prossimi passi
-1. T-026: adattatore OSM (strade e sosta) e confine comunale; poi pubblicazione statica della griglia e pagina interna.
-2. T-034 (codice allineato a C1–C12), T-035 (strade da OSM), poi T-032, T-036, T-037. Intanto T-010, T-029.
-3. T-030 (server gratuito), T-031 (contesto in tempo reale), T-004 (concorrenti sugli store).
+1. Riprovare `scripts/fetch_osm.py milano`, poi `scripts/build_streets.py milano` e misurare la copertura (T-035).
+2. T-038 (fonti legali), T-039 (attacchi nuovi), resto di T-034 (lato server).
+3. T-010, T-029 (metriche, pochi tester), T-036 (veicolo e moto), T-037 (live e stime), T-030 (server gratuito).
 
 ## Blocchi
 - Nessuno. Siti dei fornitori di hosting non ancora abilitati nella rete (T-030).

@@ -46,6 +46,9 @@ ceo-orchestrator            pianifica, assegna, risolve conflitti; non scrive co
 │   ├── mobile-engineer     app Flutter
 │   └── qa-tester           test, test di privacy, test sul campo
 ├── privacy-compliance      GDPR, DPIA, VETO sulla raccolta dati
+│   ├── privacy-engineer    meccanismi tecnici di anonimato e test
+│   ├── privacy-redteam     attacca le protezioni, test di re-identificazione
+│   └── legal-analyst       fonti primarie, licenze, bozze legali
 ├── release-manager         build, store
 ├── ops-watchdog            novità esterne, salute del progetto
 └── marketing-sales         posizionamento, ASO, sole bozze

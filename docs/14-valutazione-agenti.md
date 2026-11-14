@@ -21,6 +21,10 @@ Si aggiorna a ogni chiusura di iterazione (`ceo-orchestrator`). Voto da 1 a 5 su
 4. **Scrittura a memoria su norme e policy.** Correzione: ogni affermazione normativa non letta alla fonte porta **[verificare]**; i pareri a memoria si dichiarano tali nella prima riga.
 5. **Incarichi di ricerca generici costosi.** Correzione: ricerche su prezzi e fornitori solo con elenco chiuso di pagine da leggere e tetto di 8 chiamate.
 
+## Rinforzi decisi dal fondatore
+- Team privacy (D-025): tre specialisti sotto `privacy-compliance`, per coprire i due limiti emersi (fonti non lette, nessun attacco reale alle protezioni).
+- `visual-designer` (D-020).
+
 ## Come si valuta dal prossimo ciclo
 - Ogni report di agente chiude con una riga: `Verificato alla fonte: N · Non verificato: M · Chiamate: K`.
 - Chi delega annota qui, in una riga, voto e motivo.

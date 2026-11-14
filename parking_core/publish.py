@@ -9,12 +9,17 @@ from zoneinfo import ZoneInfo
 
 from . import grid, slots
 from .model import Outcome, estimate
+from .privacy import Admission, class_value
 
 MODEL_VERSION = "beta-binomial-0.1"
 
 
 def build_grid(config: dict, outcomes: list[Outcome], now: datetime | None = None,
-               previous_levels: dict[str, str] | None = None) -> dict:
+               previous_levels: dict[str, str] | None = None,
+               admission: Admission | None = None) -> dict:
+    """`admission` carries server-side state between publications (C6)."""
+    admission = admission or Admission(config["privacy"]["admission_batch"])
+    outcomes = admission.filter(outcomes)
     now = now or datetime.now(ZoneInfo(config["timezone"]))
     slot = slots.slot_key(now, config["time"]["slot_minutes"])
     cells = grid.cells_for_bbox(config["grid"]["bbox"], config["grid"]["h3_resolution"])
@@ -27,9 +32,9 @@ def build_grid(config: dict, outcomes: list[Outcome], now: datetime | None = Non
         "model_version": MODEL_VERSION,
         "h3_resolution": config["grid"]["h3_resolution"],
         "vehicle_odds": config["vehicles"]["odds"],  # applied on the device
-        # cell -> [probability, level, reliability, based on user data]
+        # cell -> [class value, level, reliability, based on user data]. No counts (C6).
         "cells": {
-            cell: [round(e.probability, 2), e.level, e.reliability, e.from_user_data]
+            cell: [class_value(e.level, config["display"]["class_values"]), e.level, e.reliability, e.from_user_data]
             for cell, e in estimates.items()
         },
     }

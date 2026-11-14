@@ -130,7 +130,7 @@ def test_published_grid_has_aggregates_only():
     text = json.dumps(payload)
     assert payload["valid_minutes"] == 5 and len(payload["cells"]) == len(CELLS)
     assert "c1" not in json.dumps(list(payload["cells"].values())) and "contributor" not in text
-    assert payload["cells"][CELLS[10]][3] is True
+    assert payload["cells"][CELLS[10]] == [0.8, "high", "high", True]
 
 
 def test_smaller_vehicles_find_parking_more_easily():

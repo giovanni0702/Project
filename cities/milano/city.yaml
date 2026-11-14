@@ -6,6 +6,9 @@ timezone: Europe/Rome
 locales: [it, en]
 currency: EUR
 
+sources:
+  osm_relation_id: 44915     # Comune di Milano, admin boundary (verified by the pipeline name check)
+
 grid:
   h3_resolution: 9          # to be confirmed by T-022 (9 vs 10)
   # Provisional bounding box; replaced by the official municipal boundary in the data pipeline.
@@ -36,12 +39,15 @@ publish:
   interval_minutes: 5        # D-019
 
 privacy:
-  min_contributors: 5        # k: below this only the prior is published
+  min_contributors: 5        # k: below this only the prior is published; never lowered (C2)
+  admission_batch: 2         # C6: new contributors enter a cell only in batches of this size
   raw_retention_days: 30
 
 display:
   thresholds: {high: 0.65, low: 0.35}   # provisional, on calibrated probabilities
   hysteresis: 0.05
+  # Published value per class (C6: classes, never exact probabilities or counts).
+  class_values: {low: 0.2, mid: 0.5, high: 0.8}
   reliability:
     high: {min_outcomes: 30, max_age_days: 7}
     medium: {min_outcomes: 10, max_age_days: 30}

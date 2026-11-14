@@ -185,3 +185,16 @@ Formato: ogni decisione ha data, stato, contesto, scelta e conseguenze. Le decis
 - **Data:** 2026-11-14
 - **Stato:** approvata dal fondatore
 - **Scelta:** la direzione della prima bozza (chiara e sobria, token in `16-grafica.md`) è confermata e vale per tutto il lavoro grafico futuro.
+
+## D-025 — Team privacy
+- **Data:** 2026-11-14
+- **Stato:** decisa dal fondatore
+- **Scelta:** `privacy-compliance` guida tre specialisti: `privacy-engineer` (meccanismi tecnici e test), `privacy-redteam` (attacca le nostre protezioni), `legal-analyst` (fonti primarie, licenze, bozze). Il veto resta di `privacy-compliance`.
+- **Motivo:** la valutazione del ciclo 1 ha mostrato due limiti del ruolo unico: norme non lette alla fonte e nessuno che provasse davvero a rompere le protezioni.
+- **Costo:** tre descrizioni in più caricate a ogni sessione; si delega solo la parte che serve.
+
+## D-026 — Linee sottili e continue sulla mappa
+- **Data:** 2026-11-14
+- **Stato:** decisa dal fondatore
+- **Scelta:** le strade sono colorate con linee continue e sottili, senza coprire la strada. Niente tratteggi.
+- **Accessibilità:** senza il tratto, la distinzione tra livelli si affida a colore e luminosità. Per non affidarsi al solo colore: livello sempre scritto nella scheda della strada, e modalità "alta leggibilità" nelle impostazioni che riattiva tratti diversi (T-033).

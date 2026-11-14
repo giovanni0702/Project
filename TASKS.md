@@ -14,12 +14,12 @@ Nessuna urgente. Decise il 2026-11-14: C1–C12 accettate (D-018), strade (D-021
 ## Iterazione 1 — in corso
 
 ### T-034 — Allineare codice e contratto alle condizioni C1–C12
-backend-engineer | Backlog | alta | M | —
-Criteri: [ ] pseudonimo per cella al posto dell'identificatore a 24 ore · [ ] griglia: probabilità a classi, nessun conteggio; cella aggiornata solo con almeno 2 nuovi contributori · [ ] server: ora di arrivo scartata, nessun IP nei log · [ ] test di re-identificazione automatico in `make check`
+backend-engineer | In corso | alta | M | —
+Criteri: [x] pseudonimo per cella · [x] griglia a classi, nessun conteggio, ammissione a blocchi di 2 · [x] `make reid`: attacchi A e B e scansione del file pubblicato · [ ] server: ora di arrivo scartata, nessun IP nei log · [ ] attacchi C–E (servono codice del telefono e del server)
 
 ### T-035 — Strade colorate: rete stradale e stima per tratto (D-021)
-data-engineer | Backlog | alta | L | T-026
-Criteri: [ ] adattatore OSM: tratti di strada con attributi di sosta, per città · [ ] ogni tratto collegato alla sua cella · [ ] correzione per caratteristiche fisse del tratto (con `data-scientist`) · [ ] file statico della geometria, separato dalla griglia · [ ] parere di `privacy-compliance` prima di qualsiasi invio del tratto al server · [ ] host OSM da abilitare nella rete
+data-engineer | In corso (scarico OSM da riprovare: siti non ancora raggiungibili) | alta | L | T-026
+Criteri: [x] script di scarico e di costruzione dei tratti, ogni tratto collegato alla sua cella · [ ] scarico reale di Milano e misura della copertura · [ ] correzione per caratteristiche fisse del tratto (con `data-scientist`) · [ ] file statico della geometria, separato dalla griglia · [ ] parere di `privacy-compliance` prima di qualsiasi invio del tratto al server
 
 ### T-036 — Veicolo: taglie, moto, elenco modelli (D-023)
 data-scientist | Backlog | alta | M | T-034
@@ -28,6 +28,14 @@ Criteri: [ ] parere di `privacy-compliance` sull'invio della taglia · [ ] effet
 ### T-037 — Due viste: live e stime per altri orari e giorni (D-022)
 backend-engineer | Backlog | media | M | T-034
 Criteri: [ ] griglia live ogni 5 minuti · [ ] tabella delle stime per fascia e tipo di giorno, una volta al giorno · [ ] nel contratto la stima è distinguibile dal live
+
+### T-038 — Fonti primarie per la DPIA e i documenti legali
+legal-analyst | Backlog | alta | M | —
+Criteri: [ ] ogni **[verificare]** normativo di DPIA, privacy e release letto alla fonte o lasciato marcato · [ ] ODbL e cessione del dato (con T-024) · [ ] bozza di nota informativa per i tester
+
+### T-039 — Attacchi nuovi alle protezioni
+privacy-redteam | Backlog | alta | M | T-034
+Criteri: [ ] pochi tester che si conoscono, taglia del veicolo rara, strada con una sola casa, griglie salvate nel tempo · [ ] ogni attacco come test riproducibile · [ ] esito a `privacy-compliance`
 
 ### T-029 — Dati reali visibili con pochi tester (soglia k) e piano di validazione
 data-scientist | Backlog | alta | M | T-010

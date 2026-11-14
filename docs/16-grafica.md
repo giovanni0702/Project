@@ -27,10 +27,13 @@ Mancano: privacy e diritti, onboarding passi 1 e 3, stato senza rete, modalità 
 | accent | #2251CC | Azione principale |
 | level-high | #1FA68A (testo #0B6B57) | Facile: linea piena, icona spunta |
 | level-mid | #E0A21A (testo #7A4E00) | Possibile: linea piena, icona trattino |
-| level-low | #8E2A4B | Difficile: **linea tratteggiata**, icona croce |
-| level-unknown | #7C8894 | Dati insufficienti: **linea puntinata** |
+| level-low | #8E2A4B | Difficile: linea piena, icona croce |
+| level-unknown | #A3ADB8 | Dati insufficienti: linea piena chiara |
 
 Tipografia: Space Grotesk per titoli e verdetti, Inter per il resto (licenze aperte, da confermare prima del lancio). Raggi 16–24 px. Aree toccabili da 44 px.
+
+## Linee (D-026)
+Linee continue e sottili (circa un terzo della larghezza della strada), mai tratteggiate. I livelli differiscono in luminosità; il livello è sempre scritto nella scheda. Modalità "alta leggibilità" facoltativa con tratti diversi.
 
 ## Scelte motivate
 - **Verde acqua, ambra, rosso scuro** invece di verde, giallo, rosso puri: i tre livelli differiscono in luminosità e restano distinguibili per chi non vede il rosso e il verde. In più trama e icona.

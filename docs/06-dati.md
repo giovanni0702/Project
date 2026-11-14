@@ -105,3 +105,14 @@ Senza stalli né sensori, la capacità per segmento va stimata da OSM (`parking:
 - Ogni dataset ha un file di metadati: fonte, data di download, licenza, versione.
 - Nessun dato di Google salvato in blocco.
 - I dati sintetici non entrano mai nelle metriche di produzione.
+
+## Strade e sosta da OpenStreetMap (mappa completa, D-021)
+
+- **Automatico:** `scripts/fetch_osm.py milano` scarica strade, parcheggi (anche stalli moto) e confine comunale in `data/raw/milano/`; `scripts/build_streets.py milano` produce il file delle strade collegate alle celle. I dati grezzi non entrano nel repository.
+- **Stato al 2026-11-14:** script pronti e provati su dati di prova; lo scarico reale non è riuscito perché i siti `overpass-api.de` e `download.geofabrik.de`, appena abilitati, non erano ancora raggiungibili dalla sessione. Da riprovare alla prossima sessione.
+- **Scarico manuale (se serve, lo può fare il fondatore, gratis e senza account):**
+  1. aprire `overpass-turbo.eu`, incollare la richiesta contenuta in `scripts/fetch_osm.py` (voce `streets`, con l'area di Milano), premere "Esegui" e poi "Esporta → dati grezzi";
+  2. oppure scaricare l'estratto "Nord-Ovest" d'Italia da `download.geofabrik.de` (file grande, in formato `.osm.pbf`);
+  3. caricare il file nella sessione: lo si mette in `data/raw/milano/osm_streets.json`.
+- **Licenza:** ODbL, attribuzione "© OpenStreetMap contributors" obbligatoria nell'app. Effetti sulla cessione del dato a terzi: T-024.
+- **Catalogo del Comune:** non contiene un grafo stradale né stalli per moto (ricerche del 2026-11-14: "grafo stradale", "stradario", "motocicli sosta").
