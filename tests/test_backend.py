@@ -154,3 +154,21 @@ def test_static_files_404_and_traversal(env):
     client, *_ = env
     assert client.get("/v1/grid/nowhere").status_code == 404
     assert client.get("/v1/grid/..%2F..%2Fetc").status_code == 404
+
+
+def test_live_outcomes_come_from_short_lived_rows_and_history_is_week_only(env, cell, config):
+    from backend.publish_job import to_outcomes
+    from backend.store import current_step
+    client, store, *_ = env
+    interval = config["publish"]["interval_minutes"]
+    now = datetime.now(ZoneInfo(config["timezone"]))
+    client.post("/v1/events", json=event(cell))
+    (row,) = store.events()
+    assert row["live_step"] == current_step(now, interval) and set(row) == {
+        "cell", "day_type", "slot_index", "search_bucket", "pid", "week", "live_step"}
+    (live,) = to_outcomes(store.events(), config, now)
+    assert live.age_days * 1440 <= config["model"]["live_window_minutes"]
+    later = now.replace(year=now.year + 1)
+    store.purge_live(current_step(later, interval))                    # past the live window: row deleted
+    (old,) = to_outcomes(store.events(), config, now)
+    assert old.age_days >= 1.0 and store.events()[0]["live_step"] is None

@@ -29,6 +29,7 @@ La beta è valida quando tutte le voci sono vere. Stato al 2026-11-14 tra parent
 
 **Dati e modello**
 - [x] Strade reali di Milano collegate alle celle (30.727 tratti dal Database Topografico del Comune).
+- [ ] Posti per strada: fatte le aree di sosta mappate (circa 123.000 posti stimati); manca la sosta lungo il marciapiede (D-030).
 - [ ] Regole di sosta per strada: ambiti, orari, tariffe (ambiti scaricati; tariffe e orari senza fonte verificata).
 - [x] Modello con componente "adesso", stime per altri orari, correzione per veicolo (valori provvisori).
 - [ ] Stalli e regole per le moto.

@@ -93,6 +93,7 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 3px s
   <div class="name" id="sheet-name"></div>
   <div class="verdict" id="sheet-verdict"></div>
   <div class="meta" id="sheet-meta"></div>
+  <div class="meta" id="sheet-spaces"></div>
 </div>
 
 <script>
@@ -186,6 +187,10 @@ function showSheet() {
   document.getElementById('sheet-meta').textContent = mode === 'demo'
     ? 'Valore inventato per mostrare come apparirà la mappa. Non descrive la situazione vera di questa strada.'
     : 'Non ci sono ancora contributi di utenti. Qui compariranno i dati reali durante la beta.';
+  const n = DATA.stalls ? DATA.stalls[selected] : 0;
+  document.getElementById('sheet-spaces').textContent = n
+    ? 'Aree di sosta mappate su questo tratto: circa ' + n.toLocaleString('it-IT') + ' posti (stima dalla forma delle aree, dati 2020).'
+    : 'Nessuna area di sosta mappata su questo tratto. I posti lungo il marciapiede non sono ancora censiti.';
   sheet.hidden = false;
 }
 function setStatus() {

@@ -7,25 +7,25 @@ Stati: Backlog · In corso (con nome del proprietario) · Bloccato · Fatto.
 
 ## Decisioni richieste al fondatore
 
-Decisa il 2026-11-14: la beta copre tutto il Comune (D-029).
-
-1. **Quanti tester puoi reclutare?** Su tutta la città il dettaglio della mappa dipende quasi solo da questo. Con 20 si vedrà soprattutto il dato a livello di città e di settore; per il dettaglio di quartiere ne servono alcune centinaia (stima da fare in T-045).
-2. **Durata della beta:** A) 6 settimane; B) 4. Raccomandazione: A.
-3. **Azioni solo tue prima della beta** (`docs/17-autonomia.md` §5): account gratuito per il server, prova su telefono Android, firma della DPIA dopo revisione, reclutamento.
+1. **Quanti tester puoi reclutare?** Su tutta la città il dettaglio dipende quasi solo da questo (T-045). Piano e messaggi pronti in `docs/11-marketing.md`: ogni invio va approvato da te.
+2. **Nome dell'app:** proposte in `docs/11-marketing.md` (le prime tre: Milosta, Sosta, Curbly), marchi da verificare. Serve prima di reclutare.
+3. **"Live" e privacy:** chi ha già contribuito in una zona entra subito nel dato live; chi è nuovo entra ogni 30 minuti. A) tenere così (resta l'aggiornamento ogni 5 minuti, con un piccolo rischio residuo); B) tutti ogni 30 minuti (più sicuro, niente "ogni 5 minuti"). Raccomandazione: A, se il red team conferma (T-047).
+4. **Durata della beta:** A) 6 settimane; B) 4. Raccomandazione: A.
+5. **Azioni solo tue prima della beta** (`docs/17-autonomia.md` §5).
 
 ## Iterazione 1 — in corso
 
-### T-040 — Chiudere le 5 falle trovate dal red team
-privacy-engineer | In corso | alta | L | —
-Criteri: [ ] taglia del veicolo non salvata negli eventi · [ ] nessun giorno né orario nello storico · [ ] k contata nella stessa epoca · [ ] ammissioni a intervalli larghi · [ ] test del red team verdi senza indebolirli · **release bloccata finché non è chiuso**
+### T-047 — Verifica indipendente delle correzioni privacy
+privacy-redteam | Backlog | alta | M | —
+Criteri: [ ] i test adattati da `privacy-engineer` non sono stati indeboliti · [ ] attacchi ripetuti sul codice corretto, più D ed E della DPIA · [ ] attacco al residuo "già ammessi entrano subito nel live" · [ ] esito a `privacy-compliance`, che conferma o no lo stop alla raccolta delle ripartenze
 
 ### T-045 — Stima a livelli su tutto il Comune (D-029)
 data-scientist | Backlog | alta | L | T-040
 Criteri: [ ] livelli: zona, quartiere, settore, città; ogni strada usa il più fine che raggiunge k · [ ] quanta mappa mostra dati reali, per livello, con 20, 100, 300, 1.000 tester · [ ] progetto con `privacy-engineer` contro la sottrazione tra livelli · [ ] attacco del red team superato · [ ] parere di `privacy-compliance` · [ ] il livello è dichiarato nella scheda della strada
 
-### T-041 — Attributi di sosta per strada e stalli moto
-data-engineer | Backlog | alta | L | —
-Criteri: [ ] strati `AC_VEI` e `AR_STR` del Database Topografico valutati · [ ] OpenStreetMap se la rete lo consente · [ ] tariffe e orari per ambito da fonte ufficiale · [ ] stalli moto · [ ] griglia limitata alle celle con strade e al confine comunale
+### T-041 — Posti per strada: sosta lungo il marciapiede, colori delle strisce, moto (D-030)
+data-engineer | In corso | alta | L | —
+Criteri: [x] aree di sosta mappate e stima dei posti (`scripts/build_parking.py`) · [ ] sosta lungo il marciapiede per tratto e per lato · [ ] confronto con una fonte ufficiale · [ ] OpenStreetMap se la rete lo consente · [ ] tariffe e orari per ambito da fonte ufficiale · [ ] stalli moto · [ ] griglia limitata alle celle con strade e al confine comunale
 
 ### T-042 — Testo del GDPR e norme non raggiungibili
 legal-analyst | Bloccato (EUR-Lex e Garante restituiscono pagine vuote) | media | S | —
@@ -124,10 +124,6 @@ Criteri: [ ] direzione approvata (D-024): mantenerla · [ ] mappa reale con stra
 ### T-009 — Flussi e schermate
 ux-designer | Backlog | media | M | T-004
 Criteri: [ ] onboarding con consenso, mappa, contributi, diritti in 3 tap · [ ] zone leggibili senza colore · [ ] `docs/08-ux.md` completato
-
-### T-008 — Posizionamento e ASO (IT + EN)
-marketing-sales | Backlog | media | M | T-004
-Criteri: [ ] messaggio chiave e tre titoli IT/EN · [ ] parole chiave e screenshot · [ ] solo bozze in `docs/11-marketing.md`
 
 ## In corso
 

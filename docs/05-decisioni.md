@@ -223,3 +223,11 @@ Formato: ogni decisione ha data, stato, contesto, scelta e conseguenze. Le decis
 - **Rischio privacy nuovo:** pubblicare più livelli insieme permette di sottrarre un livello dall'altro. Va progettato e attaccato dal red team prima di essere attivato.
 - **Leva principale:** più tester. Fino al 2027 l'installazione diretta su Android non ha il limite di 20 dispositivi: il numero di tester dipende solo dal reclutamento, che spetta al fondatore.
 - **Missioni:** restano, per indirizzare i tester dove mancano dati, ma senza limitare l'area.
+
+## D-030 — Dove sono i parcheggi e quanti posti hanno
+- **Data:** 2026-11-14
+- **Stato:** decisa dal fondatore (obiettivo); primo passo fatto
+- **Scelta:** l'app deve sapere dove sono i posti e quanti sono, strada per strada, e usarlo per essere più precisa.
+- **Fatto:** dal Database Topografico del Comune (strato `AC_VEI`, aree "PARCHEGGIO") sono state estratte **3.090 aree di sosta mappate**; dalla loro forma si stimano circa **123.000 posti** (circa 102.000 in aree grandi, 19.000 in fasce a pettine o a spina, 3.000 in fasce in linea), assegnati a 1.758 tratti di strada in 826 celle. Comandi: `scripts/build_parking.py`. Regole di stima in `parking_core/capacity.py`.
+- **Limiti da dichiarare:** è una stima dalla geometria, non un conteggio di stalli; dati del 2020; le aree grandi possono includere parcheggi privati o di strutture; **i posti lungo il marciapiede dipinti sulla carreggiata non sono in questo strato**, e a Milano sono la maggior parte della sosta su strada. Il numero non è confrontato con una fonte ufficiale.
+- **Prossimi passi (T-041):** censire la sosta lungo il marciapiede (lunghezza dei tratti per lato, corretta da passi carrai, incroci e divieti; OpenStreetMap se raggiungibile; contributi degli utenti), distinguere strisce blu, bianche, gialle e stalli moto, usare i posti per tratto come variabile del modello e validarla sugli esiti reali.

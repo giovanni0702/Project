@@ -27,8 +27,10 @@ def qx(lon): return round((lon - west) / (east - west) * Q)
 def qy(lat): return round((lat - south) / (north - south) * Q)
 
 
-names, name_index, cells, cell_index, out = [], {}, [], {}, []
-for piece in pieces:
+parking_file = ROOT / "build" / "parking" / city["id"] / "parking.json"
+per_piece = json.loads(parking_file.read_text(encoding="utf-8"))["per_piece"] if parking_file.exists() else {}
+names, name_index, cells, cell_index, out, stalls = [], {}, [], {}, [], []
+for number, piece in enumerate(pieces):
     if piece["cell"] not in cell_index:
         lat, lon = h3.cell_to_latlng(piece["cell"])
         cell_index[piece["cell"]] = len(cells)
@@ -45,9 +47,10 @@ for piece in pieces:
         px, py = x, y
     if len(row) >= 6:
         out.append(row)
+        stalls.append(per_piece.get(str(number), 0))
 
 center = [sum(c[0] for c in cells) / len(cells), sum(c[1] for c in cells) / len(cells)]
-data = {"bbox": [west, south, east, north], "q": Q, "names": names, "cells": cells, "pieces": out,
+data = {"bbox": [west, south, east, north], "q": Q, "names": names, "cells": cells, "pieces": out, "stalls": stalls,
         "odds": city["vehicles"]["odds"], "thresholds": city["display"]["thresholds"], "center": center}
 html = (ROOT / "web" / "preview_template.html").read_text(encoding="utf-8")
 html = html.replace("/*DATA*/null", json.dumps(data, separators=(",", ":"), ensure_ascii=False))

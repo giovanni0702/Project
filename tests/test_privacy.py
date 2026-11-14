@@ -155,18 +155,24 @@ def test_attack_1_block_member_learns_when_the_other_contributed():
 
 
 def test_attack_2_saved_grids_do_not_reveal_when_a_block_arrived():
-    """A flip to "user data" is pinned to a member's arrival when it falls in the same
-    publication step as the last arrival of the block that caused it (the original attack,
-    measured on arrival time rather than on the admission cycle, which is now a fixed clock)."""
-    flips = pinned = 0
-    for step, ((old, _, _), (new, newly, _)) in enumerate(zip(GRIDS, GRIDS[1:]), start=1):
-        for cell, value in new["cells"].items():
-            if value[3] and not old["cells"][cell][3]:           # cell becomes "based on user data"
-                flips += 1
-                last = max(ARRIVALS[(cell, agent)] for agent in newly[cell])
-                pinned += last == step                            # flip in the same step as the last arrival
+    """The saved grids show when a block was admitted; the attacker guesses the arrival step
+    of its last member (and of every member) to be that step. Immediate admission: 22/22 blocks
+    and 30/49 members guessed right; with a fixed admission clock the guess is only chance level
+    (about 1 step in the interval)."""
+    flips = sum(1 for (old, _, _), (new, _, _) in zip(GRIDS, GRIDS[1:])
+                for c, v in new["cells"].items() if v[3] and not old["cells"][c][3])
     assert flips > 0, "simulation never produced a flip: the test would prove nothing"
-    assert pinned / flips < 0.5, f"{pinned}/{flips} flips fall exactly on a block's arrival step"
+    blocks = last_hits = members = member_hits = 0
+    for step, (_, newly, _) in enumerate(GRIDS):
+        for cell, agents in newly.items():
+            if agents:
+                blocks += 1
+                last_hits += max(ARRIVALS[(cell, a)] for a in agents) == step
+                members += len(agents)
+                member_hits += sum(ARRIVALS[(cell, a)] == step for a in agents)
+    assert blocks >= 10 and members >= 30
+    assert last_hits / blocks < 0.5, f"{last_hits}/{blocks} blocks: last arrival pinned to the admission step"
+    assert member_hits / members < 0.25, f"{member_hits}/{members} members pinned to the admission step"
 
 
 def test_attack_3_contributions_below_k_do_not_leak_to_neighbours():
@@ -273,3 +279,105 @@ def test_attack_5_control_week_granularity_alone_breaks_the_link():
     assert correct <= 2, f"{correct} correct links even with week-only dates"
     _, exact, _ = link_left_to_parked(raw, owner)
     assert exact >= 10, "with exact days the attack must work, or the control proves nothing"
+
+
+# ---------------------------------------------------------------------------
+# T-040: mechanisms behind the corrections (each one proved by a test).
+# ---------------------------------------------------------------------------
+from backend.store import current_step, oldest_live_step  # noqa: E402
+from parking_core.privacy import people_lower_bound  # noqa: E402
+
+PRIVACY = CITY["privacy"]
+
+
+def table_columns(store, table):
+    return {r[1] for r in store.query(f"PRAGMA table_info({table})")}
+
+
+def test_history_keeps_no_vehicle_version_type_or_exact_day():
+    store, _, _ = fill_store(seed=3, with_vehicle=True)
+    assert not {"vehicle_class", "app_version", "type", "day"} & table_columns(store, "events")
+    assert all(e["week"] >= "2026-11-02" and len(e["week"]) == 10 for e in store.events())
+    assert not any(e["slot_index"] in (16, 35) for e in store.events())   # 'left' slots: nothing stored
+
+
+def test_attack_4_aggregate_vehicle_counts_cannot_be_linked_to_events():
+    store, owner, raw = fill_store(seed=3, with_vehicle=True)
+    cols = table_columns(store, "vehicle_outcomes")
+    assert cols == {"week", "vehicle_class", "search_bucket", "n"}      # no cell, pid, event id, slot
+    assert cols & table_columns(store, "events") == {"week", "search_bucket"}   # only coarse shared keys
+    rows = store.query("SELECT week, vehicle_class, search_bucket, n FROM vehicle_outcomes")
+    events = store.events()
+    assert sum(n for *_, n in rows) == len(events)                        # still learns from every parked event
+    # The only moto: the best the server can do is match a counter row to events of the same
+    # week and bucket. Each row must fit at least k stored events (anonymity set), in >= 2 cells.
+    for week, _, bucket, _ in rows:
+        candidates = [e for e in events if e["week"] == week and e["search_bucket"] == bucket]
+        assert len(candidates) >= K and len({e["cell"] for e in candidates}) >= 2
+    assert {c for (c, _) in store.vehicle_totals()} == {"moto", "small", "medium", "large"}
+
+
+def test_daily_rate_limit_table_and_live_rows_do_not_outlive_their_window():
+    store = SqliteStore(":memory:")
+    base = {"type": "parked", "cell": CELLS[10], "slot_day_type": "weekday", "slot_index": 20,
+            "search_bucket": 0, "pid": "0000" + "a" * 16, "app_version": "0.1"}
+    assert store.add_event(base, date(2026, 11, 16), live_step=1000)
+    assert not store.add_event(base, date(2026, 11, 16), live_step=1001)        # C9 still enforced
+    assert store.add_event({**base, "pid": "0000" + "b" * 16}, date(2026, 11, 17), live_step=1005)
+    assert store.query("SELECT COUNT(*) FROM daily_seen WHERE day < '2026-11-17'") == [(0,)]
+    step_min, window = CITY["publish"]["interval_minutes"], CITY["model"]["live_window_minutes"]
+    assert store.purge_live(1000 + -(-window // step_min) + 1) == 2
+    assert all(e["live_step"] is None for e in store.events())            # history: no time at all
+    now = datetime(2026, 11, 16, 12, 0).astimezone()
+    assert oldest_live_step(now, step_min, window) == current_step(now, step_min) - -(-window // step_min)
+
+
+def test_retention_never_keeps_more_than_the_declared_days():
+    store = SqliteStore(":memory:")
+    base = {"type": "parked", "cell": CELLS[10], "slot_day_type": "weekday", "slot_index": 20, "search_bucket": 0}
+    today = date(2026, 12, 1)
+    days = PRIVACY["raw_retention_days"]
+    for back in range(0, days + 10):
+        store.add_event({**base, "pid": f"{back:020x}"}, today - timedelta(days=back))
+    store.delete_older_than(today - timedelta(days=days))
+    kept = {e["week"] for e in store.events()}
+    assert kept and min(kept) >= (today - timedelta(days=days + 6)).isoformat()   # weeks, never older than ~30 d
+    assert min(kept) >= (today - timedelta(days=days)).isoformat()
+
+
+def test_attack_6_five_pseudonyms_of_one_epoch_are_published_but_not_straddling_ones():
+    same = [Outcome(TARGET, SLOT, True, 0.0, pseudonym(f"s{i}".encode(), "parked", TARGET, 30)) for i in range(K)]
+    published = build_grid(CITY, same, now=NOW0, admission=Admission.from_config(CITY))
+    assert published["cells"][TARGET][3], "cost check: k pseudonyms of one epoch must still publish"
+    split = same[:K - 1] + [Outcome(TARGET, SLOT, True, 0.0, pseudonym(b"s0", "parked", TARGET, 60))]
+    blocked = build_grid(CITY, split, now=NOW0, admission=Admission.from_config(CITY))
+    assert not blocked["cells"][TARGET][3]
+    assert people_lower_bound([o.contributor for o in split]) == K - 1
+
+
+def test_attack_6_one_person_in_two_epochs_does_not_make_a_block():
+    two = [Outcome(TARGET, SLOT, True, 0.0, pseudonym(b"solo", "parked", TARGET, d)) for d in (27, 28)]
+    admission = Admission.from_config(CITY)
+    admission.filter(two, now=NOW0)
+    assert admission.admitted == {}
+
+
+def test_admission_happens_only_at_the_fixed_clock_steps():
+    step, interval = CITY["publish"]["interval_minutes"], PRIVACY["admission_interval_minutes"]
+    batch = [Outcome(TARGET, SLOT, True, 0.0, f"p{i}") for i in range(PRIVACY["admission_batch"])]
+    opened = []
+    for cycle in range(2 * interval // step + 1):
+        admission = Admission.from_config(CITY)
+        admission.filter(batch, now=NOW0 + timedelta(minutes=step * cycle))
+        opened.append(bool(admission.admitted))
+    assert [i for i, o in enumerate(opened) if o] == [i for i in range(len(opened)) if i % (interval // step) == 0]
+    assert not Admission.from_config(CITY).filter(batch, now=None)       # no clock: nothing enters
+
+
+def test_admission_interval_leaves_live_time_for_new_contributors():
+    """Interval + maximum phone send delay must stay below the live window, or a newly
+    admitted outcome would already be stale; the interval must be a whole number of steps."""
+    interval, delay = PRIVACY["admission_interval_minutes"], PRIVACY["send_delay_max_minutes"]
+    assert interval + delay < CITY["model"]["live_window_minutes"]
+    assert interval % CITY["publish"]["interval_minutes"] == 0
+    assert 1440 % interval == 0

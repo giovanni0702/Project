@@ -74,6 +74,11 @@ class EventStore(Protocol):
     def delete_older_than(self, cutoff: date) -> int: ...
     def load_admitted(self) -> dict[str, set[str]]: ...
     def save_admitted(self, admitted: dict[str, set[str]], day: date) -> None: ...
+    def query(self, sql: str, params: tuple = ()) -> list[tuple]:
+        """Read-only helper for tests and audits (schema and table contents)."""
+        with closing(self._connect()) as db:
+            return [tuple(r) for r in db.execute(sql, params)]
+
     def vehicle_totals(self) -> dict[tuple[str, int], int]: ...
 
 
@@ -164,6 +169,11 @@ class SqliteStore:
                 [(c, p, week) for c, ids in admitted.items() for p in ids],
             )
             db.commit()
+
+    def query(self, sql: str, params: tuple = ()) -> list[tuple]:
+        """Read-only helper for tests and audits (schema and table contents)."""
+        with closing(self._connect()) as db:
+            return [tuple(r) for r in db.execute(sql, params)]
 
     def vehicle_totals(self) -> dict[tuple[str, int], int]:
         """City-wide counts per (vehicle class, search bucket), summed over weeks."""

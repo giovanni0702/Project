@@ -125,7 +125,7 @@ def test_live_outcomes_move_the_estimate_now():
 def test_published_grid_has_aggregates_only():
     import json
     from parking_core.publish import build_grid
-    now = datetime(2026, 11, 16, 18, 45)  # falls in SLOT
+    now = datetime(2026, 11, 16, 18, 30)  # falls in SLOT and on an admission step (T-040)
     payload = build_grid(CITY, outcomes=synthetic(CELLS[10], 36, 4, contributors=12), now=now)
     text = json.dumps(payload)
     assert payload["valid_minutes"] == 5 and len(payload["cells"]) == len(CELLS)

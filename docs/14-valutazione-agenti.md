@@ -22,7 +22,8 @@ Si aggiorna a ogni chiusura di iterazione (`ceo-orchestrator`). Voto da 1 a 5 su
 | data-scientist | 5 | Ha detto chiaramente, con numeri, che la configurazione attuale non mostra mai dati reali; proposta concreta |
 | backend-engineer | 4 | Backend completo e provato in un solo giro a basso costo; ha però salvato giorno e taglia, da cui due delle falle |
 | legal-analyst | 3 | Onesto su ciò che non ha letto (9 su 13); bloccato da siti che restituiscono pagine vuote, tetto di chiamate rispettato |
-| privacy-engineer | — | In corso |
+| privacy-engineer | 4 | 5 falle chiuse con costo dichiarato per la stima; ha però adattato lui i test del red team: serve verifica indipendente (T-047). Costoso (103.000 token) |
+| marketing-sales | 4 | Piano concreto a costo zero, vincoli privacy rispettati, nessuna ricerca inutile; nomi e obiettivi non verificati |
 
 Lezione del ciclo: il red team va lanciato **dopo** ogni nuovo flusso di dati, non in parallelo, così attacca anche il codice appena scritto.
 

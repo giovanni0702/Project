@@ -1,5 +1,8 @@
 """Milan data adapter (D-013): everything specific to Milan's sources lives here.
 
+Parking areas: DBT layer AC_VEI, polygons whose NOME is "PARCHEGGIO" (areas outside the
+carriageway intended for parking). Kerbside parking painted on the carriageway is NOT in this layer.
+
 Streets: Database Topografico 2020, Comune di Milano, CC BY. Layer EL_STR.
 Parking areas: dataset ds83 "Ambiti della sosta", Comune di Milano, CC BY.
 """
@@ -10,7 +13,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 RAW = ROOT / "data" / "raw" / "milano"
 ATTRIBUTION = "Comune di Milano, Database Topografico 2020 e Ambiti della sosta (CC BY 4.0)"
 DBT_URL = "https://gisportal.comune.milano.it/download/area_download/SIT/DBT2020/DBT_2020.zip"
-DBT_LAYERS = ("EL_STR", "LIM_COM")
+DBT_LAYERS = ("EL_STR", "LIM_COM", "AC_VEI")
 AMBITI_URL = ("https://dati.comune.milano.it/dataset/85ed8636-fbd0-4bf6-aaf7-7f3f2f610d48/resource/"
               "c871e6f8-954a-4fde-8210-071860eb0dea/download/sosta_ambiti.geojson")
 # Not public streets with kerbside parking.
@@ -58,3 +61,23 @@ def street_lines():
                 "points": [(lat, lon) for lon, lat in points],
                 "parking": {},
             }
+
+
+def parking_areas():
+    """Yield mapped parking areas: id, ring in metres, centroid (lat, lon)."""
+    import shapefile
+    from pyproj import Transformer
+
+    to_wgs84 = Transformer.from_crs(SOURCE_CRS, "EPSG:4326", always_xy=True)
+    reader = shapefile.Reader(str(RAW / "dbt2020" / "AC_VEI"), encoding="latin-1")
+    for item in reader.iterShapeRecords():
+        if item.record["NOME"] != "PARCHEGGIO":
+            continue
+        parts = list(item.shape.parts) + [len(item.shape.points)]
+        ring = [(x, y) for x, y in item.shape.points[parts[0]:parts[1]]]  # outer ring only
+        if len(ring) < 4:
+            continue
+        cx = sum(x for x, _ in ring) / len(ring)
+        cy = sum(y for _, y in ring) / len(ring)
+        lon, lat = to_wgs84.transform(cx, cy)
+        yield {"id": item.record["CLASSID"], "ring_m": ring, "centroid": (lat, lon)}
