@@ -72,4 +72,17 @@ html = html.replace("/*DATA*/null", json.dumps(data, separators=(",", ":"), ensu
 target = ROOT / "build" / "webapp" / f"{city['id']}.html"
 target.parent.mkdir(parents=True, exist_ok=True)
 target.write_text(html, encoding="utf-8")
+# Standalone site (for static hosting): the same app wrapped in a full HTML document.
+site = ROOT / "site"
+site.mkdir(exist_ok=True)
+body = html.replace("<title>SostaMi</title>", "", 1)
+(site / "index.html").write_text(
+    "<!doctype html><html lang=\"it\"><head><meta charset=\"utf-8\">"
+    "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1,viewport-fit=cover\">"
+    "<title>SostaMi</title><meta name=\"description\" content=\"Trova posto a Milano, strada per strada.\">"
+    "<meta name=\"theme-color\" content=\"#14202B\"><link rel=\"manifest\" href=\"manifest.webmanifest\">"
+    "<link rel=\"icon\" href=\"icon.svg\" type=\"image/svg+xml\"><link rel=\"apple-touch-icon\" href=\"icon-180.png\">"
+    "<meta name=\"apple-mobile-web-app-capable\" content=\"yes\"><meta name=\"apple-mobile-web-app-title\" content=\"SostaMi\">"
+    "<style>body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>"
+    "</head><body>" + body + "</body></html>", encoding="utf-8")
 print(f"{target.relative_to(ROOT)} {target.stat().st_size} bytes; pieces {len(out)}; " + ", ".join(f"{k} {len(v)}" for k, v in layers.items()))

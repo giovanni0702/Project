@@ -7,10 +7,10 @@ Stati: Backlog · In corso (con nome del proprietario) · Bloccato · Fatto.
 
 ## Decisioni richieste al fondatore
 
-Decise il 2026-11-14: nome SostaMi (D-033), vista live regola A (D-034), versione web (D-035).
+Decise il 2026-11-14: beta come sito web e pubblicazione (D-036), metodo per posti liberi e occupati (D-037).
 
-1. **Forma della beta.** A) **sito web** (link pubblico gratuito, funziona su iPhone, Android e computer, si aggiunge alla schermata Home, nessuno store); B) app Android con installazione diretta; C) Google Play (25 USD) o App Store (99 USD l'anno). Raccomandazione: A, con B o C più avanti. Il rilevamento automatico in background non è possibile in un sito: resterebbero le segnalazioni a un tocco e la sosta salvata.
-2. **Pubblicare il sito** (per esempio GitHub Pages, gratuito): sì o no. Serve prima: verifica del red team (T-047), DPIA firmata, servizio online (T-030). La pubblicazione è un'azione tua.
+1. **Attivare il sito (azione tua, 2 minuti):** repository → Settings → Pages → Source: "GitHub Actions". Poi dimmelo: verifico che l'indirizzo risponda.
+2. **Il repository è pubblico:** tutti i documenti del progetto sono già visibili a chiunque. A) lasciarlo pubblico; B) renderlo privato e pubblicare il sito da un repository separato. Raccomandazione: B prima di reclutare tester.
 3. **Durata della beta:** A) 6 settimane; B) 4. Raccomandazione: A.
 
 ## Iterazione 1 — in corso

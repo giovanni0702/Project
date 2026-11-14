@@ -15,6 +15,8 @@ Aggiornato: 2026-11-14 · Iterazione **1 — Dati e modello v0 (in corso)** · L
 
 9. **Versione web di SostaMi** (D-035): mappa vera di Milano dai dati del Comune, ricerca vie, veicolo, sosta, segnalazioni sul dispositivo. Link: https://claude.ai/artifact/RCK6XaPgv7oTuTKun7Wk87. Comando: `scripts/build_webapp.py milano`.
 
+10. **Beta = sito web (D-036):** `site/` pronto con flusso di pubblicazione; attende l'attivazione di Pages da parte del fondatore. Modello matematico di occupazione in corso (T-049, D-037).
+
 ## Cosa sappiamo
 - Nessuna fonte pubblica in tempo reale sulla sosta su strada a Milano: i dati reali sono solo i contributi dei tester.
 - OpenStreetMap non è raggiungibile dalla sessione anche con i siti abilitati; Milano non ne ha bisogno per le strade.

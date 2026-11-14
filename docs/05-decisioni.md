@@ -263,3 +263,20 @@ Formato: ogni decisione ha data, stato, contesto, scelta e conseguenze. Le decis
 - **Limiti di questa forma (pagina dentro Claude):** è privata del fondatore finché non la condivide; non può leggere la posizione GPS; non può caricare una mappa di sfondo da altri siti; non comunica con il nostro servizio, quindi le segnalazioni restano sul dispositivo e la mappa reale resta grigia. I colori si vedono solo con "Mostra esempio", dichiarato finto.
 - **Passo successivo proposto:** pubblicare la stessa app come sito vero (per esempio GitHub Pages, gratuito): avrebbe un link pubblico, si installa sulla schermata Home dell'iPhone, può usare il GPS e collegarsi al servizio. Pubblicare è una decisione del fondatore e richiede prima la verifica del red team (T-047), la DPIA firmata e un servizio online (T-030).
 - **Conseguenza per la beta:** la versione web può sostituire o affiancare l'app Android: nessuno store, nessuna installazione, funziona su iPhone, Android e computer.
+
+## D-036 — La beta è un sito web; pubblicazione su GitHub Pages
+- **Data:** 2026-11-14
+- **Stato:** decisa dal fondatore (forma A; pubblicazione: sì)
+- **Scelta:** la beta è la versione web di SostaMi, raggiungibile da un link pubblico gratuito, su iPhone, Android e computer. App Android e store dopo.
+- **Preparato:** cartella `site/` (app completa, icone, manifesto per l'aggiunta alla schermata Home) e flusso `.github/workflows/pages.yml` che la pubblica. Il pulsante "Dove sono" usa il GPS solo sul dispositivo, a richiesta.
+- **Cosa deve fare il fondatore:** nelle impostazioni del repository, Pages → Source: "GitHub Actions"; se la pubblicazione è limitata al ramo principale, consentire il ramo di lavoro o unirlo. Indirizzo atteso: `https://giovanni0702.github.io/Project/`.
+- **Cosa si può pubblicare subito:** questa versione non raccoglie né invia dati, quindi non richiede la DPIA. La raccolta delle segnalazioni si attiva solo dopo T-047, DPIA firmata e servizio online (T-044, T-030).
+- **Da sapere:** il repository è **pubblico**: documenti, strategie e bozze sono già visibili a chiunque. Se non è voluto, va reso privato (ma GitHub Pages gratuito richiede un repository pubblico: in quel caso il sito va in un repository separato).
+- **Conseguenze:** niente rilevamento automatico in background (impossibile in un sito); D-017 (beta solo Android) è superata; i vincoli Google Play e App Store si rinviano.
+
+## D-037 — Posti totali, occupati e liberi: modello matematico, senza dati Google
+- **Data:** 2026-11-14
+- **Stato:** obiettivo deciso dal fondatore; metodo scelto dal team (T-049, in corso)
+- **Perché non Google Maps:** i termini letti alla fonte vietano di estrarre, conservare o usare i loro contenuti per crearne di propri (D-004); inoltre Google non espone posti liberi né auto in sosta. Usarli esporrebbe il progetto alla chiusura dell'accesso e a contestazioni, soprattutto in vista di una cessione del dato (D-013).
+- **Metodo:** (1) capacità per tratto = aree di sosta mappate + stima della sosta lungo il marciapiede dalla lunghezza dei tratti; (2) domanda dal movimento reale disponibile: residenti e auto per quartiere, ingressi in Area C, attività per quartiere; (3) teoria delle code: sistema a c posti con arrivi e durate di sosta variabili nel tempo (formule di Erlang B e C), da cui posti occupati, posti liberi e probabilità di trovare posto entro 5 minuti, ciascuno con intervallo di incertezza; (4) calibrazione bayesiana con le segnalazioni reali.
+- **Onestà:** finché mancano le segnalazioni, i numeri sono stime del modello non verificate e l'app lo dichiara.

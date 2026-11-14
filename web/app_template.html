@@ -79,6 +79,7 @@ select.chip { appearance: none; }
   display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; max-width: min(560px, calc(100% - 440px)); }
 .legend span { display: inline-flex; align-items: center; gap: 6px; }
 .legend i { width: 22px; height: 4px; border-radius: 2px; display: inline-block; }
+.locate { position: fixed; left: max(16px, env(safe-area-inset-left, 0px)); bottom: calc(72px + env(safe-area-inset-bottom, 0px)); }
 .credit { font-size: 11px; color: var(--ink-soft); }
 .big { font: 700 28px var(--display); font-variant-numeric: tabular-nums; }
 @media (max-width: 760px) {
@@ -86,8 +87,10 @@ select.chip { appearance: none; }
   .sheet { left: max(16px, env(safe-area-inset-left, 0px)); right: auto; bottom: calc(72px + env(safe-area-inset-bottom, 0px)); max-height: 44%; padding: 14px; gap: 8px; }
   .sheet h2 { font-size: 19px; }
   .tabs button { padding: 0 11px; }
-  .status { display: none; }
+  .status:not(.notice) { display: none; }
   .legend { display: none; }
+  .locate { bottom: calc(72px + env(safe-area-inset-bottom, 0px)); }
+  .locate span { display: none; }
 }
 @media (prefers-reduced-motion: no-preference) { .sheet { transition: opacity .15s; } }
 </style>
@@ -127,6 +130,8 @@ select.chip { appearance: none; }
   <button type="button" id="tab-privacy" aria-pressed="false">Privacy</button>
 </div>
 
+<button type="button" class="chip locate" id="locate" aria-label="Vai alla mia posizione"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3.5M12 18v3.5M2.5 12H6M18 12h3.5"/></svg><span>Dove sono</span></button>
+
 <div class="card legend" aria-label="Legenda">
   <span><i style="background:var(--high)"></i>Facile</span><span><i style="background:var(--mid)"></i>Possibile</span>
   <span><i style="background:var(--low)"></i>Difficile</span><span><i style="background:var(--unknown)"></i>Nessun dato</span>
@@ -155,7 +160,7 @@ let store = { vehicle: 'medium', parked: null, outcomes: [] };
 try { store = Object.assign(store, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (e) {}
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) {} };
 let example = false, live = true, day = 0, slot = 37, tab = 'map', selected = -1, selectedPark = -1, confirmWipe = false;
-let view = { cx: DATA.center[0], cy: DATA.center[1], scale: 0 };
+let view = { cx: DATA.center[0], cy: DATA.center[1], scale: 0 }, me = null, notice = '';
 
 // ---- decode geometry
 function decode(row, skip) {
@@ -251,6 +256,10 @@ function draw() {
     ctx.lineWidth = 2; ctx.strokeStyle = css('--surface'); ctx.stroke();
     ctx.fillStyle = i === selectedPark ? css('--surface') : css('--on-accent'); ctx.fillText('P', x, y + 0.5);
   });
+  if (me) {
+    const x = sx(me.x), y = sy(me.y);
+    ctx.beginPath(); ctx.arc(x, y, 9, 0, Math.PI * 2); ctx.fillStyle = css('--accent'); ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = css('--surface'); ctx.stroke();
+  }
   if (store.parked) {
     const x = sx(store.parked.x), y = sy(store.parked.y);
     ctx.beginPath(); ctx.arc(x, y, 12, 0, Math.PI * 2); ctx.fillStyle = css('--brand-bg'); ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = css('--ink'); ctx.stroke();
@@ -303,7 +312,7 @@ function render() {
   } else if (tab === 'privacy') {
     html += '<span class="tag">Privacy</span><h2>Resta tutto su questo dispositivo</h2>' +
       '<p>Questa versione non invia nulla: niente posizione, niente account, niente pubblicità. Veicolo, sosta salvata ed esiti segnati sono conservati solo nel tuo browser.</p>' +
-      '<p>La pagina non può leggere la tua posizione: scegli tu la strada sulla mappa o con la ricerca.</p>' +
+      '<p>"Dove sono" usa la posizione solo per centrare la mappa su questo dispositivo, quando lo chiedi tu. Non viene salvata né inviata.</p>' +
       '<div class="rows"><div><span>Sosta salvata</span><span>' + (store.parked ? 'sì' : 'no') + '</span></div><div><span>Esiti segnati</span><span>' + store.outcomes.length + '</span></div></div>' +
       '<div class="actions"><button type="button" class="btn ' + (confirmWipe ? 'danger' : '') + ' wide" id="wipe">' + (confirmWipe ? 'Conferma: cancella tutto' : 'Cancella i miei dati') + '</button></div>';
   } else if (selectedPark >= 0) {
@@ -341,7 +350,8 @@ function setTab(name) {
   render(); redraw();
 }
 function setStatus() {
-  $('status').textContent = example ? 'Stai guardando un esempio: i colori sono finti, le strade e i parcheggi sono veri.'
+  $('status').classList.toggle('notice', !!notice);
+  $('status').textContent = notice ? notice : example ? 'Stai guardando un esempio: i colori sono finti, le strade e i parcheggi sono veri.'
     : 'Strade e parcheggi veri di ' + DATA.city + '. Non ci sono ancora segnalazioni: le strade restano grigie.';
   $('example').setAttribute('aria-pressed', example); $('example').textContent = example ? 'Nascondi esempio' : 'Mostra esempio';
   $('live').setAttribute('aria-pressed', live); $('other').setAttribute('aria-pressed', !live); $('when').hidden = live;
@@ -389,6 +399,15 @@ function goToStreet(nameIndex) {
   selectedPark = -1; selected = mine[Math.floor(mine.length / 2)]; $('results').hidden = true; $('search').value = DATA.names[nameIndex];
   flyTo((a + c) / 2, (b + d) / 2, Math.min(metresPerUnit * 2, Math.max(fit, metresPerUnit * 0.25))); setTab('map');
 }
+$('locate').onclick = () => {
+  const fail = () => { notice = 'Posizione non disponibile qui. Cerca una via o tocca la mappa.'; setStatus(); };
+  if (!navigator.geolocation) return fail();
+  navigator.geolocation.getCurrentPosition((pos) => {
+    const x = (pos.coords.longitude - W) / (E - W) * Q, y = (pos.coords.latitude - S) / (N - S) * Q;
+    if (x < 0 || x > Q || y < 0 || y > Q) { notice = 'Sei fuori da ' + DATA.city + ': la mappa copre solo la città.'; setStatus(); return; }
+    me = { x, y }; notice = ''; setStatus(); flyTo(x, y, Math.max(view.scale, metresPerUnit * 0.9));   // used on this device only, never sent
+  }, fail, { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 });
+};
 $('live').onclick = () => { live = true; setStatus(); render(); redraw(); };
 $('other').onclick = () => { live = false; setStatus(); render(); redraw(); };
 $('example').onclick = () => { example = !example; setStatus(); render(); redraw(); };
