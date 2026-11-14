@@ -58,18 +58,27 @@ def test_extra_fields_rejected(env, cell, extra):
 @pytest.mark.parametrize("patch", [
     {"search_bucket": 4}, {"search_bucket": None}, {"pid": "XYZ"}, {"pid": "a" * 21},
     {"cell": "45.46,9.19"}, {"cell": "8928308280fffff"}, {"vehicle_class": "truck"},
-    {"slot_day_type": "funday"}, {"slot_index": 999}, {"type": "left"},  # left with bucket
+    {"slot_day_type": "funday"}, {"slot_index": 999}, {"type": "left"},
 ])
 def test_invalid_values_rejected(env, cell, patch):
     client, *_ = env
     assert client.post("/v1/events", json={**event(cell), **patch}).status_code == 422
 
 
-def test_left_event_and_vehicle(env, cell):
-    client, *_ = env
-    body = event(cell, type="left", vehicle_class="moto")
+def test_departures_are_not_collected(env, cell):
+    client, store, *_ = env
+    body = event(cell, type="left")
     body.pop("search_bucket")
-    assert client.post("/v1/events", json=body).status_code == 202
+    assert client.post("/v1/events", json=body).status_code == 422
+    assert store.events() == []
+
+
+def test_vehicle_class_is_counted_not_stored(env, cell):
+    client, store, _, db = env
+    assert client.post("/v1/events", json=event(cell, vehicle_class="moto")).status_code == 202
+    assert store.vehicle_totals() == {("moto", 0): 1}
+    with sqlite3.connect(db) as con:
+        assert "vehicle_class" not in [r[1] for r in con.execute("PRAGMA table_info(events)")]
 
 
 def test_rate_limit_per_pid_type_cell(env, cell):
@@ -86,13 +95,14 @@ def test_no_time_or_ip_columns(env, cell):
             cols = [r[1].lower() for r in con.execute(f"PRAGMA table_info({table})")]
             assert not [c for c in cols if any(w in c for w in ("ip", "agent", "time", "lat", "lng", "hour"))
                         and c != "slot_index"], cols
-        (day,) = con.execute("SELECT day FROM events").fetchone()
-    assert len(day) == 10  # date only, no time of day
+            assert not {"day", "vehicle_class", "app_version", "type"} & set(cols)
+        (week,) = con.execute("SELECT week FROM events").fetchone()
+    assert date.fromisoformat(week).weekday() == 0  # a Monday: week granularity only
 
 
 def test_retention(env, cell, config):
     _, store, *_ = env
-    store.add_event({**event(cell), "slot_day_type": "weekday"}, date(2026, 1, 1))
+    store.add_event({**event(cell), "slot_day_type": "weekday"}, date(2026, 1, 1))  # week of Dec 29
     store.add_event({**event(cell, pid="b" * 20), "slot_day_type": "weekday"}, date(2026, 2, 20))
     deleted = run_retention(store, config, today=date(2026, 2, 25))
     assert deleted == 1 and len(store.events()) == 1
@@ -101,7 +111,7 @@ def test_retention(env, cell, config):
 def test_full_flow_event_to_grid(env, cell, config):
     client, store, tmp, _ = env
     k = config["privacy"]["min_contributors"]
-    now = datetime(2026, 3, 4, 10, 15, tzinfo=ZoneInfo(config["timezone"]))  # a Wednesday
+    now = datetime(2026, 3, 4, 10, 30, tzinfo=ZoneInfo(config["timezone"]))  # a Wednesday, admission step
     slots_per_hour = 60 // config["time"]["slot_minutes"]
     index = now.hour * slots_per_hour + now.minute // config["time"]["slot_minutes"]
     for i in range(k + 1):
@@ -109,7 +119,8 @@ def test_full_flow_event_to_grid(env, cell, config):
         assert client.post("/v1/events", json=body).status_code == 202
     # Events were stored "today" by the server clock; align them with the fixed publish time.
     with sqlite3.connect(tmp / "e.sqlite3") as con:
-        con.execute("UPDATE events SET day = ?", (now.date().isoformat(),))
+        con.execute("UPDATE events SET week = ?", (now.date().isoformat(),))
+        con.execute("DELETE FROM live")  # fixed publish time: only the history is under test here
     grid_path, forecast_path = publish(store, config, tmp / "out", now)
     published = json.loads(grid_path.read_text())
     assert published["cells"][cell][3] is True  # based on user data
@@ -123,12 +134,12 @@ def test_full_flow_event_to_grid(env, cell, config):
 
 def test_published_files_have_no_pid_or_counts(env, cell, config):
     client, store, tmp, _ = env
-    now = datetime(2026, 3, 4, 10, 15, tzinfo=ZoneInfo(config["timezone"]))
+    now = datetime(2026, 3, 4, 10, 30, tzinfo=ZoneInfo(config["timezone"]))
     pids = [f"{i + 100:020x}" for i in range(7)]
     for pid in pids:
         client.post("/v1/events", json=event(cell, pid=pid, slot_index=20))
     with sqlite3.connect(tmp / "e.sqlite3") as con:
-        con.execute("UPDATE events SET day = ?", (now.date().isoformat(),))
+        con.execute("UPDATE events SET week = ?", (now.date().isoformat(),))
     paths = publish(store, config, tmp / "out", now)
     for path in paths:
         text = path.read_text()

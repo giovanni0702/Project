@@ -18,9 +18,9 @@ def build_grid(config: dict, outcomes: list[Outcome], now: datetime | None = Non
                previous_levels: dict[str, str] | None = None,
                admission: Admission | None = None) -> dict:
     """`admission` carries server-side state between publications (C6)."""
-    admission = admission or Admission(config["privacy"]["admission_batch"])
-    outcomes = admission.filter(outcomes)
+    admission = admission or Admission.from_config(config)
     now = now or datetime.now(ZoneInfo(config["timezone"]))
+    outcomes = admission.filter(outcomes, now)
     slot = slots.slot_key(now, config["time"]["slot_minutes"])
     cells = grid.cells_for_bbox(config["grid"]["bbox"], config["grid"]["h3_resolution"])
     estimates = estimate(cells, slot, outcomes, config, grid.neighbors, previous_levels=previous_levels)
@@ -54,9 +54,9 @@ def build_forecast(config: dict, outcomes: list[Outcome], now: datetime | None =
     Only cells that differ from the prior-only estimate are listed: the app
     falls back to `default` for the others. No counts, no contributor ids.
     """
-    admission = admission or Admission(config["privacy"]["admission_batch"])
-    outcomes = admission.filter(outcomes)
+    admission = admission or Admission.from_config(config)
     now = now or datetime.now(ZoneInfo(config["timezone"]))
+    outcomes = admission.filter(outcomes, now)
     cells = grid.cells_for_bbox(config["grid"]["bbox"], config["grid"]["h3_resolution"])
     no_live = {**config, "model": {**config["model"], "live_window_minutes": -1}}
     values = config["display"]["class_values"]

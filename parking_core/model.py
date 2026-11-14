@@ -7,6 +7,8 @@ binary: found within the target time, or not.
 from collections import defaultdict
 from dataclasses import dataclass, replace
 
+from .privacy import people_lower_bound
+
 
 @dataclass(frozen=True)
 class Outcome:
@@ -119,7 +121,7 @@ def estimate(
 
     def publishable(cell):
         entry = stats.get((cell, slot))
-        return entry if entry and len(entry["ids"]) >= k else None
+        return entry if entry and people_lower_bound(entry["ids"]) >= k else None
 
     result = {}
     for cell in cells:
@@ -143,7 +145,7 @@ def estimate(
             reliability=reliability,
             level=_level(p, display["thresholds"], display["hysteresis"], previous_levels.get(cell)),
             n_outcomes=n,
-            n_contributors=len(own["ids"]) if own else 0,
+            n_contributors=people_lower_bound(own["ids"]) if own else 0,
             from_user_data=bool(own),
         )
     return result

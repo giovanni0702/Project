@@ -14,7 +14,7 @@ from parking_core import grid
 from parking_core.config import load_city
 
 from .schemas import EventIn
-from .store import SqliteStore, retention_cutoff
+from .store import SqliteStore, current_step, oldest_live_step, retention_cutoff
 
 ROOT = Path(__file__).resolve().parent.parent
 CITY_ID = re.compile(r"^[a-z0-9_-]{1,40}$")
@@ -29,6 +29,8 @@ def create_app(city_id: str | None = None, db_path: str | None = None,
     tz = ZoneInfo(config["timezone"])
     resolution = config["grid"]["h3_resolution"]
     day_types = set(config["time"]["day_types"])
+    step_minutes = config["publish"]["interval_minutes"]
+    live_window = config["model"]["live_window_minutes"]
     slots_per_day = 1440 // config["time"]["slot_minutes"]
 
     @lru_cache(maxsize=1)
@@ -45,9 +47,12 @@ def create_app(city_id: str | None = None, db_path: str | None = None,
             raise HTTPException(422, "cell outside the city grid")
         if event.slot_day_type not in day_types or event.slot_index >= slots_per_day:
             raise HTTPException(422, "invalid slot")
-        today = datetime.now(tz).date()  # only the day is kept, never the arrival time (C7)
-        if not store.add_event(event.model_dump(), today):
-            raise HTTPException(429, "rate limit")  # C9 defence: 1 per type and cell per day
+        now = datetime.now(tz)
+        store.purge_live(oldest_live_step(now, step_minutes, live_window))
+        # History keeps only the week; the 5-minute step lives in `live` until the live window ends (T-040).
+        accepted = store.add_event(event.model_dump(), now.date(), current_step(now, step_minutes))
+        if not accepted:
+            raise HTTPException(429, "rate limit")  # C9 defence: 1 per pid and cell per day
         return Response(status_code=202)
 
     def _serve(city: str, name: str):

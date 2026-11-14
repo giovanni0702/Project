@@ -31,12 +31,15 @@ def test_pseudonym_unlinkable_across_cells_types_and_epochs():
     assert base != pseudonym(b"other-device", "parked", CELLS[0], 100)
 
 
+ARRIVALS: dict[tuple[str, int], int] = {}   # (cell, agent) -> cycle of the agent's first event there
+
+
 def simulate(cycles=72, agents=20, seed=11):
     """20 agents report in 3 busy cells; a grid is published every 5 minutes."""
     rng = random.Random(seed)
     busy = [CELLS[400], CELLS[401], CELLS[900]]
     secrets = [f"agent-{i}".encode() for i in range(agents)]
-    owner, events, grids, admission, levels = {}, [], [], Admission(CITY["privacy"]["admission_batch"]), {}
+    owner, events, grids, admission, levels = {}, [], [], Admission.from_config(CITY), {}
     for cycle in range(cycles):
         now = START + timedelta(minutes=5 * cycle)
         for agent in range(agents):
@@ -44,6 +47,7 @@ def simulate(cycles=72, agents=20, seed=11):
                 cell = rng.choice(busy)
                 pid = pseudonym(secrets[agent], "parked", cell, 0)
                 owner[pid] = agent
+                ARRIVALS.setdefault((cell, agent), cycle)
                 events.append((now, cell, pid, rng.random() < 0.6))
         slot = ("weekday", (now.hour * 60 + now.minute) // CITY["time"]["slot_minutes"])
         outcomes = [Outcome(c, slot, ok, (now - t).total_seconds() / 86400, pid) for t, c, pid, ok in events]
@@ -130,8 +134,9 @@ def run_block_scenario(seed, base=4):
     t_a = rng.randint(1, 4)
     t_b = rng.randint(t_a + 1, 5)
     arrivals = {0: [f"base{i}" for i in range(base)], t_a: ["A"], t_b: ["B"]}
-    admission, outcomes, levels, flip = Admission(CITY["privacy"]["admission_batch"]), [], {}, None
-    for cycle in range(6):
+    admission, outcomes, levels, flip = Admission.from_config(CITY), [], {}, None
+    window = CITY["privacy"]["admission_interval_minutes"] // CITY["publish"]["interval_minutes"]
+    for cycle in range(window + 1):   # up to and including the first admission step after the arrivals
         now = NOW0 + timedelta(minutes=5 * cycle)
         outcomes += [Outcome(TARGET, SLOT, rng.random() < 0.5, 0.0, who) for who in arrivals.get(cycle, [])]
         aged = [replace(o, age_days=0.0) for o in outcomes]
@@ -142,8 +147,6 @@ def run_block_scenario(seed, base=4):
     return flip, t_a, t_b
 
 
-@pytest.mark.xfail(strict=True, reason="T-039 attack 1: in a block of 2 the cell turns user-based exactly "
-                   "when the second member arrives, so the first member learns the other's arrival cycle")
 def test_attack_1_block_member_learns_when_the_other_contributed():
     trials = [run_block_scenario(seed) for seed in range(40)]
     assert all(flip is not None for flip, _, _ in trials), "scenario never reached k"
@@ -151,17 +154,19 @@ def test_attack_1_block_member_learns_when_the_other_contributed():
     assert exact < 0.2, f"attacker pins the other member's arrival cycle in {exact:.0%} of trials"
 
 
-@pytest.mark.xfail(strict=True, reason="T-039 attack 2: the grid timeline gives the arrival time of the "
-                   "last member of every admitted block (to the 5-minute publication step)")
-def test_attack_2_saved_grids_reveal_when_a_block_arrived():
-    flips = aligned = 0
-    for (old, _, _), (new, newly, _) in zip(GRIDS, GRIDS[1:]):
+def test_attack_2_saved_grids_do_not_reveal_when_a_block_arrived():
+    """A flip to "user data" is pinned to a member's arrival when it falls in the same
+    publication step as the last arrival of the block that caused it (the original attack,
+    measured on arrival time rather than on the admission cycle, which is now a fixed clock)."""
+    flips = pinned = 0
+    for step, ((old, _, _), (new, newly, _)) in enumerate(zip(GRIDS, GRIDS[1:]), start=1):
         for cell, value in new["cells"].items():
             if value[3] and not old["cells"][cell][3]:           # cell becomes "based on user data"
                 flips += 1
-                aligned += bool(newly.get(cell))                  # same cycle as a block admission
+                last = max(ARRIVALS[(cell, agent)] for agent in newly[cell])
+                pinned += last == step                            # flip in the same step as the last arrival
     assert flips > 0, "simulation never produced a flip: the test would prove nothing"
-    assert aligned / flips < 0.5, f"{aligned}/{flips} flips fall exactly on a block's arrival cycle"
+    assert pinned / flips < 0.5, f"{pinned}/{flips} flips fall exactly on a block's arrival step"
 
 
 def test_attack_3_contributions_below_k_do_not_leak_to_neighbours():
@@ -169,28 +174,27 @@ def test_attack_3_contributions_below_k_do_not_leak_to_neighbours():
     cell = CELLS[600]
     people = [Outcome(cell, SLOT, True, 0.0, f"p{i}") for i in range(CITY["privacy"]["min_contributors"] - 1)]
     now = NOW0
-    quiet = build_grid(CITY, [], now=now, admission=Admission(CITY["privacy"]["admission_batch"]))
-    loud = build_grid(CITY, people, now=now, admission=Admission(CITY["privacy"]["admission_batch"]))
+    quiet = build_grid(CITY, [], now=now, admission=Admission.from_config(CITY))
+    loud = build_grid(CITY, people, now=now, admission=Admission.from_config(CITY))
     assert loud["cells"] == quiet["cells"]
     assert not loud["cells"][cell][3]
 
 
-@pytest.mark.xfail(strict=True, reason="T-039 attack 6: k counts pseudonyms, but the pseudonym changes every "
-                   "28-day epoch, so 3 real people straddling an epoch boundary pass k=5")
 def test_attack_6_k_counts_people_not_pseudonyms_across_epochs():
     secrets = [f"epoch-agent-{i}".encode() for i in range(3)]
     outcomes = [Outcome(TARGET, SLOT, True, 0.0, pseudonym(s, "parked", TARGET, day))
                 for s in secrets for day in (27, 28)]            # same person, two epochs, two pids
     assert len({o.contributor for o in outcomes}) >= K           # what the server sees
-    payload = build_grid(CITY, outcomes, now=NOW0, admission=Admission(CITY["privacy"]["admission_batch"]))
+    payload = build_grid(CITY, outcomes, now=NOW0, admission=Admission.from_config(CITY))
     assert not payload["cells"][TARGET][3], "3 real people published as user data with k=5"
 
 
 def fill_store(seed, with_vehicle, day_bucket=None):
     """20 synthetic commuters, 20 weekdays, through the real SqliteStore schema.
-    Returns (store, owner: pid -> agent, home, work)."""
+    Returns (store, owner: pid -> agent, raw): `raw` is what the phones sent, before the store
+    discards what it does not keep (rows: type, cell, pid, slot, day as sent)."""
     rng = random.Random(seed)
-    store, owner = SqliteStore(":memory:"), {}
+    store, owner, raw = SqliteStore(":memory:"), {}, []
     homes, works = CELLS[100:120], CELLS[200:205]
     classes = ["moto"] + ["small"] * 4 + ["medium"] * 12 + ["large"] * 3
     secrets = [f"commuter-{i}".encode() for i in range(20)]
@@ -205,32 +209,32 @@ def fill_store(seed, with_vehicle, day_bucket=None):
             for typ, cell, slot in (("left", home, 16), ("parked", work, 17), ("left", work, 35), ("parked", home, 36)):
                 pid = pseudonym(secrets[agent], typ, cell, d)
                 owner[pid] = agent
+                raw.append((typ, cell, pid, slot, seen))
                 store.add_event({"type": typ, "cell": cell, "slot_day_type": "weekday", "slot_index": slot,
                                  "search_bucket": 1 if typ == "parked" else None, "vehicle_class": vehicle,
                                  "pid": pid, "app_version": "0.1"}, seen)
-    return store, owner
+    return store, owner, raw
 
 
-@pytest.mark.xfail(strict=True, reason="T-039 attack 4: vehicle_class stored with every event makes the only "
-                   "motorcycle among 20 testers a stable key that joins its events across cells")
 def test_attack_4_rare_vehicle_class_links_events_across_cells():
-    store, owner = fill_store(seed=3, with_vehicle=True)
+    store, owner, _ = fill_store(seed=3, with_vehicle=True)
     events = store.events()
     population = {}
     for e in events:
-        population.setdefault(e["vehicle_class"], set()).add(owner[e["pid"]])
+        population.setdefault(e.get("vehicle_class"), set()).add(owner[e["pid"]])
     rare = [c for c, agents in population.items() if len(agents) < K]
-    victim_events = [e for e in events if e["vehicle_class"] in rare and len(population[e["vehicle_class"]]) == 1]
+    victim_events = [e for e in events if e.get("vehicle_class") in rare and len(population[e.get("vehicle_class")]) == 1]
     cells_joined = {e["cell"] for e in victim_events}
     assert len(cells_joined) <= 1, f"{len(victim_events)} events in {len(cells_joined)} cells joined by one rare class"
 
 
-def link_left_to_parked(store, owner):
+def link_left_to_parked(rows, owner):
     """Join a 'left' pseudonym to a 'parked' pseudonym of another cell when the next slot
-    and the exact set of days match. Returns (links tried, links correct, agents covered)."""
+    and the exact set of days match. `rows`: (type, cell, pid, slot, day).
+    Returns (links tried, links correct, agents covered)."""
     groups = {}
-    for e in store.events():
-        groups.setdefault((e["type"], e["cell"], e["pid"]), (e["slot_index"], set()))[1].add(e["day"])
+    for typ, cell, pid, slot, day in rows:
+        groups.setdefault((typ, cell, pid), (slot, set()))[1].add(day)
     lefts = [(k, v) for k, v in groups.items() if k[0] == "left"]
     parked = [(k, v) for k, v in groups.items() if k[0] == "parked"]
     tried = correct = 0
@@ -247,16 +251,25 @@ def link_left_to_parked(store, owner):
     return tried, correct, len(covered)
 
 
-@pytest.mark.xfail(strict=True, reason="T-039 attack 5: day + slot_index kept per event let the server join "
-                   "'left' in one cell to 'parked' in another (same days, next slot) despite per-cell pid")
+def stored_rows(store):
+    """What the server can still use: the store's own rows (no type, no day: week only)."""
+    return [("parked", e["cell"], e["pid"], e["slot_index"], e["week"]) for e in store.events()]
+
+
 def test_attack_5_day_and_slot_link_departure_to_next_parking():
-    store, owner = fill_store(seed=4, with_vehicle=False)
-    tried, correct, covered = link_left_to_parked(store, owner)
+    store, owner, raw = fill_store(seed=4, with_vehicle=False)
+    assert any(r[0] == "left" for r in raw)                   # the phones did send departures
+    tried, correct, covered = link_left_to_parked(stored_rows(store), owner)
     assert correct == 0, f"{correct} correct cross-cell links, {covered} of 20 agents joined"
+    assert all(len(e["week"]) == 10 and e["week"] >= "2026-11-02" for e in store.events())
 
 
-def test_attack_5_control_week_granularity_breaks_the_link():
-    """Control for the proposed fix: with the day coarsened to a week the same attack fails."""
-    store, owner = fill_store(seed=4, with_vehicle=False, day_bucket=7)
-    tried, correct, covered = link_left_to_parked(store, owner)
+def test_attack_5_control_week_granularity_alone_breaks_the_link():
+    """Control, independent of dropping departures: even if 'left' were stored, week-only
+    dates make the same attack fail (it succeeds with exact days: second assert)."""
+    _, owner, raw = fill_store(seed=4, with_vehicle=False)
+    weekly = [(t, c, p, sl, d - timedelta(days=d.weekday())) for t, c, p, sl, d in raw]
+    _, correct, _ = link_left_to_parked(weekly, owner)
     assert correct <= 2, f"{correct} correct links even with week-only dates"
+    _, exact, _ = link_left_to_parked(raw, owner)
+    assert exact >= 10, "with exact days the attack must work, or the control proves nothing"

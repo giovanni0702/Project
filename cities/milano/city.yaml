@@ -42,6 +42,8 @@ publish:
 privacy:
   min_contributors: 5        # k: below this only the prior is published; never lowered (C2)
   admission_batch: 2         # C6: new contributors enter a cell only in batches of this size
+  admission_interval_minutes: 30  # T-040: batches enter the grid only at these fixed clock intervals (< live window - send delay)
+  send_delay_max_minutes: 10      # C7: the phone delays each send by a random 0..N minutes (device requirement)
   raw_retention_days: 30
 
 display:

@@ -9,32 +9,32 @@ from datetime import date, datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from parking_core import slots as slots_mod
 from parking_core.config import load_city
 from parking_core.model import Outcome
 from parking_core.privacy import Admission
 from parking_core.publish import build_forecast, build_grid, write_forecast, write_grid
 
 from .app import ROOT, run_retention
-from .store import SqliteStore
+from .store import SqliteStore, current_step, oldest_live_step
 
 
 def to_outcomes(events: list[dict], config: dict, now: datetime) -> list[Outcome]:
-    """Only 'parked' events carry a search result. Success = bucket 0 or 1 (<= target).
+    """Success = bucket 0 or 1 (<= target).
 
-    The arrival time is unknown: an event counts as "live" only if it was sent
-    today in the current or previous slot; otherwise its age is whole days
-    (at least 1 for earlier slots of today, so it never counts as live).
+    The history knows only the week, so its outcomes are at least a day old and
+    never "live". Live outcomes come from the short-lived `live` rows (5-minute
+    step), which exist only inside the live window (T-040: no times in the history).
     """
-    slot_minutes = config["time"]["slot_minutes"]
-    day_type, index = slots_mod.slot_key(now, slot_minutes)
+    interval = config["publish"]["interval_minutes"]
+    window = config["model"]["live_window_minutes"]
+    now_step = current_step(now, interval)
     result = []
     for e in events:
-        if e["type"] != "parked":
-            continue
-        age = (now.date() - date.fromisoformat(e["day"])).days
-        if age == 0 and not (e["day_type"] == day_type and index - 1 <= e["slot_index"] <= index):
-            age = 1
+        step = e.get("live_step")
+        if step is not None and 0 <= (now_step - step) * interval <= window:
+            age = (now_step - step) * interval / 1440
+        else:  # mid-week estimate of the age, never below one day
+            age = max(1.0, (now.date() - date.fromisoformat(e["week"])).days - 3.0)
         result.append(Outcome(e["cell"], (e["day_type"], e["slot_index"]), e["search_bucket"] <= 1,
                               float(age), e["pid"]))
     return result
@@ -42,8 +42,10 @@ def to_outcomes(events: list[dict], config: dict, now: datetime) -> list[Outcome
 
 def publish(store, config: dict, out_dir: Path, now: datetime | None = None) -> tuple[Path, Path]:
     now = now or datetime.now(ZoneInfo(config["timezone"]))
+    store.purge_live(oldest_live_step(now, config["publish"]["interval_minutes"],
+                                      config["model"]["live_window_minutes"]))
     outcomes = to_outcomes(store.events(), config, now)
-    admission = Admission(config["privacy"]["admission_batch"], store.load_admitted())
+    admission = Admission.from_config(config, store.load_admitted())
     previous = None
     old = out_dir / config["id"] / "grid.json"
     if old.is_file():
