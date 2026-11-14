@@ -12,12 +12,13 @@ Ogni iterazione produce qualcosa di usabile e misurabile, e ha un criterio di **
 
 ## Iterazione 1 — Dati, modello v0, prova dell'ipotesi (backend e pagina web interna)
 - Rete stradale e sosta da OpenStreetMap (attribuzione ODbL); dataset del Comune verificati.
+- Configurazione della città (`cities/milano`), secondo D-013: nessun valore di Milano nel codice.
 - Griglia H3 su tutta Milano; regole di sosta per cella (tariffe, orari, lavaggio strade se disponibili).
 - Modelli 1 e 2 di [`09-modello.md`](09-modello.md); pubblicazione statica (D-011); pagina interna con mappa.
 - Test di calibrazione su dati sintetici, etichettati come test tecnici.
 - **Prova a basso costo dell'ipotesi:** protocollo di rilevazione sul campo e traccia per 5 interviste (T-021). Le esegue il fondatore.
 
-**Uscita:** ≥ 90% delle strade con sosta coperte da una stima; pipeline riproducibile con un comando; `make check` verde; nessun segreto o dato personale nel repository.
+**Uscita:** test automatico che fallisce se il nucleo contiene valori specifici di Milano; ≥ 90% delle strade con sosta coperte da una stima; pipeline riproducibile con un comando; `make check` verde; nessun segreto o dato personale nel repository.
 **Abbandono o cambio di rotta:** se sul campo il prior non fa meglio del caso, il prodotto principale diventa "regole di sosta e lavaggio strade" e il modello si rivede.
 
 ## Iterazione 2 — Beta chiusa (centro)
@@ -39,7 +40,19 @@ Ogni iterazione produce qualcosa di usabile e misurabile, e ha un criterio di **
 ## Iterazione 4 — Prodotto completo
 - Parcheggi di struttura e di interscambio; "Piano B" (T-013); previsione all'orario di arrivo.
 - CarPlay / Android Auto; eventuali partnership per il pagamento (da valutare).
-- Architettura pronta per altre città (decisione separata del fondatore).
+- Prova a secco: configurare una seconda città solo con dati aperti, senza lanciarla, per misurare quanto il nucleo è davvero indipendente da Milano.
+
+## Oltre il pilota (visione, D-013)
+Ogni passo richiede una decisione del fondatore e la **verifica di prontezza**.
+
+| Passo | Contenuto | Si apre quando |
+|---|---|---|
+| 5 — Seconda città italiana | Prima prova che una città è configurazione; misura di tempo e costo per aggiungerla | Milano calibrata entro tolleranza e contributi stabili |
+| 6 — Più città italiane | Procedura ripetibile; prior trasferito tra città | Seconda città aggiunta senza modifiche al nucleo |
+| 7 — Altri paesi | Lingue, regole e norme locali; residenza dei dati | Procedura stabile; parere legale per paese |
+| 8 — Dato in licenza e integrazioni | API per terzi, prove di calibrazione, proposta alle app di mappe | Più città calibrate; origine dei dati e licenze in ordine |
+
+**Verifica di prontezza per una nuova città:** fonti e licenze verificate · regole di sosta mappate · copertura OSM sufficiente · prior calcolato · piano per i primi contributi · costo stimato · parere di `privacy-compliance`.
 
 ## Chiusura di un'iterazione
 1. Metriche di uscita raggiunte, o fallimento documentato.

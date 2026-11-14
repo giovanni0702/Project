@@ -12,6 +12,15 @@ Un'app che risponde a una domanda: **"Se vado lì adesso, quante probabilità ho
 - Un tap per avviare la navigazione verso la zona scelta (Google Maps o Waze).
 - Contributo semplice degli utenti: "ho lasciato il posto", "non c'era posto". Sono il dato più prezioso.
 
+## Visione a lungo termine
+Milano è il pilota, non il traguardo. La traiettoria decisa dal fondatore (D-013):
+1. **Milano** — dimostrare che la stima è calibrata e che gli utenti contribuiscono.
+2. **Altre città italiane** — aggiungere una città deve essere configurazione, non riscrittura.
+3. **Altri paesi** — stessa architettura, con lingue, regole e norme locali.
+4. **Il sogno: integrazione nelle grandi app di mappe** (Google Maps, Apple Mappe, Waze e simili). La strada realistica è fornire la stima come **dato in licenza tramite API**, oppure una partnership o un'acquisizione: queste app non accettano livelli di terzi a richiesta.
+
+Ogni passo si apre solo con una decisione esplicita del fondatore e una verifica di prontezza (→ `04-roadmap.md`). Quello che la visione cambia **da subito** è il modo di costruire: → `05-decisioni.md` D-013.
+
 ## Utente target (v1)
 - Automobilisti che si spostano in centro a Milano per lavoro, shopping o visite.
 - Residenti che cercano posto sotto casa (priorità da valutare in iterazione 2).
@@ -23,7 +32,7 @@ Un'app che risponde a una domanda: **"Se vado lì adesso, quante probabilità ho
 - **Lingue:** italiano e inglese dal lancio.
 - **Piattaforme:** iOS e Android con un'unica codebase.
 
-Fuori scope fino a decisione esplicita: Roma, altre città, flotte, pagamenti integrati, prenotazioni.
+Fuori scope **operativo** fino a decisione esplicita: altre città (nessun dato, nessun lancio), flotte, pagamenti integrati, prenotazioni. L'architettura però è multi-città dal primo giorno.
 
 ## Successo del pilota (indicatori)
 - Calibrazione: su osservazioni reali, le probabilità previste corrispondono agli esiti reali entro una tolleranza da definire (es. ±10 punti percentuali).

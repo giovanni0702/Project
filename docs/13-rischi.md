@@ -18,3 +18,7 @@ P = probabilità, I = impatto (A alta, M media, B bassa). Rivisto da `ops-watchd
 | R-12 | Un solo fondatore: tempo e continuità | A | M | `STATO.md` come passaggio di consegne; task piccoli con budget | ceo-orchestrator |
 | R-13 | Vincoli sui dati o sui marchi di terzi (Google, nome del prodotto) | M | M | Nessun dato Google nel modello (D-004); verifica marchi prima del nome | privacy-compliance |
 | R-14 | Regole di sosta mostrate ma sbagliate o non aggiornate | M | A | Data della fonte visibile; avviso "vale la segnaletica"; aggiornamento automatico della fonte | data-engineer |
+| R-15 | Costruire per il mondo prima di aver dimostrato Milano (complessità e costi prematuri) | M | A | D-013: solo regole di costruzione, nessuna infrastruttura in più; espansioni con verifica di prontezza | ceo-orchestrator |
+| R-16 | La licenza ODbL limita la cessione a terzi di dati derivati da OSM | M | A | Origine dei dati separata; verifica T-024 prima di qualsiasi proposta commerciale | privacy-compliance |
+| R-17 | Le grandi app di mappe non integrano dati di terzi, o li sviluppano da sole | A | M | Il prodotto deve reggersi da solo; il dato in licenza è un'opzione, non il piano unico | product-manager |
+| R-18 | Ogni città ha regole e fonti diverse: costo di ingresso alto | A | M | Adattatori per fonte; OSM come base comune; misura del costo sulla seconda città | data-engineer |

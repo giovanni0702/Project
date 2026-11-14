@@ -66,7 +66,7 @@ Criteri: [ ] griglia e regole in cache · [ ] età della stima sempre visibile �
 
 ### T-017 — Opzioni di ricavo (3 alternative, senza pubblicità)
 marketing-sales | Backlog | bassa | S | T-004
-Criteri: [ ] pro, contro e vincoli privacy per ciascuna in `docs/11-marketing.md` · [ ] raccomandazione · [ ] decisione lasciata al fondatore, non prima dell'iterazione 3
+Criteri: [ ] include il dato in licenza a terzi (D-013) · [ ] pro, contro e vincoli privacy per ciascuna in `docs/11-marketing.md` · [ ] raccomandazione · [ ] decisione lasciata al fondatore, non prima dell'iterazione 3
 
 ## Backlog — privacy, sicurezza, tecnica
 
@@ -83,7 +83,7 @@ mobile-engineer | Backlog | alta | M | decisione 2
 Criteri: [ ] maturità del pacchetto verificata · [ ] prototipo con celle colorate su Milano · [ ] dimensione dei tasselli e costo stimato · [ ] D-010 confermata o cambiata
 
 ### T-006 — Scaffold del repository per l'iterazione 1
-backend-engineer | Backlog | media | S | decisione 2
+backend-engineer | Backlog | media | S | decisione 2, T-026
 Criteri: [ ] cartelle `backend/`, `model/`, `app/`, `tests/` · [ ] contratto OpenAPI iniziale · [ ] test eseguiti da `make check`
 
 ## Backlog — modello e dati
@@ -99,6 +99,18 @@ Criteri: [ ] protocollo di una pagina: zone, orari, cosa annotare, quante ripeti
 ### T-022 — Risoluzione della griglia H3 (9 o 10)
 data-scientist | Backlog | media | S | T-006
 Criteri: [ ] confronto su numero di celle, eventi attesi per cella, effetto sulla soglia k · [ ] decisione in `docs/05-decisioni.md`
+
+### T-024 — Licenze e standard per fornire il dato a terzi
+privacy-compliance | Backlog | media | M | decisione 1
+Criteri: [ ] vincoli ODbL sui dati derivati da OSM, con fonte ufficiale · [ ] standard di scambio dei dati di sosta esistenti · [ ] regole per tenere separata l'origine dei dati · [ ] esito in `docs/06-dati.md`
+
+### T-025 — Strade verso le app di mappe e mercato del dato di sosta
+competitor-analyst | Backlog | bassa | M | T-004
+Criteri: [ ] chi fornisce oggi dati di sosta a mappe e case auto, e come · [ ] programmi per partner di Google, Apple, Waze · [ ] cosa chiedono (copertura, prove di qualità) · [ ] sezione in `docs/02-concorrenza.md` · [ ] nessun contatto esterno
+
+### T-026 — Schema "città come configurazione" e adattatori
+backend-engineer | Backlog | alta | M | decisione 2
+Criteri: [ ] schema del file di città e dell'interfaccia degli adattatori · [ ] `cities/milano` come primo caso · [ ] test che fallisce se il nucleo contiene valori di Milano · [ ] con `data-scientist`: variabili del modello definite in modo indipendente dalla città
 
 ### T-023 — Modello a tassi con concorrenza e penetrazione (ricerca)
 data-scientist | Backlog | bassa | L | T-010

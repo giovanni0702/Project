@@ -9,6 +9,8 @@ Aggiornato: 2026-11-14 · Iterazione **0 — Fondamenta (in chiusura)**
 4. Verifiche T-001–T-004 eseguite in parte: molti siti ufficiali non raggiungibili dalla rete della sessione.
 5. Stima costi: 5–15 €/mese fino a 10.000 utenti, da riverificare sulle pagine ufficiali.
 
+6. **Visione ampliata dal fondatore (D-013):** altre città italiane, poi altri paesi, poi dato in licenza alle app di mappe. Da subito cambia solo il modo di costruire (città come configurazione); Milano resta l'unico scope operativo. Task T-024–T-026.
+
 ## Cosa sappiamo di nuovo
 - Nessun dataset aperto di stalli o sensori per le strisce blu (confidenza media).
 - "FindPark" è quasi certamente Find & Park di EasyPark. Nessun concorrente unisce a Milano regole di zona, lavaggio strade e "dove ho parcheggiato" (da riconfermare).

@@ -1,6 +1,6 @@
 # CLAUDE.md — Regole del progetto
 
-App mobile (iOS + Android) che stima la **probabilità di trovare parcheggio in strada** nel **Comune di Milano**. Italiano principale, inglese dal primo giorno. Un solo fondatore; il team è fatto di agenti AI (`.claude/agents/`).
+App mobile (iOS + Android) che stima la **probabilità di trovare parcheggio in strada** nel **Comune di Milano**. Milano è il **pilota**: l'architettura è multi-città dal primo giorno (D-013), ma nessun'altra città si apre senza decisione del fondatore. Italiano principale, inglese dal primo giorno. Un solo fondatore; il team è fatto di agenti AI (`.claude/agents/`).
 Questo file è caricato a ogni turno: **massimo 100 righe, si modifica raramente**. I dettagli stanno nei documenti collegati.
 
 ## 1. Principi non negoziabili
@@ -73,5 +73,6 @@ Gli agenti preparano (raccomandazione, alternative, costo) nella sezione "Decisi
 - Il server non riceve mai coordinate: solo cella H3 e fascia oraria.
 - Nessun dato Google salvato o usato nel modello → `docs/05-decisioni.md`.
 - Ogni modifica passa per test. Nessun merge senza `make check` verde.
+- **Niente di specifico di Milano nel codice:** confini, regole, fonti, lingue e parametri stanno nella configurazione della città.
 - Stack e motivazioni → `docs/05-decisioni.md`.
 - Branch: quello assegnato dalla sessione. Commit piccoli, messaggi chiari.

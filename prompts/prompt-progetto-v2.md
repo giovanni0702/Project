@@ -63,7 +63,9 @@ Domanda: *"Se vado lì adesso (o alle 18:30), quante probabilità ho di trovare 
 6. **Offline:** griglia e regole in cache; l'app funziona anche senza rete con l'ultima stima e la sua età.
 7. **Modello di ricavo:** nessuna pubblicità. Prepara 3 opzioni con pro e contro (gratuita con funzioni extra a pagamento; dati aggregati B2B con k-anonimato; partnership). Decide il fondatore, non prima dell'iterazione 3.
 
-**Scope:** intero Comune di Milano; calibrazione dal centro. Strisce blu, poi bianche, poi strutture. Italiano principale, inglese dal primo giorno. Codebase unica. Fuori scope: altre città, flotte, pagamenti integrati, prenotazioni.
+**Visione (D-013):** Milano è il pilota. Poi altre città italiane, altri paesi, e infine il dato in licenza alle grandi app di mappe. Da subito: città come configurazione, fonti come adattatori, API versionata, origine dei dati separata. Nessuna espansione senza decisione del fondatore.
+
+**Scope operativo:** intero Comune di Milano; calibrazione dal centro. Strisce blu, poi bianche, poi strutture. Italiano principale, inglese dal primo giorno. Codebase unica. Fuori scope: altre città, flotte, pagamenti integrati, prenotazioni.
 
 ---
 

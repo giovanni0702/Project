@@ -77,3 +77,20 @@ Formato: ogni decisione ha data, stato, contesto, scelta e conseguenze. Le decis
 - **Stato:** approvata in principio
 - **Scelta:** il bersaglio è "posto trovato entro 5 minuti, sì o no". Si parte da baseline e Beta-Binomiale gerarchico; il modello a tassi si adotta solo se li batte su dati reali. Dettagli in `09-modello.md`.
 - **Motivo:** la formula 1 − e^(−λt) ignora concorrenza tra automobilisti e penetrazione dell'app.
+
+## D-013 — Scalabilità: altre città, altri paesi, integrazione nelle app di mappe
+- **Data:** 2026-11-14
+- **Stato:** approvata dal fondatore come visione; ogni espansione resta una decisione separata
+- **Contesto:** l'obiettivo finale è portare la stima in altre città italiane, poi all'estero, e idealmente dentro app come Google Maps, Apple Mappe o Waze.
+- **Scelta — regole di costruzione valide da subito:**
+  1. **Città come configurazione.** Un file per città: confine, fuso orario, lingue, valuta, fonti dati, regole di sosta, parametri del modello. Nessun valore di Milano nel codice.
+  2. **Fonti e regole come adattatori.** Il nucleo conosce solo uno schema comune (cella, fascia, tipo di sosta, regola). Ogni fonte locale ha il suo adattatore.
+  3. **Basi globali dove esistono:** griglia H3 e OpenStreetMap coprono il mondo; le fonti comunali sono un arricchimento, non un requisito.
+  4. **Modello trasferibile.** Variabili definite in modo uguale ovunque; una città nuova parte da un prior appreso dalle città già calibrate, con affidabilità bassa dichiarata.
+  5. **Lingue senza limiti:** testi in file di traduzione, formati di data, ora, valuta e unità dal sistema; nessuna assunzione su due sole lingue.
+  6. **API come prodotto.** Contratto OpenAPI versionato, pensato anche per un cliente esterno: stima, affidabilità, età del dato, versione del modello.
+  7. **Prove di qualità pubblicabili.** Calibrazione misurata per città e per periodo, riproducibile: è ciò che un partner chiederà per primo.
+  8. **Dati con origine separata e documentata.** Eventi nostri, dati OSM e open data restano distinguibili, con licenza per ciascuno: serve per concedere il dato in licenza.
+  9. **Privacy che regge una verifica esterna:** nessun dato personale negli aggregati forniti a terzi; soglia k applicata anche all'API.
+- **Cosa NON facciamo ora:** nessuna infrastruttura multi-regione, nessun dato di altre città, nessuna traduzione oltre IT/EN, nessun contatto con partner. Costruire per scalare non significa costruire in grande.
+- **Da verificare (T-024, T-025):** vincoli della licenza ODbL sulla cessione di dati derivati da OSM; standard di scambio dei dati di sosta; programmi per partner delle app di mappe; norme sulla posizione fuori dall'UE.
