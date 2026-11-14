@@ -1,0 +1,32 @@
+# Segreti e configurazione locale
+.env
+.env.*
+*.key
+*.p12
+*.jks
+google-services.json
+GoogleService-Info.plist
+
+# Dati grezzi e pesanti (si committano solo script e metadati)
+data/raw/
+data/cache/
+*.parquet
+*.gpkg
+*.zip
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+
+# Flutter / Dart
+build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
