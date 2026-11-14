@@ -38,3 +38,23 @@ def estimate_stalls(area: float, perimeter: float) -> tuple[int, str]:
             return int(length / STALL_WIDTH_M), "strip_angled"
         return int(length / STALL_LENGTH_M), "strip_parallel"
     return int(area / LOT_AREA_PER_STALL_M2), "lot"
+
+
+def usable_kerb_length(length_m: float, setback_m: float, factor: float = 1.0) -> float:
+    """Kerb length where parking is physically possible: piece length minus a setback at each end
+    (no parking near junctions), times a street-type factor in [0, 1]."""
+    return max(length_m - 2 * setback_m, 0.0) * factor
+
+
+def kerbside_stalls(usable_m: float, sides: float, parkable_share: float, stall_length_m: float,
+                    moto_share: float = 0.0) -> float:
+    """Expected car stalls along the kerb: usable length x sides x parkable share x (1 - moto share) / stall length.
+
+    Returns a real number: it is an expected value, not a count of painted stalls.
+    """
+    return usable_m * sides * parkable_share * (1 - moto_share) / stall_length_m
+
+
+def moto_stalls(usable_m: float, sides: float, parkable_share: float, moto_share: float, moto_stall_width_m: float) -> float:
+    """Expected motorcycle stalls: the moto share of the parkable kerb divided by the width of one moto stall."""
+    return usable_m * sides * parkable_share * moto_share / moto_stall_width_m
