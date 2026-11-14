@@ -59,11 +59,21 @@ Fonti e licenze: [`06-dati.md`](06-dati.md). Una variabile entra solo se la font
 
 ## 6. Metriche
 
-- **Calibrazione:** diagramma di affidabilità ed errore medio; tolleranza proposta ±10 punti.
-- **Brier score** e **miglioramento percentuale sul baseline**.
-- **Copertura:** quota di celle non grigie. **Nitidezza:** quanto le stime si allontanano dalla media.
-- Sempre con intervallo di confidenza e numero di osservazioni. Sotto l'N minimo (da fissare in T-010) non si dichiara nulla.
-- **Validazione temporale:** si addestra sul passato, si valuta sul futuro. Mai divisione casuale.
+Codice: `parking_core/metrics.py`; test tecnici (dati sintetici) in `tests/test_metrics.py`.
+
+| Metrica | Definizione operativa | Funzione |
+|---|---|---|
+| Brier | media di (p − y)², y ∈ {0, 1}; più basso è meglio | `brier`, `brier_ci` |
+| Miglioramento sul baseline | 1 − Brier_modello / Brier_baseline, sugli **stessi** esiti di validazione | `skill_vs_baseline` |
+| Errore di calibrazione (ECE) | media pesata di \|p medio − frequenza osservata\| per classe di p; in beta **3 classi** = le classi pubblicate (bassa / media / alta) | `calibration_error(..., bins=3)`, `calibration_error_ci` |
+| Diagramma di affidabilità | per classe: n, p medio, frequenza osservata | `reliability_table` |
+| Copertura | quota di celle-fascia dell'area con dati utente pubblicabili (≥ k pseudonimi) | `scripts/beta_density.py` (simulazione) |
+| Nitidezza | scarto medio delle stime dalla media di città | da fare (T-032) |
+
+- **Tolleranza di calibrazione:** proposta ±10 punti (da confermare con il product-manager).
+- **Intervallo di confidenza:** bootstrap percentile al 95%, 1000 ricampionamenti, seme fisso. Si ricampionano **contributori interi** (`groups`), non esiti singoli: gli esiti di una persona sono correlati e il bootstrap semplice darebbe intervalli troppo stretti.
+- **N minimo (`enough_data`):** per una classe servono **97 esiti** perché l'intervallo al 95% della frequenza osservata stia entro ±10 punti (caso peggiore p = 0,5: 1,96² · 0,25 / 0,1²). Con 3 classi: **≥ 291 esiti di validazione** e **≥ 10 contributori distinti**. Sotto, non si dichiara nulla: né calibrazione né miglioramento sul baseline, nemmeno con intervallo. Con tolleranza ±5 punti servirebbero 385 esiti per classe.
+- **Validazione temporale (`temporal_split`):** si addestra sul passato, si valuta sul futuro; mai divisione casuale. Gli esiti nell'intervallo `gap` prima del taglio si scartano, perché la componente "adesso" non trasmetta informazione oltre il confine. In beta si usa la forma **sequenziale**: ogni esito è previsto con il modello com'era prima di riceverlo, così tutti gli esiti servono alla validazione senza toglierli alla mappa.
 - **Deriva:** le metriche si ricalcolano a ogni pubblicazione; un peggioramento oltre soglia apre un task.
 
 ## 7. Dal numero allo schermo
@@ -84,3 +94,49 @@ Fonti e licenze: [`06-dati.md`](06-dati.md). Una variabile entra solo se la font
 - Non è una garanzia e non sostituisce la segnaletica: le regole di sosta valgono sempre.
 - Non usare per sanzioni, controllo della sosta o profilazione di persone.
 - Fuori da Milano il modello non è valido.
+
+## 10. Piano per la beta con pochi tester (T-029)
+
+**Simulazione sintetica:** dimensiona la beta, non misura accuratezza. Comando: `.venv/bin/python scripts/beta_density.py` (seme 20261114, 20 ripetizioni, parametri da riga di comando). Ipotesi non verificate: profilo orario delle ricerche, abitudini (60% degli esiti liberi nei due luoghi abituali), 80% degli esiti liberi dentro l'area, 80% delle missioni eseguite, 10% di esiti riservati alla validazione, 4 settimane in una sola epoca di pseudonimi (C1). k = 5 pseudonimi distinti per cella, tipo di giorno e fascia, contati sulla **storia della fascia** (C2); al massimo un evento per persona, cella e giorno (C9).
+
+| Tester × esiti/sett. | Area | Griglia | Fascia | Missioni | Copertura feriale ≥ k |
+|---|---|---|---|---|---|
+| 20 × 5 | 30 celle res 9 | res 9 | 30 min | 0% / 75% | **0% / 0%** |
+| 100 × 5 | 30 celle res 9 | res 9 | 30 min | 0% / 75% | 1% / 0% |
+| 20 × 5 | 30 celle res 9 | res 9 | 3 ore | 75% | 0% |
+| 20 × 10 | 14 celle res 9 | res 9 | 3 ore | 75% | 92% |
+| 20 × 5 | 30 celle res 9 (8 celle res 8) | res 8 | 3 ore | 0% / 75% | 26% / **85%** |
+| 20 × 5 | 14 celle res 9 (4 celle res 8) | res 8 | 3 ore | 75% | **100%** |
+| 20 × 5 | 14 celle res 9 | res 8 | 2 ore | 75% | 95% |
+| 20 × 3 | 14 celle res 9 | res 8 | 3 ore | 75% | 97% |
+| 10 × 5 | 14 celle res 9 | res 8 | 3 ore | 75% | 81% |
+| 10 × 5 | 30 celle res 9 | res 8 | 3 ore | 75% | 10% |
+
+Letture:
+- **Con la configurazione attuale (res 9, 30 minuti) la mappa non mostra mai dati reali**, né con 20 né con 100 tester. Su Milano intera (circa 1.650 celle × 30 fasce diurne × 3 tipi di giorno ≈ 150.000 celle-fascia) 20 tester producono circa 400 esiti in 4 settimane: meno di uno ogni 300 celle-fascia.
+- **"Stesso orario su più giorni" è indispensabile:** contando k nel singolo giorno nessuna configurazione con 20 tester supera k. Per lo stesso motivo la componente "adesso" non supera mai k in beta: si mostra solo la storia della fascia.
+- **Le missioni contano più del numero di tester:** a parità di tutto, passare da 0% a 75% di missioni porta la copertura da 26% a 85%. Con fasce strette le missioni si disperdono e non aiutano.
+- **Sabato e festivi restano grigi:** le missioni sono solo feriali; con 20 tester non bastano gli esiti spontanei.
+
+**Raccomandazione per la beta (4 settimane):**
+1. **Area:** 4 celle H3 res 8 contigue nel centro (circa 3 km², circa 28 celle res 9), scelte da noi.
+2. **Unità di pubblicazione e di conteggio di k:** res 8 × blocchi di 3 ore (07–10, 10–13, 13–16, 16–19, 19–22) × giorno feriale = 20 celle-blocco. Il modello resta a res 9 / 30 minuti all'interno; la soglia si conta e la classe si pubblica sull'unità grossa.
+3. **Minimo:** 20 tester attivi × 5 esiti a settimana, di cui 3–4 in missione. Con 10 tester serve un'area di 3 celle res 8 (95%) o 10 esiti a settimana a testa (99%). Sotto 10 tester attivi la mappa non mostra quasi nessun dato reale.
+4. **Cosa vede il fondatore:** con il minimo, circa il 100% dei blocchi feriali delle 4 celle (simulato) ha dati reali, in classi e con affidabilità **bassa**; fuori area e nel fine settimana solo il prior.
+
+**Missioni di copertura (zone e orari scelti da noi):** ogni tester riceve ogni settimana 3–4 coppie (cella res 8, blocco feriale), assegnate a rotazione in modo che ogni coppia abbia almeno 7 tester diversi nel ciclo (margine sopra k per chi salta la missione). L'app chiede solo l'esito a un tap quando il tester cerca parcheggio lì; nessun obbligo di spostarsi. Le missioni correggono anche la distorsione di segnalazione (§5).
+
+**Quota di validazione:** (a) validazione **sequenziale** su tutti gli esiti (§6), senza toglierli alla mappa; (b) **10% degli esiti di missione**, estratti a caso dal server con seme registrato, mai usati per addestrare né per contare k: servono alla ricalibrazione di T-032. Con 20 × 5 per 4 settimane si raccolgono circa 280 esiti nell'area: **sotto l'N minimo (291)**. Dopo 4 settimane la beta dimostra che la mappa funziona, **non che le probabilità sono calibrate**; servono circa 5–6 settimane per la validazione sequenziale e alcuni mesi per la quota (b).
+
+**Proposta di modifica a `cities/milano/city.yaml` (non applicata, decide il fondatore):**
+```yaml
+publish_unit:            # unit where k (C2) and C6 are counted and classes are published
+  h3_resolution: 8       # model stays at grid.h3_resolution
+  slot_minutes: 180
+  day_types: [weekday]   # saturday/holiday: prior only during the beta
+beta_area_res8: []       # 4 contiguous res-8 cells, chosen by us
+validation_holdout: 0.10 # share of mission outcomes never used for training or k
+```
+Richiede codice in `parking_core/publish.py` e `privacy.py` (fuori da T-029) e revisione di `privacy-compliance`.
+
+**Cosa non sappiamo ancora:** quanti esiti a settimana fa davvero un tester; quante missioni esegue; se una cella res 8 (lato circa 530 m) è abbastanza utile per chi cerca; il comportamento del fine settimana. **Rischio privacy da verificare:** lo pseudonimo cambia ogni 28 giorni (C1), quindi oltre un'epoca la stessa persona conta due volte per k; la beta deve stare in un'epoca o il conteggio va corretto.

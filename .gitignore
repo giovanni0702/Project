@@ -31,3 +31,7 @@ build/
 .idea/
 .vscode/
 .check.log
+
+# Backend local store (events, admission state)
+data/backend/
+*.sqlite3

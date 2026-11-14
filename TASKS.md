@@ -7,39 +7,35 @@ Stati: Backlog · In corso (con nome del proprietario) · Bloccato · Fatto.
 
 ## Decisioni richieste al fondatore
 
-Nessuna urgente. Decise il 2026-11-14: C1–C12 accettate (D-018), strade (D-021), live (D-022), veicolo e moto (D-023), grafica (D-024).
-
-1. **Prima della beta (non ora):** firma della DPIA dopo revisione di un professionista; account gratuito per il server (T-030).
+1. **Come mostrare dati reali in beta** (`docs/09-modello.md` §10). Con la soglia privacy di 5 contributori, zone piccole e fasce da 30 minuti la mappa non mostra mai dati reali, né con 20 né con 100 tester. A) beta concentrata in circa 3 km² del centro, con zone più grandi (risoluzione 8) e blocchi di 3 ore, 20 tester con 5 esiti a settimana guidati da missioni; B) restare con zone piccole e vedere solo stime. Raccomandazione: A.
+2. **Durata della beta:** A) 6 settimane, per avere abbastanza esiti da misurare la calibrazione; B) 4 settimane. Raccomandazione: A.
+3. **Prima della beta, azioni solo tue** (`docs/17-autonomia.md` §5): account gratuito per il server, prova su telefono Android, firma della DPIA dopo revisione, reclutamento dei tester.
 
 ## Iterazione 1 — in corso
 
-### T-034 — Allineare codice e contratto alle condizioni C1–C12
-backend-engineer | In corso | alta | M | —
-Criteri: [x] pseudonimo per cella · [x] griglia a classi, nessun conteggio, ammissione a blocchi di 2 · [x] `make reid`: attacchi A e B e scansione del file pubblicato · [ ] server: ora di arrivo scartata, nessun IP nei log · [ ] attacchi C–E (servono codice del telefono e del server)
+### T-040 — Chiudere le 5 falle trovate dal red team
+privacy-engineer | In corso | alta | L | —
+Criteri: [ ] taglia del veicolo non salvata negli eventi · [ ] nessun giorno né orario nello storico · [ ] k contata nella stessa epoca · [ ] ammissioni a intervalli larghi · [ ] test del red team verdi senza indebolirli · **release bloccata finché non è chiuso**
 
-### T-035 — Strade colorate: rete stradale e stima per tratto (D-021)
-data-engineer | In corso (scarico OSM da riprovare: siti non ancora raggiungibili) | alta | L | T-026
-Criteri: [x] script di scarico e di costruzione dei tratti, ogni tratto collegato alla sua cella · [ ] scarico reale di Milano e misura della copertura · [ ] correzione per caratteristiche fisse del tratto (con `data-scientist`) · [ ] file statico della geometria, separato dalla griglia · [ ] parere di `privacy-compliance` prima di qualsiasi invio del tratto al server
+### T-041 — Attributi di sosta per strada e stalli moto
+data-engineer | Backlog | alta | L | —
+Criteri: [ ] strati `AC_VEI` e `AR_STR` del Database Topografico valutati · [ ] OpenStreetMap se la rete lo consente · [ ] tariffe e orari per ambito da fonte ufficiale · [ ] stalli moto · [ ] griglia limitata alle celle con strade e al confine comunale
+
+### T-042 — Testo del GDPR e norme non raggiungibili
+legal-analyst | Bloccato (EUR-Lex e Garante restituiscono pagine vuote) | media | S | —
+Criteri: [ ] articoli 4, 6, 7, 11, 25, 35, 36 e considerando 26 letti alla fonte · [ ] art. 122 Codice privacy · [ ] Linee guida EDPB 1/2020
+
+### T-043 — App Android: ambiente e scheletro
+mobile-engineer | Backlog | alta | L | T-040
+Criteri: [ ] Flutter e Android SDK installabili nell'ambiente (siti da abilitare elencati) · [ ] scheletro con mappa delle strade, vista live e altri orari, veicolo, contributi · [ ] contratto API dal backend · [ ] testi IT/EN · [ ] requisito: invio con ritardo casuale (C7)
+
+### T-044 — Pagina interna: stato reale dal backend
+backend-engineer | Backlog | media | S | T-040
+Criteri: [ ] la pagina `web/` legge la griglia pubblicata dal backend al posto dei dati dimostrativi · [ ] comando unico per avviare tutto in locale
 
 ### T-036 — Veicolo: taglie, moto, elenco modelli (D-023)
 data-scientist | Backlog | alta | M | T-034
 Criteri: [ ] parere di `privacy-compliance` sull'invio della taglia · [ ] effetto della taglia stimato a livello di città, sostituendo i valori provvisori · [ ] fonte degli stalli moto e regole per le moto a Milano · [ ] fonte con licenza adatta per modelli e lunghezze · [ ] stima per le moto dichiarata indicativa finché manca il modello dedicato
-
-### T-037 — Due viste: live e stime per altri orari e giorni (D-022)
-backend-engineer | Backlog | media | M | T-034
-Criteri: [ ] griglia live ogni 5 minuti · [ ] tabella delle stime per fascia e tipo di giorno, una volta al giorno · [ ] nel contratto la stima è distinguibile dal live
-
-### T-038 — Fonti primarie per la DPIA e i documenti legali
-legal-analyst | Backlog | alta | M | —
-Criteri: [ ] ogni **[verificare]** normativo di DPIA, privacy e release letto alla fonte o lasciato marcato · [ ] ODbL e cessione del dato (con T-024) · [ ] bozza di nota informativa per i tester
-
-### T-039 — Attacchi nuovi alle protezioni
-privacy-redteam | Backlog | alta | M | T-034
-Criteri: [ ] pochi tester che si conoscono, taglia del veicolo rara, strada con una sola casa, griglie salvate nel tempo · [ ] ogni attacco come test riproducibile · [ ] esito a `privacy-compliance`
-
-### T-029 — Dati reali visibili con pochi tester (soglia k) e piano di validazione
-data-scientist | Backlog | alta | M | T-010
-Criteri: [ ] stima di quanti esiti servono per superare k con 10–20 tester · [ ] proposta per la beta: zone, dimensione delle celle, larghezza delle fasce · [ ] missioni di copertura · [ ] quota di esiti riservata alla validazione · [ ] parere di `privacy-compliance`
 
 ### T-032 — Rilevamento sul dispositivo e miglioramento automatico
 data-scientist | Backlog | alta | L | T-034
@@ -99,19 +95,7 @@ Criteri: [ ] `docs/12-sicurezza.md` completato · [ ] limiti di frequenza e cont
 mobile-engineer | Backlog | alta | M | —
 Criteri: [ ] mappa dietro un'interfaccia unica, sostituibile con Google Maps (D-010) · [ ] maturità del pacchetto verificata · [ ] prototipo con celle colorate su Milano · [ ] dimensione dei tasselli e costo stimato · [ ] D-010 confermata o cambiata
 
-### T-006 — Scaffold del repository per l'iterazione 1
-backend-engineer | Backlog | media | S | T-026
-Criteri: [ ] tutto eseguibile in locale, senza servizi a pagamento (D-014) · [ ] cartelle `backend/`, `model/`, `app/`, `tests/` · [ ] contratto OpenAPI iniziale · [ ] test eseguiti da `make check`
-
 ## Backlog — modello e dati
-
-### T-010 — Metriche di calibrazione e N minimo
-data-scientist | Backlog | alta | M | —
-Criteri: [ ] definizioni operative in `docs/09-modello.md` §6 · [ ] N minimo per dichiarare una metrica · [ ] metodo di test con dati sintetici etichettati
-
-### T-022 — Risoluzione della griglia H3 (9 o 10)
-data-scientist | Backlog | media | S | T-006
-Criteri: [ ] confronto su numero di celle, eventi attesi per cella, effetto sulla soglia k · [ ] decisione in `docs/05-decisioni.md`
 
 ### T-024 — Licenze e standard per fornire il dato a terzi
 privacy-compliance | Backlog | media | M | —
@@ -120,10 +104,6 @@ Criteri: [ ] vincoli ODbL sui dati derivati da OSM, con fonte ufficiale · [ ] s
 ### T-025 — Strade verso le app di mappe e mercato del dato di sosta
 competitor-analyst | Backlog | bassa | M | T-004
 Criteri: [ ] chi fornisce oggi dati di sosta a mappe e case auto, e come · [ ] programmi per partner di Google, Apple, Waze · [ ] cosa chiedono (copertura, prove di qualità) · [ ] sezione in `docs/02-concorrenza.md` · [ ] nessun contatto esterno
-
-### T-026 — Schema "città come configurazione" e adattatori
-backend-engineer | In corso (avviato: `cities/milano`, `parking_core`, test) | alta | M | —
-Criteri: [ ] schema del file di città e dell'interfaccia degli adattatori · [ ] `cities/milano` come primo caso · [ ] test che fallisce se il nucleo contiene valori di Milano · [ ] con `data-scientist`: variabili del modello definite in modo indipendente dalla città
 
 ### T-023 — Modello a tassi con concorrenza e penetrazione (ricerca)
 data-scientist | Backlog | bassa | L | T-010

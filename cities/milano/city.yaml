@@ -7,7 +7,8 @@ locales: [it, en]
 currency: EUR
 
 sources:
-  osm_relation_id: 44915     # Comune di Milano, admin boundary (verified by the pipeline name check)
+  streets: municipal_dbt_2020   # official, CC BY; see cities/milano/adapter.py
+  osm_relation_id: 44915       # fallback source (scripts/fetch_osm.py), not verified yet
 
 grid:
   h3_resolution: 9          # to be confirmed by T-022 (9 vs 10)

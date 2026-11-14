@@ -198,3 +198,18 @@ Formato: ogni decisione ha data, stato, contesto, scelta e conseguenze. Le decis
 - **Stato:** decisa dal fondatore
 - **Scelta:** le strade sono colorate con linee continue e sottili, senza coprire la strada. Niente tratteggi.
 - **Accessibilità:** senza il tratto, la distinzione tra livelli si affida a colore e luminosità. Per non affidarsi al solo colore: livello sempre scritto nella scheda della strada, e modalità "alta leggibilità" nelle impostazioni che riattiva tratti diversi (T-033).
+
+## D-027 — Strade dal Database Topografico del Comune
+- **Data:** 2026-11-14
+- **Stato:** approvata (scelta tecnica, reversibile)
+- **Contesto:** i siti di OpenStreetMap risultano abilitati ma la connessione dalla sessione viene interrotta. Nel catalogo del Comune esiste il Database Topografico 2020 (licenza CC BY), con tutti gli elementi stradali e i loro nomi.
+- **Scelta:** la rete stradale di Milano viene dal Database Topografico (strato `EL_STR`), tramite l'adattatore `cities/milano/adapter.py`. OpenStreetMap resta come fonte di riserva e per le altre città.
+- **Vantaggi:** fonte ufficiale; la licenza CC BY chiede solo l'attribuzione e non ha il vincolo "condividi allo stesso modo" di OpenStreetMap, che pesava sulla cessione del dato a terzi (R-16).
+- **Limiti:** dati del 2020; nessun attributo di sosta sui tratti (stalli, strisce, moto): vanno da altre fonti; escluse pertinenze private e tangenziali.
+- **Risultato:** 24.008 elementi stradali, 30.727 tratti collegati a 1.654 celle, tutti con nome.
+
+## D-028 — Lavoro autonomo del team
+- **Data:** 2026-11-14
+- **Stato:** decisa dal fondatore
+- **Scelta:** il team lavora anche senza richiesta, con la sessione principale come CEO. Un'attività programmata esegue un ciclo ogni giorno alle 03:41 (ora italiana) in questa stessa sessione. Procedura, limiti di costo e definizione di "beta valida" in `17-autonomia.md`.
+- **Limiti invariati:** le decisioni di `CLAUDE.md` §7 restano del fondatore. In particolare **gli agenti non creano account**: un account lega legalmente una persona e richiede la sua email e la sua identità. Quando serve, il ciclo prepara tutto e indica il singolo passo da fare.

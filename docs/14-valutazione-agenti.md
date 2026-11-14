@@ -14,6 +14,18 @@ Si aggiorna a ogni chiusura di iterazione (`ceo-orchestrator`). Voto da 1 a 5 su
 | generico (costi) | 2 | 2 | Tabella leggibile, raccomandazione chiara | 157.000 token per dati quasi tutti di seconda mano: il peggior rapporto costo/valore |
 | Tutti gli altri ruoli | 0 | — | Non usati: il lavoro è stato fatto direttamente, perché costava meno | Da valutare al primo incarico |
 
+## Ciclo 2 — 2026-11-14 (5 incarichi, circa 190.000 token più T-040 in corso)
+
+| Agente | Voto | Motivo |
+|---|---|---|
+| privacy-redteam | 5 | 5 falle reali dimostrate con test riproducibili, più una non richiesta; perimetro rispettato |
+| data-scientist | 5 | Ha detto chiaramente, con numeri, che la configurazione attuale non mostra mai dati reali; proposta concreta |
+| backend-engineer | 4 | Backend completo e provato in un solo giro a basso costo; ha però salvato giorno e taglia, da cui due delle falle |
+| legal-analyst | 3 | Onesto su ciò che non ha letto (9 su 13); bloccato da siti che restituiscono pagine vuote, tetto di chiamate rispettato |
+| privacy-engineer | — | In corso |
+
+Lezione del ciclo: il red team va lanciato **dopo** ogni nuovo flusso di dati, non in parallelo, così attacca anche il codice appena scritto.
+
 ## Problemi di sistema (e correzioni applicate)
 1. **Ricerche lanciate prima di controllare la rete.** Il primo giro (5 incarichi, circa 213.000 token) ha prodotto risultati parziali perché i siti ufficiali erano bloccati. *Errore di chi ha delegato, non degli agenti.* Correzione: prima di ogni ricerca si prova un sito con `scripts/fetch_text.py`.
 2. **Lo strumento di lettura web degli agenti non raggiunge siti che lo script raggiunge.** Correzione: `privacy-compliance` e `competitor-analyst` ora possono usare Bash, solo per `scripts/fetch_text.py` e `make check`.

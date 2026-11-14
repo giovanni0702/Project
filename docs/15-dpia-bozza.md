@@ -2,12 +2,12 @@
 
 **BOZZA — non firmata, richiede revisione di un professionista e firma del fondatore.**
 
-Redatta da `privacy-compliance` il 2026-11-14 (T-018, T-028). Secondo la nostra lettura; non è un parere legale. Ogni riferimento marcato **[verificare]** non è stato letto alla fonte ufficiale: i siti eur-lex.europa.eu, edpb.europa.eu e garanteprivacy.it non sono raggiungibili dalla rete di lavoro (da abilitare). Fonti → [`fonti.md`](fonti.md). Decisioni di partenza: D-016, D-018, D-019 in [`05-decisioni.md`](05-decisioni.md). Vincoli sintetici → [`03-privacy.md`](03-privacy.md#vincoli-tecnici-v2).
+Redatta da `privacy-compliance` il 2026-11-14 (T-018, T-028). Secondo la nostra lettura; non è un parere legale. Ogni riferimento marcato **[verificare]** non è stato letto alla fonte ufficiale. Verifica T-038 (2026-11-14): letto solo il provv. Garante 467/2018; il testo del GDPR (eur-lex e Garante), il Codice e le linee guida EDPB 1/2020 hanno restituito pagine vuote o non trovate: vedi tabella in §12. Fonti → [`fonti.md`](fonti.md). Decisioni di partenza: D-016, D-018, D-019 in [`05-decisioni.md`](05-decisioni.md). Vincoli sintetici → [`03-privacy.md`](03-privacy.md#vincoli-tecnici-v2).
 
 ## 1. Perché una DPIA
 
-- Il fondatore l'ha resa condizione di D-018. Indipendentemente da questo, secondo la nostra lettura il rilevamento automatico soddisfa almeno due criteri delle linee guida WP29/EDPB sulla DPIA (WP248 rev.01) **[verificare]**: dati di localizzazione raccolti in modo sistematico e uso innovativo di tecnologie (posizione in background + Bluetooth).
-- Art. 35 GDPR, par. 1 e 7 (contenuto minimo) **[verificare]**; elenco del Garante dei trattamenti soggetti a DPIA (provv. n. 467 dell'11/10/2018) **[verificare]** se includa la geolocalizzazione.
+- Il fondatore l'ha resa condizione di D-018. Indipendentemente da questo, secondo la nostra lettura il rilevamento automatico soddisfa almeno due criteri delle linee guida WP29/EDPB sulla DPIA (WP248 rev.01; i nove criteri e la regola "due o più" sono citati nel provv. Garante 467/2018, letto): dati di localizzazione raccolti in modo sistematico e uso innovativo di tecnologie (posizione in background + Bluetooth).
+- Art. 35 GDPR, par. 1 e 7 (contenuto minimo) **[verificare]**; elenco del Garante (provv. n. 467 dell'11/10/2018, GU n. 269 del 19/11/2018, art. 35 par. 4): il provvedimento dichiara l'elenco non esaustivo e ribadisce "due o più criteri" WP248; il testo dell'Allegato 1 non è stato letto (pagina senza allegato), quindi se citi la geolocalizzazione resta **[verificare]**.
 - Ambito: **beta chiusa Android**, 10–20 tester, installazione diretta (D-017). Il lancio pubblico e Google Play richiedono una nuova revisione di questa DPIA.
 
 ## 2. Titolare, soggetti, contesto
@@ -124,3 +124,23 @@ Raccomandazione: revisione di un professionista privacy prima della beta con T3 
 - Redatto: `privacy-compliance`, 2026-11-14 (bozza).
 - Revisione professionale: ______ (data) ______
 - Approvazione del titolare (fondatore): ______ (data) ______
+
+## 12. Verifica delle fonti (T-038, 2026-11-14, `legal-analyst`)
+
+Non è un parere legale: serve la revisione di un professionista. N = testo della norma · A = interpretazione di un'autorità · L = lettura nostra.
+
+| Affermazione | Fonte | Esito |
+|---|---|---|
+| La DPIA va fatta se il trattamento può presentare rischio elevato (art. 35(1)) | Provv. Garante 467/2018, premesse, cita art. 35 par. 1 (N, riportato) · garanteprivacy.it docweb 9058979 · 11/10/2018 | Confermato (via citazione) |
+| Due o più criteri WP248 rev.01 indicano rischio elevato; criteri: monitoraggio sistematico, ubicazione/spostamenti, uso innovativo | Stesso provv., premesse (A) | Confermato |
+| Il nostro T3 soddisfa almeno 2 criteri | Nostra applicazione dei criteri (L) | Lettura nostra, coerente col testo |
+| L'elenco del Garante è non esaustivo | Stesso provv. (A) | Confermato |
+| L'elenco include la geolocalizzazione | Allegato 1 non letto | **[verificare]** |
+| Art. 35(7) contenuto minimo; 35(7)(d); art. 36 | GDPR non raggiungibile | **[verificare]** |
+| Art. 4(1), considerando 26 (pseudonimo = dato personale) | GDPR non raggiungibile | **[verificare]** |
+| Art. 6(1)(a), art. 7(3) (consenso, revoca) | GDPR non raggiungibile | **[verificare]** |
+| Art. 11 e 11(2) (identificazione non richiesta) | GDPR non raggiungibile | **[verificare]** |
+| Art. 25 (by design) | GDPR non raggiungibile | **[verificare]** |
+| Art. 122 Codice / art. 5(3) ePrivacy | docweb Codice vuoto (pagina dinamica) | **[verificare]** |
+| EDPB 1/2020 (veicoli connessi, localizzazione) | Pagina EDPB "non trovata" | **[verificare]**; vale solo per veicoli connessi, applicabilità per analogia: lettura nostra |
+| Obbligo di DPO | Non letto | **[verificare]** |

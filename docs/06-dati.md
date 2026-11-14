@@ -106,13 +106,17 @@ Senza stalli né sensori, la capacità per segmento va stimata da OSM (`parking:
 - Nessun dato di Google salvato in blocco.
 - I dati sintetici non entrano mai nelle metriche di produzione.
 
-## Strade e sosta da OpenStreetMap (mappa completa, D-021)
+## Strade di Milano: Database Topografico del Comune (fonte in uso, D-027)
 
-- **Automatico:** `scripts/fetch_osm.py milano` scarica strade, parcheggi (anche stalli moto) e confine comunale in `data/raw/milano/`; `scripts/build_streets.py milano` produce il file delle strade collegate alle celle. I dati grezzi non entrano nel repository.
-- **Stato al 2026-11-14:** script pronti e provati su dati di prova; lo scarico reale non è riuscito perché i siti `overpass-api.de` e `download.geofabrik.de`, appena abilitati, non erano ancora raggiungibili dalla sessione. Da riprovare alla prossima sessione.
-- **Scarico manuale (se serve, lo può fare il fondatore, gratis e senza account):**
-  1. aprire `overpass-turbo.eu`, incollare la richiesta contenuta in `scripts/fetch_osm.py` (voce `streets`, con l'area di Milano), premere "Esegui" e poi "Esporta → dati grezzi";
-  2. oppure scaricare l'estratto "Nord-Ovest" d'Italia da `download.geofabrik.de` (file grande, in formato `.osm.pbf`);
-  3. caricare il file nella sessione: lo si mette in `data/raw/milano/osm_streets.json`.
-- **Licenza:** ODbL, attribuzione "© OpenStreetMap contributors" obbligatoria nell'app. Effetti sulla cessione del dato a terzi: T-024.
-- **Catalogo del Comune:** non contiene un grafo stradale né stalli per moto (ricerche del 2026-11-14: "grafo stradale", "stradario", "motocicli sosta").
+- **Fonte:** dataset ds2889, "Database Topografico (DBT) 2020 - formato SHP", Comune di Milano, CC BY. Archivio da circa 600 MB su `gisportal.comune.milano.it`; si scaricano solo gli strati `EL_STR` (elementi stradali con nome) e `LIM_COM` (confine).
+- **Comandi:** `scripts/fetch_city.py milano` poi `scripts/build_streets.py milano` → `build/streets/milano/streets.json` (circa 8 MB, fuori dal repository).
+- **Esito del 2026-11-14:** 24.008 elementi, 30.727 tratti, 1.654 celle con strade, nome presente su tutti.
+- **Ambiti della sosta:** dataset ds83 scaricato (36 ambiti con geometria). **I campi di tariffa, orari e numero di posti sono vuoti**: servono altre fonti (T-031).
+- **Mancano:** attributi di sosta per tratto, stalli moto. Altri strati utili dello stesso archivio da valutare: `AC_VEI` (aree di circolazione veicolare), `AR_STR` (aree stradali).
+- **Attribuzione nell'app:** "Comune di Milano, Database Topografico 2020 (CC BY 4.0)".
+
+## OpenStreetMap (fonte di riserva e per altre città)
+
+- `scripts/fetch_osm.py <città>` è pronto, ma dal 2026-11-14 la connessione a `overpass-api.de`, `overpass.kumi.systems` e `download.geofabrik.de` viene interrotta dalla rete della sessione anche se i siti sono abilitati.
+- Scarico manuale possibile dal fondatore (gratis, senza account): `overpass-turbo.eu` con la richiesta contenuta nello script, poi "Esporta → dati grezzi"; il file va in `data/raw/<città>/osm_streets.json`.
+- Licenza ODbL: attribuzione obbligatoria e vincoli sulla cessione di dati derivati (T-024).

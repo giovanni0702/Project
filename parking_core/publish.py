@@ -45,3 +45,52 @@ def write_grid(payload: dict, out_dir: Path) -> Path:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, separators=(",", ":")), encoding="utf-8")
     return path
+
+
+def build_forecast(config: dict, outcomes: list[Outcome], now: datetime | None = None,
+                   admission: Admission | None = None) -> dict:
+    """Estimates for every day type and slot, without the "now" component (D-022).
+
+    Only cells that differ from the prior-only estimate are listed: the app
+    falls back to `default` for the others. No counts, no contributor ids.
+    """
+    admission = admission or Admission(config["privacy"]["admission_batch"])
+    outcomes = admission.filter(outcomes)
+    now = now or datetime.now(ZoneInfo(config["timezone"]))
+    cells = grid.cells_for_bbox(config["grid"]["bbox"], config["grid"]["h3_resolution"])
+    no_live = {**config, "model": {**config["model"], "live_window_minutes": -1}}
+    values = config["display"]["class_values"]
+    slots_per_day = 1440 // config["time"]["slot_minutes"]
+
+    def pack(e):
+        return [class_value(e.level, values), e.level, e.reliability, e.from_user_data]
+
+    default = pack(next(iter(estimate(cells[:1], ("weekday", 0), [], no_live, lambda c: []).values())))
+    by_slot: dict[str, dict] = {}
+    for day_type in config["time"]["day_types"]:
+        for index in range(slots_per_day):
+            slot = (day_type, index)
+            mine = [o for o in outcomes if o.slot == slot]
+            if not mine:
+                continue
+            est = estimate(cells, slot, outcomes, no_live, grid.neighbors)
+            diff = {c: pack(e) for c, e in est.items() if pack(e) != default}
+            if diff:
+                by_slot.setdefault(day_type, {})[str(index)] = diff
+    return {
+        "city": config["id"],
+        "generated_at": now.isoformat(timespec="seconds"),
+        "model_version": MODEL_VERSION,
+        "h3_resolution": config["grid"]["h3_resolution"],
+        "slot_minutes": config["time"]["slot_minutes"],
+        "vehicle_odds": config["vehicles"]["odds"],
+        "default": default,
+        "slots": by_slot,
+    }
+
+
+def write_forecast(payload: dict, out_dir: Path) -> Path:
+    path = out_dir / payload["city"] / "forecast.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, separators=(",", ":")), encoding="utf-8")
+    return path

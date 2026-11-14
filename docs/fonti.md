@@ -47,3 +47,7 @@ Stato: **letta** (pagina ufficiale aperta) · **parziale** (troncata o solo tito
 | Dati | ATM, posti liberi dei parcheggi di interscambio | 2026-11-14 | secondaria | Nessun feed pubblico in tempo reale |
 | Costi | pub.dev/packages/maplibre (e changelog) | 2026-11-14 | letta | Versione 0.3.7+1; PMTiles su Android dalla 0.2.1 |
 | Costi | Neon, Supabase, Cloudflare R2/Pages (pagine ufficiali non raggiungibili) | 2026-11-14 | secondaria | Piani gratuiti esistono; regione UE, PostGIS, carta richiesta: non verificati. Pages: 25 MiB per file |
+| Norme | garanteprivacy.it docweb 9058979 (provv. 467/2018, elenco DPIA) | 2026-11-14 | parziale | Premesse lette: WP248 nove criteri, "due o più", elenco non esaustivo; Allegato 1 assente |
+| Norme | eur-lex.europa.eu CELEX:32016R0679 (IT/EN, 3 varianti) · garanteprivacy.it docweb 9355574 | 2026-11-14 | bloccata | Pagine vuote: artt. 4, 6, 7, 11, 25, 35, 36 GDPR non letti |
+| Norme | garanteprivacy.it docweb 9042678 (Codice, art. 122) | 2026-11-14 | bloccata | Pagina dinamica, senza testo |
+| Norme | edpb.europa.eu Linee guida 1/2020 | 2026-11-14 | bloccata | "Page not found" all'URL tentato; non lette |

@@ -1,0 +1,241 @@
+<title>Mappa parcheggi __CITY_NAME__</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap">
+<style>
+/* Layout: one-screen map tool. Canvas fills the screen; a control bar floats on top, a street sheet at the bottom. */
+:root {
+  --ground: #E9EDF1; --street: #FFFFFF; --surface: #FFFFFF; --ink: #14202B; --ink-soft: #51606E; --line: #D5DCE3;
+  --accent: #2251CC; --on-accent: #FFFFFF;
+  --high: #1FA68A; --mid: #E0A21A; --low: #8E2A4B; --unknown: #A3ADB8;
+  --font: Inter, system-ui, sans-serif; --display: "Space Grotesk", Inter, system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --ground: #101820; --street: #26323E; --surface: #1A2530; --ink: #F1F4F7; --ink-soft: #A9B5C1; --line: #33414E;
+  --accent: #7FA2FF; --on-accent: #0B1622; --high: #37C9AC; --mid: #F2BC45; --low: #E0739A; --unknown: #5F6D7A; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --ground: #101820; --street: #26323E; --surface: #1A2530; --ink: #F1F4F7; --ink-soft: #A9B5C1; --line: #33414E;
+  --accent: #7FA2FF; --on-accent: #0B1622; --high: #37C9AC; --mid: #F2BC45; --low: #E0739A; --unknown: #5F6D7A; color-scheme: dark }
+html, body { height: 100%; }
+body { background: var(--ground); color: var(--ink); font-family: var(--font); overflow: hidden; }
+#map { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; }
+#map:active { cursor: grabbing; }
+.bar { position: fixed; top: calc(12px + env(safe-area-inset-top, 0px)); left: 0; right: 0;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+.bar > * { pointer-events: auto; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.panel { background: var(--surface); border-radius: 16px; box-shadow: 0 2px 10px rgba(0,0,0,.14); }
+.head { padding: 10px 14px; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; max-width: 560px; }
+.head h1 { margin: 0; font: 700 17px var(--display); }
+.head p { margin: 0; font-size: 13px; color: var(--ink-soft); }
+.seg { display: inline-flex; padding: 3px; gap: 2px; }
+.seg button, .chip { min-height: 40px; padding: 0 14px; border: 0; border-radius: 13px; background: transparent; color: var(--ink);
+  font: 500 13px var(--font); cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--surface); font-weight: 600; }
+.chip { background: var(--surface); box-shadow: 0 1px 6px rgba(0,0,0,.12); display: inline-flex; align-items: center; gap: 8px; }
+select.chip { appearance: none; padding-right: 14px; }
+.time { padding: 6px 14px; display: flex; align-items: center; gap: 10px; font-size: 13px; }
+.time input { width: 150px; accent-color: var(--accent); }
+.time output { font: 600 13px var(--font); font-variant-numeric: tabular-nums; min-width: 44px; }
+button:focus-visible, select:focus-visible, input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.legend { position: fixed; left: max(16px, env(safe-area-inset-left, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  padding: 8px 14px; display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; max-width: calc(100% - 32px); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 22px; height: 4px; border-radius: 2px; display: inline-block; }
+.sheet { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  width: min(340px, calc(100% - 32px)); padding: 16px 18px; display: flex; flex-direction: column; gap: 6px; }
+.sheet .name { font-size: 13px; color: var(--ink-soft); }
+.sheet .verdict { font: 700 21px var(--display); line-height: 1.15; }
+.sheet .meta { font-size: 13px; color: var(--ink-soft); line-height: 1.4; }
+.tag { align-self: flex-start; font: 600 11px var(--font); letter-spacing: .04em; text-transform: uppercase; padding: 4px 8px; border-radius: 8px;
+  background: var(--ink); color: var(--surface); }
+.credit { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); top: calc(12px + env(safe-area-inset-top, 0px));
+  font-size: 11px; color: var(--ink-soft); max-width: 220px; text-align: right; }
+@media (max-width: 720px) { .credit { display: none; } .sheet { bottom: calc(64px + env(safe-area-inset-bottom, 0px)); left: max(16px, env(safe-area-inset-left, 0px)); right: auto; } }
+</style>
+
+<canvas id="map" aria-label="Mappa delle strade colorate per facilità di parcheggio"></canvas>
+
+<div class="bar">
+  <div class="panel head">
+    <h1>Parcheggi a __CITY_NAME__</h1>
+    <p id="status"></p>
+  </div>
+  <div class="row">
+    <div class="panel seg" role="group" aria-label="Dati mostrati">
+      <button type="button" id="mode-real" aria-pressed="false">Stato reale</button>
+      <button type="button" id="mode-demo" aria-pressed="true">Dimostrazione</button>
+    </div>
+    <label class="chip"><span>Veicolo</span>
+      <select id="vehicle" class="chip" style="box-shadow:none;padding-left:0;min-height:36px">
+        <option value="moto">Moto</option><option value="small">Auto piccola</option>
+        <option value="medium" selected>Auto media</option><option value="large">Auto grande</option>
+      </select>
+    </label>
+    <label class="panel time" id="time-wrap"><span>Orario</span>
+      <input type="range" id="hour" min="0" max="47" step="1" value="37">
+      <output id="hour-out" for="hour">18:30</output>
+    </label>
+  </div>
+</div>
+
+<div class="credit">__ATTRIBUTION__</div>
+
+<div class="panel legend" aria-label="Legenda">
+  <span><i style="background:var(--high)"></i>Facile</span>
+  <span><i style="background:var(--mid)"></i>Possibile</span>
+  <span><i style="background:var(--low)"></i>Difficile</span>
+  <span><i style="background:var(--unknown)"></i>Nessun dato</span>
+</div>
+
+<div class="panel sheet" id="sheet" hidden>
+  <span class="tag" id="sheet-tag"></span>
+  <div class="name" id="sheet-name"></div>
+  <div class="verdict" id="sheet-verdict"></div>
+  <div class="meta" id="sheet-meta"></div>
+</div>
+
+<script>
+const DATA = /*DATA*/null;
+// DATA: {bbox:[w,s,e,n], q, names:[], cells:[[x,y]...] (cell centres, quantised), pieces:[[cell,name,x0,y0,dx,dy,...]], odds:{}, thresholds:{high,low}, center:[x,y]}
+const canvas = document.getElementById('map'), ctx = canvas.getContext('2d');
+const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const LEVELS = ['high', 'mid', 'low', 'unknown'];
+const VERDICT = { high: 'Facile trovare posto', mid: 'Posto possibile', low: 'Difficile trovare posto', unknown: 'Nessun dato reale' };
+const [W, S, E, N] = DATA.bbox, Q = DATA.q;
+const kx = Math.cos((S + N) / 2 * Math.PI / 180) * (E - W) / (N - S);   // aspect of the quantised square
+let mode = 'demo', vehicle = 'medium', slot = 37, selected = -1;
+let view = { cx: DATA.center[0], cy: DATA.center[1], scale: 0 };       // scale: css px per quantised unit (y)
+const pieces = DATA.pieces.map((p) => {
+  const pts = new Float32Array(p.length - 2); let x = 0, y = 0;
+  for (let i = 2; i < p.length; i += 2) { x += p[i]; y += p[i + 1]; pts[i - 2] = x; pts[i - 1] = y; }
+  return { cell: p[0], name: p[1], pts };
+});
+
+function hash(i) { let h = (i + 1) * 2654435761 >>> 0; h ^= h >>> 15; return (h % 1000) / 1000; }
+function demoProbability(cell) {            // SYNTHETIC: plausible shape only, no real observations
+  const [x, y] = DATA.cells[cell];
+  const d = Math.hypot((x - DATA.center[0]) * kx, y - DATA.center[1]) / Q;      // 0 centre .. ~0.5 edge
+  const hour = slot / 2;
+  const busy = Math.exp(-((hour - 10) ** 2) / 8) + 1.1 * Math.exp(-((hour - 19) ** 2) / 6) + 0.45 * Math.exp(-((hour - 13.5) ** 2) / 5);
+  const night = hour < 6 || hour > 23 ? 0.12 : 0;
+  return Math.min(0.95, Math.max(0.05, 0.45 + 2.2 * d - 0.32 * busy * Math.max(0, 1 - 3 * d) - night + 0.3 * (hash(cell) - 0.5)));
+}
+function adjust(p) { const o = p / (1 - p) * DATA.odds[vehicle]; return o / (1 + o); }
+function levelOf(cell) {
+  if (mode === 'real') return 'unknown';
+  const p = adjust(demoProbability(cell));
+  return p >= DATA.thresholds.high ? 'high' : p <= DATA.thresholds.low ? 'low' : 'mid';
+}
+
+function resize() {
+  const r = window.devicePixelRatio || 1;
+  canvas.width = Math.round(innerWidth * r); canvas.height = Math.round(innerHeight * r);
+  if (!view.scale) view.scale = Math.max(innerWidth / (Q * kx), innerHeight / Q) * 2.6;
+  draw();
+}
+const sx = (x) => (x - view.cx) * view.scale * kx + innerWidth / 2;
+const sy = (y) => (view.cy - y) * view.scale + innerHeight / 2;
+
+function draw() {
+  const r = window.devicePixelRatio || 1;
+  ctx.setTransform(r, 0, 0, r, 0, 0);
+  ctx.fillStyle = css('--ground'); ctx.fillRect(0, 0, innerWidth, innerHeight);
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  const pad = 40, zoom = view.scale * Q / 1000;
+  const base = Math.max(1.5, Math.min(9, zoom * 0.9)), thin = Math.max(1, base * 0.38);
+  const visible = [], levels = new Array(DATA.cells.length);
+  for (let i = 0; i < pieces.length; i++) {
+    const [cx, cy] = DATA.cells[pieces[i].cell];
+    const x = sx(cx), y = sy(cy);
+    if (x > -pad - 300 && x < innerWidth + pad + 300 && y > -pad - 300 && y < innerHeight + pad + 300) visible.push(i);
+  }
+  const stroke = (list, color, width) => {
+    ctx.beginPath();
+    for (const i of list) { const p = pieces[i].pts; ctx.moveTo(sx(p[0]), sy(p[1])); for (let j = 2; j < p.length; j += 2) ctx.lineTo(sx(p[j]), sy(p[j + 1])); }
+    ctx.strokeStyle = color; ctx.lineWidth = width; ctx.stroke();
+  };
+  stroke(visible, css('--street'), base);
+  const groups = { high: [], mid: [], low: [], unknown: [] };
+  for (const i of visible) { const c = pieces[i].cell; groups[levels[c] || (levels[c] = levelOf(c))].push(i); }
+  for (const name of LEVELS) stroke(groups[name], css('--' + name), thin);
+  if (selected >= 0) { stroke([selected], css('--ink'), base + 4); stroke([selected], css('--' + levelOf(pieces[selected].cell)), Math.max(2.5, thin + 1)); }
+}
+
+function pick(px, py) {
+  let best = -1, bestD = 18 * 18;
+  for (let i = 0; i < pieces.length; i++) {
+    const p = pieces[i].pts;
+    for (let j = 0; j < p.length - 2; j += 2) {
+      const ax = sx(p[j]), ay = sy(p[j + 1]), bx = sx(p[j + 2]), by = sy(p[j + 3]);
+      if (Math.min(ax, bx) - 18 > px || Math.max(ax, bx) + 18 < px || Math.min(ay, by) - 18 > py || Math.max(ay, by) + 18 < py) continue;
+      const dx = bx - ax, dy = by - ay, t = Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy || 1)));
+      const d = (px - ax - t * dx) ** 2 + (py - ay - t * dy) ** 2;
+      if (d < bestD) { bestD = d; best = i; }
+    }
+  }
+  return best;
+}
+function showSheet() {
+  const sheet = document.getElementById('sheet');
+  if (selected < 0) { sheet.hidden = true; return; }
+  const level = levelOf(pieces[selected].cell);
+  document.getElementById('sheet-tag').textContent = mode === 'demo' ? 'Dimostrazione · dati finti' : 'Stato reale';
+  document.getElementById('sheet-name').textContent = DATA.names[pieces[selected].name] || 'Strada senza nome';
+  document.getElementById('sheet-verdict').textContent = VERDICT[level];
+  document.getElementById('sheet-meta').textContent = mode === 'demo'
+    ? 'Valore inventato per mostrare come apparirà la mappa. Non descrive la situazione vera di questa strada.'
+    : 'Non ci sono ancora contributi di utenti. Qui compariranno i dati reali durante la beta.';
+  sheet.hidden = false;
+}
+function setStatus() {
+  document.getElementById('status').textContent = mode === 'demo'
+    ? 'Strade vere, colori dimostrativi: non sono dati reali.'
+    : pieces.length.toLocaleString('it-IT') + ' tratti di strada veri. Nessun dato di sosta reale ancora.';
+  document.getElementById('time-wrap').hidden = mode !== 'demo';
+  document.getElementById('mode-real').setAttribute('aria-pressed', mode === 'real');
+  document.getElementById('mode-demo').setAttribute('aria-pressed', mode === 'demo');
+}
+
+// Pan, pinch and wheel zoom.
+const pointers = new Map(); let moved = false, pinch = 0;
+canvas.addEventListener('pointerdown', (e) => { canvas.setPointerCapture(e.pointerId); pointers.set(e.pointerId, [e.clientX, e.clientY]); moved = false; pinch = 0; });
+canvas.addEventListener('pointermove', (e) => {
+  if (!pointers.has(e.pointerId)) return;
+  const prev = pointers.get(e.pointerId); pointers.set(e.pointerId, [e.clientX, e.clientY]);
+  if (pointers.size === 1) {
+    const dx = e.clientX - prev[0], dy = e.clientY - prev[1];
+    if (Math.abs(dx) + Math.abs(dy) > 2) moved = true;
+    view.cx -= dx / (view.scale * kx); view.cy += dy / view.scale;
+  } else if (pointers.size === 2) {
+    const [a, b] = [...pointers.values()], dist = Math.hypot(a[0] - b[0], a[1] - b[1]);
+    if (pinch) zoomAt((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, dist / pinch);
+    pinch = dist; moved = true;
+  }
+  draw();
+});
+const release = (e) => {
+  if (pointers.has(e.pointerId) && pointers.size === 1 && !moved) { selected = pick(e.clientX, e.clientY); showSheet(); draw(); }
+  pointers.delete(e.pointerId); pinch = 0;
+};
+canvas.addEventListener('pointerup', release); canvas.addEventListener('pointercancel', release);
+function zoomAt(px, py, factor) {
+  const min = Math.min(innerWidth / (Q * kx), innerHeight / Q) * 0.8, next = Math.max(min, Math.min(min * 400, view.scale * factor));
+  const wx = view.cx + (px - innerWidth / 2) / (view.scale * kx), wy = view.cy - (py - innerHeight / 2) / view.scale;
+  view.scale = next; view.cx = wx - (px - innerWidth / 2) / (view.scale * kx); view.cy = wy + (py - innerHeight / 2) / view.scale;
+}
+canvas.addEventListener('wheel', (e) => { e.preventDefault(); zoomAt(e.clientX, e.clientY, Math.exp(-e.deltaY * 0.0015)); draw(); }, { passive: false });
+
+document.getElementById('mode-real').addEventListener('click', () => { mode = 'real'; setStatus(); showSheet(); draw(); });
+document.getElementById('mode-demo').addEventListener('click', () => { mode = 'demo'; setStatus(); showSheet(); draw(); });
+document.getElementById('vehicle').addEventListener('change', (e) => { vehicle = e.target.value; showSheet(); draw(); });
+document.getElementById('hour').addEventListener('input', (e) => {
+  slot = +e.target.value;
+  document.getElementById('hour-out').textContent = String(Math.floor(slot / 2)).padStart(2, '0') + ':' + (slot % 2 ? '30' : '00');
+  showSheet(); draw();
+});
+addEventListener('resize', resize);
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', draw);
+new MutationObserver(draw).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+setStatus(); resize();
+</script>
