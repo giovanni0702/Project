@@ -11,6 +11,8 @@ Aggiornato: 2026-11-14 · Iterazione **1 — Dati e modello v0 (in corso)** · L
 6. **Marketing:** piano di reclutamento, ganci e nomi in `11-marketing.md` (bozze).
 7. Valutazioni degli agenti in `14-valutazione-agenti.md`.
 
+8. **Nome SostaMi e logo** (D-033, marchio da verificare in T-048); 6 schermate aggiornate più il logo in `16-grafica.md`.
+
 ## Cosa sappiamo
 - Nessuna fonte pubblica in tempo reale sulla sosta su strada a Milano: i dati reali sono solo i contributi dei tester.
 - OpenStreetMap non è raggiungibile dalla sessione anche con i siti abilitati; Milano non ne ha bisogno per le strade.

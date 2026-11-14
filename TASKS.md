@@ -7,13 +7,17 @@ Stati: Backlog · In corso (con nome del proprietario) · Bloccato · Fatto.
 
 ## Decisioni richieste al fondatore
 
-1. **Quanti tester puoi reclutare?** Su tutta la città il dettaglio dipende quasi solo da questo (T-045). Piano e messaggi pronti in `docs/11-marketing.md`: ogni invio va approvato da te.
-2. **Nome dell'app:** proposte in `docs/11-marketing.md` (le prime tre: Milosta, Sosta, Curbly), marchi da verificare. Serve prima di reclutare.
-3. **"Live" e privacy:** chi ha già contribuito in una zona entra subito nel dato live; chi è nuovo entra ogni 30 minuti. A) tenere così (resta l'aggiornamento ogni 5 minuti, con un piccolo rischio residuo); B) tutti ogni 30 minuti (più sicuro, niente "ogni 5 minuti"). Raccomandazione: A, se il red team conferma (T-047).
-4. **Durata della beta:** A) 6 settimane; B) 4. Raccomandazione: A.
-5. **Azioni solo tue prima della beta** (`docs/17-autonomia.md` §5).
+Decise il 2026-11-14: nome SostaMi (D-033), vista live regola A (D-034).
+
+1. **Come si scarica la beta.** Oggi è decisa l'installazione diretta, gratis, fuori dagli store (D-017): nessuno trova l'app da solo, arrivano solo le persone a cui mandi il link, e Android mostra un avviso che scoraggia. A) restare così, costo zero; B) Google Play, 25 USD una volta sola: si scarica dallo store come un'app normale, ma servono prima 12 tester per 14 giorni e l'approvazione di Google per la posizione in background; C) anche iPhone tramite App Store, 99 USD l'anno. Raccomandazione: B, perché vuoi tanti download; è un'eccezione a "nessuna spesa fino al lancio" (D-014).
+2. **Durata della beta:** A) 6 settimane; B) 4. Raccomandazione: A.
+3. **Azioni solo tue prima della beta** (`docs/17-autonomia.md` §5).
 
 ## Iterazione 1 — in corso
+
+### T-048 — Verifica del nome SostaMi
+legal-analyst | Backlog | alta | S | —
+Criteri: [ ] ricerca nei registri UIBM ed EUIPO (classi per software e servizi di mobilità) · [ ] app con nome uguale o simile su Google Play e App Store · [ ] domini liberi · [ ] esito con rischio e alternative; nessuna registrazione, che spetta al fondatore
 
 ### T-047 — Verifica indipendente delle correzioni privacy
 privacy-redteam | Backlog | alta | M | —

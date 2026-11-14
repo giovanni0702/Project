@@ -244,3 +244,14 @@ Formato: ogni decisione ha data, stato, contesto, scelta e conseguenze. Le decis
 - **Data:** 2026-11-14
 - **Stato:** decisa dal fondatore (il ciclo giornaliero consumava troppo e riempiva la chat principale)
 - **Scelta:** il ciclo gira in una sessione dedicata ("App parcheggi - cicli autonomi"), il martedì e il venerdì alle 03:41, con al massimo 2 deleghe. La chat principale resta per le decisioni. Sostituisce la cadenza indicata in D-028.
+
+## D-033 — Nome "SostaMi" e logo
+- **Data:** 2026-11-14
+- **Stato:** nome scelto dal fondatore; **marchio non ancora verificato** (registri UIBM ed EUIPO, nomi già presenti sugli store): la verifica va fatta prima di usarlo in pubblico (T-048).
+- **Logo (bozza):** una S tracciata come una strada, con una linea sola e continua, che finisce nel punto dove si parcheggia. Due colori più il bianco; leggibile a 24 px; versioni su fondo scuro e chiaro in `16-grafica.md`.
+- **Nota:** "Mi" lega il nome a Milano. Per altre città (D-013) servirà decidere se tenere il nome o declinarlo.
+
+## D-034 — Vista live: regola A
+- **Data:** 2026-11-14
+- **Stato:** decisa dal fondatore, subordinata alla conferma del red team (T-047)
+- **Scelta:** chi ha già contribuito in una zona entra subito nel dato live; i nuovi contributori entrano ogni 30 minuti. Resta l'aggiornamento ogni 5 minuti.

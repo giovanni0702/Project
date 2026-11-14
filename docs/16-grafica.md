@@ -6,16 +6,20 @@ Stato: **direzione approvata dal fondatore il 2026-11-14 (D-024): mantenerla.** 
 - Tavole pubblicate (private, del fondatore): https://claude.ai/artifact/ChLZtfNZZvJ3Aji8uCQe6L
 - Sorgente nel repository: `design/schermate/`
 
+## Logo (D-033)
+Nome: **SostaMi**. Segno: una S come una strada, linea unica e continua, con il punto finale dove si parcheggia. Colori: #14202B, #37C9AC, bianco. Tavola "Logo SostaMi". Marchio da verificare (T-048).
+
 ## Schermate disegnate
 | Tavola | Contenuto |
 |---|---|
-| 1 · Mappa delle strade | Ogni strada colorata per livello, "Live adesso" sempre attivo all'apertura, altro orario, veicolo |
-| 2 · Scheda strada | Verdetto per il proprio veicolo, affidabilità, altri orari e giorni (stime), regole di sosta |
-| 3 · Il mio veicolo | Ricerca del modello o scelta della taglia, moto comprese |
-| 4 · Contributo e sosta | Tre esiti a un tocco, veicolo salvato, timer, rilevamento automatico (spento in partenza) |
-| 5 · Consenso | Spiegazione della posizione prima della richiesta di sistema |
+| 1 · Benvenuto | Logo, promessa in una frase, tre punti, "Inizia" |
+| 2 · Consenso | Spiegazione della posizione prima della richiesta di sistema |
+| 3 · Mappa delle strade | Strade colorate con linee sottili, parcheggi in struttura (P), "Live adesso", altro orario, veicolo |
+| 4 · Scheda strada | Verdetto per il proprio veicolo, livello del dato, posti stimati, altri orari e giorni (stime), regole |
+| 5 · Il mio veicolo | Ricerca del modello o scelta della taglia, moto comprese |
+| 6 · Contributo e sosta | Tre esiti a un tocco, veicolo salvato, timer, rilevamento automatico (spento in partenza) |
 
-Mancano: privacy e diritti, onboarding passi 1 e 3, stato senza rete, modalità scura, icona dell'app, mappa reale al posto di quella stilizzata.
+Mancano: scheda di un parcheggio in struttura, privacy e diritti, stato senza rete, modalità scura completa, scheda condivisibile, missioni.
 
 ## Token (provvisori)
 | Nome | Valore | Uso |
