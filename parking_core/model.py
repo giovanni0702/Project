@@ -32,6 +32,17 @@ def success_from_search(search_minutes: float, target_minutes: float) -> bool:
     return search_minutes <= target_minutes
 
 
+def adjust_for_vehicle(probability: float, vehicle_class: str, odds: dict[str, float]) -> float:
+    """Shift a base probability by the vehicle-size odds multiplier.
+
+    Runs on the device: the vehicle never has to be sent to see the map.
+    """
+    if probability <= 0 or probability >= 1:
+        return probability
+    shifted = probability / (1 - probability) * odds[vehicle_class]
+    return shifted / (1 + shifted)
+
+
 def is_live(outcome: Outcome, params: dict) -> bool:
     return outcome.age_days * 1440 <= params["live_window_minutes"]
 

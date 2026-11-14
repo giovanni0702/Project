@@ -51,6 +51,8 @@ Rivisti da `privacy-compliance` il 2026-11-14 (T-018, T-028). Motivi e condizion
 - [corretto] **Test di re-identificazione** (`make reid`) prima di ogni build distribuita: specifica in [`15-dpia-bozza.md` §9](15-dpia-bozza.md#9-test-di-re-identificazione-prima-di-ogni-release). Se un attacco riesce, la release è bloccata.
 - Antiabuso e piano incidenti → [`12-sicurezza.md`](12-sicurezza.md).
 
+- **Veicolo (D-023):** il modello resta sul telefono; l'invio della taglia con i contributi è **in attesa di parere** (T-036). Nessun invio del tratto di strada senza parere (T-035).
+
 ## Requisiti store
 
 → [`10-release.md`](10-release.md) (fonte unica). Punto chiave: Apple richiede il consenso anche per dati anonimi.

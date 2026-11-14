@@ -7,22 +7,34 @@ Stati: Backlog · In corso (con nome del proprietario) · Bloccato · Fatto.
 
 ## Decisioni richieste al fondatore
 
-1. **Condizioni privacy C1–C12 per il rilevamento automatico** (`docs/15-dpia-bozza.md` §condizioni). `privacy-compliance` mantiene il veto su D-018 com'è scritta e la approva solo con queste condizioni, per la sola beta chiusa. A) accettarle; B) rinunciare al rilevamento automatico nella prima beta. Raccomandazione: A. Costo: i dati compaiono sulla mappa con qualche minuto di ritardo (invio ritardato 0–10 minuti; una zona si aggiorna solo con almeno 2 nuovi contributori).
-2. **Direzione grafica** della prima bozza (`docs/16-grafica.md`): va bene, o cosa cambiare.
-3. **Prima della beta (non ora):** firma della DPIA dopo revisione di un professionista; account gratuito per il server (T-030).
+Nessuna urgente. Decise il 2026-11-14: C1–C12 accettate (D-018), strade (D-021), live (D-022), veicolo e moto (D-023), grafica (D-024).
+
+1. **Prima della beta (non ora):** firma della DPIA dopo revisione di un professionista; account gratuito per il server (T-030).
 
 ## Iterazione 1 — in corso
 
 ### T-034 — Allineare codice e contratto alle condizioni C1–C12
-backend-engineer | Bloccato (decisione 1) | alta | M | —
+backend-engineer | Backlog | alta | M | —
 Criteri: [ ] pseudonimo per cella al posto dell'identificatore a 24 ore · [ ] griglia: probabilità a classi, nessun conteggio; cella aggiornata solo con almeno 2 nuovi contributori · [ ] server: ora di arrivo scartata, nessun IP nei log · [ ] test di re-identificazione automatico in `make check`
+
+### T-035 — Strade colorate: rete stradale e stima per tratto (D-021)
+data-engineer | Backlog | alta | L | T-026
+Criteri: [ ] adattatore OSM: tratti di strada con attributi di sosta, per città · [ ] ogni tratto collegato alla sua cella · [ ] correzione per caratteristiche fisse del tratto (con `data-scientist`) · [ ] file statico della geometria, separato dalla griglia · [ ] parere di `privacy-compliance` prima di qualsiasi invio del tratto al server · [ ] host OSM da abilitare nella rete
+
+### T-036 — Veicolo: taglie, moto, elenco modelli (D-023)
+data-scientist | Backlog | alta | M | T-034
+Criteri: [ ] parere di `privacy-compliance` sull'invio della taglia · [ ] effetto della taglia stimato a livello di città, sostituendo i valori provvisori · [ ] fonte degli stalli moto e regole per le moto a Milano · [ ] fonte con licenza adatta per modelli e lunghezze · [ ] stima per le moto dichiarata indicativa finché manca il modello dedicato
+
+### T-037 — Due viste: live e stime per altri orari e giorni (D-022)
+backend-engineer | Backlog | media | M | T-034
+Criteri: [ ] griglia live ogni 5 minuti · [ ] tabella delle stime per fascia e tipo di giorno, una volta al giorno · [ ] nel contratto la stima è distinguibile dal live
 
 ### T-029 — Dati reali visibili con pochi tester (soglia k) e piano di validazione
 data-scientist | Backlog | alta | M | T-010
 Criteri: [ ] stima di quanti esiti servono per superare k con 10–20 tester · [ ] proposta per la beta: zone, dimensione delle celle, larghezza delle fasce · [ ] missioni di copertura · [ ] quota di esiti riservata alla validazione · [ ] parere di `privacy-compliance`
 
 ### T-032 — Rilevamento sul dispositivo e miglioramento automatico
-data-scientist | Backlog | alta | L | decisione 1
+data-scientist | Backlog | alta | L | T-034
 Criteri: [ ] regole per riconoscere inizio ricerca, sosta e partenza (con `mobile-engineer`) · [ ] scaglioni del tempo di ricerca · [ ] ricalibrazione periodica automatica dei parametri su dati reali riservati · [ ] allarme automatico se la calibrazione peggiora · [ ] misura dei falsi parcheggi e della batteria in beta
 
 ### T-030 — Server gratuito per la beta
@@ -113,7 +125,7 @@ Criteri: [ ] formulazione scritta · [ ] condizioni per adottarlo rispetto al Be
 
 ### T-033 — Sistema visivo e schermate mancanti
 visual-designer | Backlog | media | M | T-009
-Criteri: [ ] direzione confermata dal fondatore sulla prima bozza (`docs/16-grafica.md`) · [ ] modalità scura · [ ] privacy e diritti, onboarding completo, stato senza rete · [ ] stile della mappa reale (con T-020) · [ ] token pronti per `mobile-engineer`
+Criteri: [ ] direzione approvata (D-024): mantenerla · [ ] mappa reale con strade colorate · [ ] modalità scura · [ ] privacy e diritti, onboarding completo, stato senza rete · [ ] stile della mappa reale (con T-020) · [ ] token pronti per `mobile-engineer`
 
 ### T-009 — Flussi e schermate
 ux-designer | Backlog | media | M | T-004

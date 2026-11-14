@@ -13,6 +13,8 @@ Aggiornato: 2026-11-14 · Iterazione **1 — Dati e modello v0 (in corso)** · I
 
 7. **Parere privacy:** veto sul rilevamento automatico com'è in D-018; approvato con condizioni C1–C12 (`docs/15-dpia-bozza.md`). Attende la decisione del fondatore; poi T-034.
 
+8. Decisioni del fondatore: C1–C12 accettate; **mappa per strada** (D-021); **vista sempre live**, altri orari come stime (D-022); **taglia del veicolo e moto** (D-023); **direzione grafica approvata** (D-024). Bozza aggiornata a 5 schermate; correzione per taglia nel codice (valori provvisori).
+
 ## Cosa sappiamo
 - **Nessuna fonte pubblica in tempo reale sull'occupazione della sosta su strada a Milano.** I dati reali sono solo i contributi dei tester.
 - Il catalogo del Comune non ha stalli, sensori, tariffe né lavaggio strade.
@@ -21,7 +23,7 @@ Aggiornato: 2026-11-14 · Iterazione **1 — Dati e modello v0 (in corso)** · I
 
 ## Prossimi passi
 1. T-026: adattatore OSM (strade e sosta) e confine comunale; poi pubblicazione statica della griglia e pagina interna.
-2. Decisione del fondatore su C1–C12, poi T-034 e T-032. Intanto T-010, T-029.
+2. T-034 (codice allineato a C1–C12), T-035 (strade da OSM), poi T-032, T-036, T-037. Intanto T-010, T-029.
 3. T-030 (server gratuito), T-031 (contesto in tempo reale), T-004 (concorrenti sugli store).
 
 ## Blocchi

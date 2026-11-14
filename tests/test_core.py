@@ -131,3 +131,11 @@ def test_published_grid_has_aggregates_only():
     assert payload["valid_minutes"] == 5 and len(payload["cells"]) == len(CELLS)
     assert "c1" not in json.dumps(list(payload["cells"].values())) and "contributor" not in text
     assert payload["cells"][CELLS[10]][3] is True
+
+
+def test_smaller_vehicles_find_parking_more_easily():
+    from parking_core.model import adjust_for_vehicle
+    odds = CITY["vehicles"]["odds"]
+    p = {name: adjust_for_vehicle(0.5, name, odds) for name in odds}
+    assert p["moto"] > p["small"] > p["medium"] == 0.5 > p["large"]
+    assert adjust_for_vehicle(1.0, "large", odds) == 1.0

@@ -26,6 +26,7 @@ def build_grid(config: dict, outcomes: list[Outcome], now: datetime | None = Non
         "slot": list(slot),
         "model_version": MODEL_VERSION,
         "h3_resolution": config["grid"]["h3_resolution"],
+        "vehicle_odds": config["vehicles"]["odds"],  # applied on the device
         # cell -> [probability, level, reliability, based on user data]
         "cells": {
             cell: [round(e.probability, 2), e.level, e.reliability, e.from_user_data]

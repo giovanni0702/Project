@@ -35,6 +35,11 @@ In iterazione 1 si costruiscono 1 e 2. Il modello 3 è un task di ricerca, non u
 - La griglia si ricalcola ogni 5 minuti. Gli esiti recenti (finestra e peso in configurazione) contano di più e valgono per la fascia corrente.
 - Emivita, peso dei dati recenti e soglie si ricalibrano periodicamente su dati reali tenuti da parte, mai a mano e mai su dati sintetici (T-032).
 
+### Strade, orari, veicolo (D-021, D-022, D-023)
+- **Strade:** la stima si calcola per cella; ogni tratto di strada la eredita, corretta dalle sue caratteristiche fisse (stalli, tipo di sosta, regole). Non è una misura live del singolo tratto.
+- **Altri orari e giorni:** solo la componente storica per fascia e tipo di giorno, mostrata come stima.
+- **Veicolo:** correzione per taglia applicata sul telefono, stimata a livello di città. Valori iniziali non validati. Le moto richiedono dati e modello propri.
+
 ## 4. Variabili
 
 - **Tempo:** fascia di 30 minuti × tipo di giorno (feriale, sabato, festivo); festività; calendario scolastico.

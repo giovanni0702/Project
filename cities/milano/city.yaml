@@ -25,6 +25,13 @@ model:
   neighbor_weight: 0.3       # spatial shrinkage toward neighbouring cells
   max_weight_per_contributor: 3.0
 
+vehicles:
+  # Odds multipliers relative to a medium car. PROVISIONAL and unvalidated (D-023):
+  # replaced by values learned city-wide from real outcomes. Motorcycles get their
+  # own supply data and model later; until then this is a rough placeholder.
+  default: medium
+  odds: {moto: 4.0, small: 1.4, medium: 1.0, large: 0.6}
+
 publish:
   interval_minutes: 5        # D-019
 

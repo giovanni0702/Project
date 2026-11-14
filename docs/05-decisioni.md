@@ -134,7 +134,7 @@ Formato: ogni decisione ha data, stato, contesto, scelta e conseguenze. Le decis
 
 ## D-018 — L'app impara da sola: rilevamento automatico tramite posizione
 - **Data:** 2026-11-14
-- **Stato:** **voluta dal fondatore; veto di `privacy-compliance` su questa forma (2026-11-14)**. Approvata solo con le condizioni C1–C12 di `15-dpia-bozza.md`, per la beta chiusa: attende la decisione del fondatore e poi la firma della DPIA. Il parere preliminare di `privacy-compliance` era contrario per la prima beta: la DPIA deve mostrare che le condizioni qui sotto bastano.
+- **Stato:** approvata **con le condizioni C1–C12** di `15-dpia-bozza.md`, accettate dal fondatore il 2026-11-14, per la sola beta chiusa. Si attiva dopo revisione professionale e firma della DPIA. Le condizioni di progetto qui sotto valgono dove C1–C12 non dicono altro. Il parere preliminare di `privacy-compliance` era contrario per la prima beta: la DPIA deve mostrare che le condizioni qui sotto bastano.
 - **Scelta:** con il consenso dell'utente, il telefono capisce da solo quando il conducente sta cercando posto, quando ha parcheggiato, quanto ci ha messo e quando riparte.
 - **Perché conta:** il tempo di ricerca misurato è esattamente il bersaglio del modello ("posto trovato entro 5 minuti"). È il dato migliore che possiamo avere, e arriva senza chiedere nulla all'utente.
 - **Condizioni di progetto (non negoziabili):**
@@ -157,3 +157,31 @@ Formato: ogni decisione ha data, stato, contesto, scelta e conseguenze. Le decis
 - **Stato:** decisa dal fondatore
 - **Scelta:** la griglia si ricalcola e si pubblica ogni 5 minuti. Gli esiti degli ultimi 45 minuti pesano di più e valgono per "adesso" qualunque sia la fascia (parametri in `cities/<città>/city.yaml`, da validare).
 - **Conseguenze:** l'app riscarica un file piccolo ogni 5 minuti mentre è aperta. La pubblicazione resta a intervalli fissi, come richiesto dalla privacy: `privacy-compliance` verifica in T-018 che 5 minuti con soglia k non permettano di isolare un contributo.
+
+## D-021 — Mappa a livello di strada
+- **Data:** 2026-11-14
+- **Stato:** decisa dal fondatore
+- **Scelta:** l'utente vede la disponibilità **sulla singola strada**, colorata con gli stessi livelli (colore più tratto), sopra una mappa stradale normale. Le zone esagonali non si mostrano più.
+- **Come si concilia con la privacy:** il calcolo e i contributi restano per cella (condizioni C1, C2). Ogni tratto di strada prende la stima della sua cella, corretta dalle caratteristiche fisse del tratto (numero e tipo di stalli, regole di sosta, da OSM e open data).
+- **Limite da dichiarare:** due strade della stessa cella differiscono solo per le caratteristiche fisse, non per dati live propri. Inviare al server il tratto di strada invece della cella sarebbe una nuova raccolta: serve un parere di `privacy-compliance` (T-035).
+- **Conseguenze:** serve la rete stradale da OSM con gli attributi di sosta (T-035); la griglia pubblicata resta per cella, la geometria delle strade è un file statico a parte.
+
+## D-022 — Vista sempre live, con altri orari e giorni come stime
+- **Data:** 2026-11-14
+- **Stato:** decisa dal fondatore
+- **Scelta:** la mappa si apre sempre sulla situazione di adesso. L'utente può scegliere un altro orario o giorno della settimana: in quel caso vede una **stima**, indicata come tale, senza la componente "adesso".
+- **Conseguenze:** si pubblicano due file: la griglia live (ogni 5 minuti) e la tabella delle stime per fascia e tipo di giorno (ricalcolata una volta al giorno).
+
+## D-023 — Taglia del veicolo e moto
+- **Data:** 2026-11-14
+- **Stato:** decisa dal fondatore (cambio di scope: le moto entrano nel prodotto)
+- **Scelta:** l'utente indica il veicolo (ricerca per modello oppure taglia: moto o scooter, auto piccola, media, grande o furgone). La stima si adatta: più piccolo è il veicolo, più è facile trovare posto.
+- **Privacy:** il modello resta sul telefono; la correzione per taglia si applica sul telefono, quindi per vedere la mappa non si invia nulla. Con i contributi viaggerebbe solo la taglia (4 valori): è un dato in più e serve il parere di `privacy-compliance` (T-036). L'effetto della taglia si stima a livello di città, non per cella, così la soglia k non si frammenta.
+- **Onestà sui numeri:** i moltiplicatori iniziali sono ipotesi non validate (in `cities/<città>/city.yaml`); vanno sostituiti da valori appresi sugli esiti reali.
+- **Moto:** hanno stalli e regole propri. Serve una fonte per gli stalli moto e un modello dedicato (T-036); fino ad allora la stima per le moto è indicativa.
+- **Elenco dei modelli:** serve una fonte con licenza adatta per modello e lunghezza; fino ad allora si sceglie la taglia.
+
+## D-024 — Direzione grafica approvata
+- **Data:** 2026-11-14
+- **Stato:** approvata dal fondatore
+- **Scelta:** la direzione della prima bozza (chiara e sobria, token in `16-grafica.md`) è confermata e vale per tutto il lavoro grafico futuro.
