@@ -13,13 +13,17 @@ Nessuna urgente. Decise il 2026-11-14: D-003, D-010, D-013–D-017 (`docs/05-dec
 
 ## Iterazione 1 — in corso
 
-### T-028 — DPIA e progetto del rilevamento via Bluetooth
+### T-028 — DPIA e progetto del rilevamento automatico (posizione e Bluetooth, D-018)
 privacy-compliance | Backlog | alta | L | T-018
-Criteri: [ ] bozza di DPIA per tap, "ricorda dove ho parcheggiato" e Bluetooth · [ ] condizioni: consenso separato, scelta dell'auto, zone escluse sul dispositivo, nessun identificativo Bluetooth inviato · [ ] effetto sulla dichiarazione di posizione in background · [ ] pronta per la firma del fondatore
+Criteri: [ ] bozza di DPIA per tap, "ricorda dove ho parcheggiato", posizione in background e Bluetooth · [ ] verifica che le condizioni di D-018 bastino, o correzioni · [ ] condizioni: consenso separato, scelta dell'auto, zone escluse sul dispositivo, nessun identificativo Bluetooth inviato · [ ] effetto sulla dichiarazione di posizione in background · [ ] pronta per la firma del fondatore
 
 ### T-029 — Dati reali visibili con pochi tester (soglia k) e piano di validazione
 data-scientist | Backlog | alta | M | T-010
 Criteri: [ ] stima di quanti esiti servono per superare k con 10–20 tester · [ ] proposta per la beta: zone, dimensione delle celle, larghezza delle fasce · [ ] missioni di copertura · [ ] quota di esiti riservata alla validazione · [ ] parere di `privacy-compliance`
+
+### T-032 — Rilevamento sul dispositivo e miglioramento automatico
+data-scientist | Backlog | alta | L | T-028
+Criteri: [ ] regole per riconoscere inizio ricerca, sosta e partenza (con `mobile-engineer`) · [ ] scaglioni del tempo di ricerca · [ ] ricalibrazione periodica automatica dei parametri su dati reali riservati · [ ] allarme automatico se la calibrazione peggiora · [ ] misura dei falsi parcheggi e della batteria in beta
 
 ### T-030 — Server gratuito per la beta
 backend-engineer | Backlog | media | S | —

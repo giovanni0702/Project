@@ -12,7 +12,7 @@ Senza un Y osservabile non esiste calibrazione: ogni fonte di dati deve produrre
 | Fonte | Esito | Uso | Quando |
 |---|---|---|---|
 | Contributo manuale a un tap: "trovato subito" / "trovato dopo un po'" / "non trovato" | Y diretto | Addestramento | Iterazione 2 |
-| Rilevamento sul dispositivo tramite Bluetooth dell'auto (D-016) | Eventi di sosta e partenza | Addestramento | Solo dopo DPIA (T-028) |
+| Rilevamento automatico sul dispositivo, tramite posizione e Bluetooth dell'auto (D-018): tempo di ricerca misurato | **Y diretto** (tempo ≤ 5 minuti) | Addestramento | Solo dopo DPIA (T-028) |
 | Quota di esiti dei tester tenuta da parte, più "missioni" di copertura (T-021, D-015) | Y diretto | **Solo validazione**, mai addestramento | Iterazione 2 |
 
 Non sono previste rilevazioni sul campo: **fino alla beta il prior non è validato** e si mostra sempre con affidabilità bassa.
@@ -30,6 +30,10 @@ Un modello si adotta solo se batte il precedente **su dati reali**, con interval
    - **penetrazione:** gli eventi osservati sono una frazione ignota di quelli reali; senza stimarla λ è sottostimato.
 
 In iterazione 1 si costruiscono 1 e 2. Il modello 3 è un task di ricerca, non un impegno.
+
+### Componente "adesso" e miglioramento automatico (D-018, D-019)
+- La griglia si ricalcola ogni 5 minuti. Gli esiti recenti (finestra e peso in configurazione) contano di più e valgono per la fascia corrente.
+- Emivita, peso dei dati recenti e soglie si ricalibrano periodicamente su dati reali tenuti da parte, mai a mano e mai su dati sintetici (T-032).
 
 ## 4. Variabili
 

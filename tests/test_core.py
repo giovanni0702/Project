@@ -104,3 +104,29 @@ def test_metrics_on_synthetic_data():
 def test_baseline_frequency():
     cell = CELLS[10]
     assert baseline(synthetic(cell, 3, 1, contributors=4))[(cell, SLOT)] == 0.75
+
+
+def test_search_time_becomes_binary_target():
+    from parking_core.model import success_from_search
+    target = CITY["model"]["target_minutes"]
+    assert success_from_search(3.5, target) and not success_from_search(9, target)
+
+
+def test_live_outcomes_move_the_estimate_now():
+    cell = CELLS[10]
+    history = synthetic(cell, 30, 10, contributors=10, age=5)
+    other_slot = (SLOT[0], SLOT[1] - 1)
+    live = [Outcome(cell, other_slot, False, 20 / 1440, f"live{i}") for i in range(8)]
+    before, after = run(history)[cell], run(history + live)[cell]
+    assert before.probability > 0.7
+    assert after.probability < before.probability - 0.15
+
+
+def test_published_grid_has_aggregates_only():
+    import json
+    from parking_core.publish import build_grid
+    payload = build_grid(CITY, outcomes=synthetic(CELLS[10], 36, 4, contributors=12))
+    text = json.dumps(payload)
+    assert payload["valid_minutes"] == 5 and len(payload["cells"]) == len(CELLS)
+    assert "c1" not in json.dumps(list(payload["cells"].values())) and "contributor" not in text
+    assert payload["cells"][CELLS[10]][3] is True

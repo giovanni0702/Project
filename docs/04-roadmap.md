@@ -25,7 +25,7 @@ Ogni iterazione produce qualcosa di usabile e misurabile, e ha un criterio di **
 ## Iterazione 2 — Beta chiusa (centro)
 - App Flutter IT/EN: onboarding con consenso, mappa, affidabilità, contributi a un tap.
 - Regole della zona e avviso lavaggio strade (T-011); "ricorda dove ho parcheggiato" e timer (T-012); funzionamento offline (T-016); contatore locale (T-015); regole di sicurezza alla guida (T-014).
-- Dati reali e attuali secondo D-016: tap, "ricorda dove ho parcheggiato", Bluetooth dell'auto dopo DPIA, missioni, griglia pubblicata ogni 15 minuti.
+- Dati reali e attuali secondo D-016: tap, "ricorda dove ho parcheggiato", rilevamento automatico tramite posizione e Bluetooth dopo DPIA firmata (D-018), missioni, griglia pubblicata ogni 5 minuti (D-019).
 - 10–20 tester, solo Android, installazione diretta, server su piano gratuito (D-017).
 - Missioni di copertura per i tester e quota di esiti riservata alla validazione.
 

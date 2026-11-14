@@ -121,8 +121,9 @@ Formato: ogni decisione ha data, stato, contesto, scelta e conseguenze. Le decis
   3. **Rilevamento automatico via Bluetooth dell'auto** (la disconnessione segnala la sosta, la riconnessione la partenza). Tutto sul dispositivo, l'utente sceglie l'auto, zone escluse (casa, lavoro). **Solo dopo DPIA** (T-028).
   4. **Missioni per i tester**: zone e orari da coprire, scelti da noi.
   5. **Contesto in tempo reale** come variabili: meteo, scioperi, eventi, stazioni BikeMi; traffico TomTom solo se i termini lo permettono (T-031).
-  6. **Pubblicazione frequente** della griglia (proposta: ogni 15 minuti), con età della stima sempre visibile.
-- **Escluso:** riconoscimento dell'attività con posizione in background (parere negativo per la prima beta); dati Google (D-004); Waze (richiede un accordo, decisione del fondatore).
+  6. **Pubblicazione frequente** della griglia: ogni 5 minuti (D-019), con età della stima sempre visibile.
+- **Rilevamento tramite posizione:** vedi D-018.
+- **Escluso:** dati Google (D-004); Waze (richiede un accordo, decisione del fondatore).
 - **Limite da risolvere (T-029):** con 10–20 tester la soglia di k = 5 contributori per cella e fascia non si raggiunge quasi mai, e i dati reali resterebbero invisibili. Proposte da valutare: beta concentrata in poche zone del centro, celle più grandi e fasce più larghe durante la beta.
 
 ## D-017 — Beta solo Android, a costo zero
@@ -130,3 +131,24 @@ Formato: ogni decisione ha data, stato, contesto, scelta e conseguenze. Le decis
 - **Stato:** decisa dal fondatore
 - **Scelta:** la beta parte solo su Android, con installazione diretta del file dell'app. Dettagli e rischi in `10-release.md`.
 - **Conseguenze:** nessun account a pagamento. L'account Android gratuito a distribuzione limitata (fino a 20 dispositivi) serve solo dal 2027 e lo crea il fondatore. iPhone, TestFlight e Google Play (25 USD, 12 tester per 14 giorni) si rinviano al lancio. Server della beta: solo piani gratuiti, da verificare sulle pagine ufficiali (T-030).
+
+## D-018 — L'app impara da sola: rilevamento automatico tramite posizione
+- **Data:** 2026-11-14
+- **Stato:** **voluta dal fondatore; si attiva solo dopo la DPIA** (T-028), che il fondatore firma. Il parere preliminare di `privacy-compliance` era contrario per la prima beta: la DPIA deve mostrare che le condizioni qui sotto bastano.
+- **Scelta:** con il consenso dell'utente, il telefono capisce da solo quando il conducente sta cercando posto, quando ha parcheggiato, quanto ci ha messo e quando riparte.
+- **Perché conta:** il tempo di ricerca misurato è esattamente il bersaglio del modello ("posto trovato entro 5 minuti"). È il dato migliore che possiamo avere, e arriva senza chiedere nulla all'utente.
+- **Condizioni di progetto (non negoziabili):**
+  1. Tutto il calcolo avviene sul telefono. Il percorso non lascia mai il dispositivo e viene cancellato appena prodotto l'evento.
+  2. Al server arriva solo: tipo di evento, cella, fascia oraria, **tempo di ricerca a scaglioni** (0–2, 2–5, 5–10, oltre 10 minuti), identificatore a rotazione.
+  3. Consenso separato ed esplicito; funzione spenta in partenza; interruttore sempre visibile; l'app funziona anche senza.
+  4. Zone escluse scelte dall'utente (casa, lavoro), applicate sul telefono.
+  5. Conferma facoltativa con un tap ("Hai parcheggiato in strada?") per scartare garage e cortili: le risposte migliorano il rilevamento.
+  6. Consumo di batteria misurato in beta, con soglia massima da fissare.
+- **Come l'app si migliora da sola:** ogni esito aggiorna la stima al ciclo successivo; emivita, peso dei dati recenti e soglie si ricalibrano periodicamente su dati reali tenuti da parte; un peggioramento della calibrazione apre un task automatico (T-032).
+- **Vincoli esterni:** per la beta con installazione diretta non serve l'approvazione di Google. Per Google Play la posizione in background richiede dichiarazione e approvazione: va dimostrato che è essenziale alla funzione principale (`10-release.md`).
+
+## D-019 — Aggiornamento ogni 5 minuti
+- **Data:** 2026-11-14
+- **Stato:** decisa dal fondatore
+- **Scelta:** la griglia si ricalcola e si pubblica ogni 5 minuti. Gli esiti degli ultimi 45 minuti pesano di più e valgono per "adesso" qualunque sia la fascia (parametri in `cities/<città>/city.yaml`, da validare).
+- **Conseguenze:** l'app riscarica un file piccolo ogni 5 minuti mentre è aperta. La pubblicazione resta a intervalli fissi, come richiesto dalla privacy: `privacy-compliance` verifica in T-018 che 5 minuti con soglia k non permettano di isolare un contributo.

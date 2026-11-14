@@ -5,7 +5,7 @@ time decay, per-contributor weight cap and spatial shrinkage. Outcomes are
 binary: found within the target time, or not.
 """
 from collections import defaultdict
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 
 @dataclass(frozen=True)
@@ -27,6 +27,15 @@ class Estimate:
     from_user_data: bool      # False when only the prior is published (below k)
 
 
+def success_from_search(search_minutes: float, target_minutes: float) -> bool:
+    """Turn an on-device measured search time into the binary target."""
+    return search_minutes <= target_minutes
+
+
+def is_live(outcome: Outcome, params: dict) -> bool:
+    return outcome.age_days * 1440 <= params["live_window_minutes"]
+
+
 def decay_weight(age_days: float, half_life_days: float) -> float:
     return 0.5 ** (age_days / half_life_days)
 
@@ -46,6 +55,8 @@ def _weighted_counts(outcomes: list[Outcome], params: dict) -> dict[tuple, dict]
     for o in sorted(outcomes, key=lambda x: x.age_days):  # newest first keep their weight
         key = (o.cell, o.slot)
         weight = decay_weight(o.age_days, params["half_life_days"])
+        if is_live(o, params):
+            weight *= params["live_weight"]
         room = params["max_weight_per_contributor"] - per_contributor[(key, o.contributor)]
         weight = max(0.0, min(weight, room))
         per_contributor[(key, o.contributor)] += weight
@@ -91,7 +102,9 @@ def estimate(
     strength = params["prior_strength"]
     prior_mean = prior_mean or {}
     previous_levels = previous_levels or {}
-    stats = _weighted_counts([o for o in outcomes if o.slot == slot], params)
+    # Historical evidence comes from the same slot; live evidence from any slot.
+    relevant = [replace(o, slot=slot) for o in outcomes if o.slot == slot or is_live(o, params)]
+    stats = _weighted_counts(relevant, params)
 
     def publishable(cell):
         entry = stats.get((cell, slot))

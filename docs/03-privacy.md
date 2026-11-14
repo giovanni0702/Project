@@ -36,7 +36,8 @@ Proposti il 2026-11-14, da confermare da `privacy-compliance` in T-018 prima di 
 - **Riduzione sul dispositivo:** la posizione diventa cella H3 e l'orario è arrotondato alla fascia **prima** dell'invio. Il server non riceve mai coordinate.
 - **La mappa non rivela dove guarda l'utente:** l'app scarica la griglia intera di Milano come file statico. Nessuna richiesta contiene posizione o destinazione.
 - **Sotto soglia k** la cella mostra solo il prior, con affidabilità bassa. La soglia vale per gli aggregati derivati dagli utenti.
-- **Pubblicazione a intervalli fissi**, per impedire di isolare un contributo confrontando due versioni.
+- **Rilevamento automatico tramite posizione** (D-018): solo dopo DPIA firmata; percorso mai inviato e cancellato sul telefono; al server solo evento, cella, fascia e tempo di ricerca a scaglioni; zone escluse; spento in partenza.
+- **Pubblicazione a intervalli fissi** (ogni 5 minuti, D-019), per impedire di isolare un contributo confrontando due versioni.
 - **Rotazione dell'identificatore** (proposta: ogni 24 ore). Gli eventi "ho parcheggiato" e "ho lasciato" non sono collegati tra loro sul server.
 - **Diritti e rotazione:** accesso e cancellazione valgono per gli identificatori ancora sul dispositivo; dopo la rotazione il dato non è più riconducibile. Scelta da motivare nella DPIA.
 - **Log** senza indirizzi IP e senza posizione, verificati da test automatico.

@@ -20,8 +20,13 @@ model:
   prior_strength: 4.0        # pseudo-observations behind the prior
   prior_mean_default: 0.5    # used until proxies provide a per-cell prior (unvalidated, see D-015)
   half_life_days: 21         # to be validated on real outcomes
+  live_window_minutes: 45    # outcomes this recent count for "now" whatever their slot
+  live_weight: 3.0           # extra weight of live outcomes (to be validated)
   neighbor_weight: 0.3       # spatial shrinkage toward neighbouring cells
   max_weight_per_contributor: 3.0
+
+publish:
+  interval_minutes: 5        # D-019
 
 privacy:
   min_contributors: 5        # k: below this only the prior is published
