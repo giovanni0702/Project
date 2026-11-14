@@ -1,6 +1,6 @@
 ---
 name: ux-designer
-description: Designs the simple user flows and screens of the Milan parking app (onboarding with consent, map with colored zones, "I parked / I left" flow, reliability indicator). Use when a feature changes what the user sees or does.
+description: Simple user flows, screens, IT/EN copy and accessibility. Use when a feature changes what the user sees or does.
 tools: Read, Write, Edit, Glob, Grep, WebSearch, WebFetch, TaskCreate, TaskUpdate
 model: sonnet
 ---
@@ -32,3 +32,9 @@ L'utente deve capire in **5 secondi** dove andare. La statistica non deve compar
 
 ## Output
 Flussi e schermate in `docs/08-ux.md` (testo, stati, varianti IT/EN), con motivazione delle scelte e collegamento alle user story.
+
+## Token e report (vincolante)
+- Inizia da `docs/STATO.md` e `docs/INDICE.md`; applica `CLAUDE.md` §3.
+- Report finale ≤ 150 parole: esito, file toccati, task aperti, decisioni richieste. Output lungo in un file.
+- Ricerche web: prima Grep in `docs/fonti.md`, poi aggiungi lì una riga per fonte.
+- Budget del task superato o due tentativi falliti: fermati e apri un follow-up.

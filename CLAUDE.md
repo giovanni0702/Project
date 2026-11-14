@@ -1,92 +1,77 @@
 # CLAUDE.md — Regole del progetto
 
-Progetto: app mobile (App Store + Google Play) che stima la **probabilità di trovare parcheggio** in strada, a partire da dati di traffico, GPS, velocità e segnalazioni degli utenti.
-Pilota: **intero Comune di Milano**. Roma e altre città sono fuori scope fino a decisione esplicita.
-Lingue: **italiano principale**, inglese dal primo giorno (tutto il testo utente è tradotto).
-Sviluppatore: un solo fondatore. Il team è composto da agenti AI con ruoli definiti in `.claude/agents/`.
+App mobile (iOS + Android) che stima la **probabilità di trovare parcheggio in strada** nel **Comune di Milano**. Italiano principale, inglese dal primo giorno. Un solo fondatore; il team è fatto di agenti AI (`.claude/agents/`).
+Questo file è caricato a ogni turno: **massimo 100 righe, si modifica raramente**. I dettagli stanno nei documenti collegati.
 
-## 1. Missione e principi non negoziabili
+## 1. Principi non negoziabili
+1. **Privacy prima di tutto.** Nessuna raccolta di dati senza approvazione di `privacy-compliance` → `docs/03-privacy.md`.
+2. **Facile.** Si capisce dove andare in 5 secondi. Niente statistica nella schermata principale.
+3. **Onestà sui numeri.** Probabilità calibrate, affidabilità esplicita. I dati sintetici testano il codice, mai l'accuratezza → `docs/09-modello.md`.
+4. **Iterare.** Ogni iterazione ha criteri di uscita e di abbandono → `docs/04-roadmap.md`.
+5. **Imparare dalla concorrenza, non copiarla** → `docs/02-concorrenza.md`.
+6. **Costo minimo.** Opzione gratuita o più economica; stima mensile prima di qualsiasi spesa.
+7. **Accessibilità.** Mai informazione affidata al solo colore.
 
-1. **Privacy prima di tutto.** Nessuna feature che raccolga o conservi dati personali viene sviluppata prima che `privacy-compliance` l'abbia approvata. Vedi `docs/03-privacy.md`.
-2. **Facile da usare.** L'utente deve capire in 5 secondi dove andare. La statistica resta dentro l'app, non sullo schermo.
-3. **Onestà sui numeri.** Ogni probabilità mostrata deve essere calibrata e accompagnata da un indicatore di affidabilità. Mai dichiarare accuratezza senza misurarla su dati reali.
-4. **Iterare, non costruire tutto insieme.** Ogni iterazione produce qualcosa di usabile e misurabile. Vedi `docs/04-roadmap.md`.
-5. **Imparare dalla concorrenza, non copiarla.** Ogni scelta di prodotto importante cita `docs/02-concorrenza.md`.
+## 2. Inizio e fine sessione
+- **Inizio:** leggi `docs/STATO.md` (40 righe). Scegli cosa altro leggere da `docs/INDICE.md`, non aprendo i file.
+- **Fine:** aggiorna `docs/STATO.md` e `TASKS.md`. Suggerisci una chat nuova per il task successivo.
 
-## 2. Struttura del team (gerarchia)
+## 3. Efficienza dei token (vincolante per tutti gli agenti)
+1. Glob/Grep prima di Read; Read con `offset`/`limit`. Non rileggere ciò che hai appena scritto.
+2. Edit per modificare, Write solo per file nuovi.
+3. Un fatto vive in un solo file; altrove link. Documenti ≤ 300 righe, `TASKS.md` ≤ 150, `STATO.md` ≤ 40.
+4. Chiamate indipendenti nello stesso blocco.
+5. Prima di una ricerca web: Grep in `docs/fonti.md`. Dopo: aggiungi una riga lì. Modalità extended solo per fonti ufficiali difficili.
+6. Sub-agenti solo per lavoro parallelo o contesto separato. Delega = obiettivo, file, criteri, vincoli, budget. Mai documenti copiati.
+7. **Report di un agente ≤ 150 parole:** esito, file toccati, task aperti, decisioni richieste. Output lungo in un file.
+8. `make check` dopo ogni modifica (silenzioso: stampa solo i fallimenti). Suite completa solo a chiusura di iterazione.
+9. Script per ogni operazione ripetuta (`scripts/`).
+10. Budget del task superato, o due tentativi falliti sulla stessa strada: stop, stato nel task, follow-up.
 
+## 4. Chat con il fondatore
+- Risposta ≤ 120 parole: riga 1 stato (se bloccato, lo dice); poi Fatto / Aperto / Decisioni richieste (numerate, opzioni A/B, raccomandazione). Solo percorsi di file, mai contenuti.
+- Domande raggruppate, una volta, con default. Sulle scelte reversibili si procede col default.
+- Comandi: `vai` (prosegui da STATO) · `stato` · `decido 1A 2B` · `dettagli <tema>` · `watchdog` · `chiudi` (chiusura iterazione).
+
+## 5. Team
 ```
-ceo-orchestrator                      (coordina tutto, assegna task, decide le priorità)
-├── product-manager                   (requisiti, roadmap, criteri di accettazione)
-│   ├── ux-designer                   (flussi, schermate, semplicità)
-│   └── competitor-analyst            (studio concorrenza, aggiornato ogni iterazione)
-├── data-scientist                    (modello probabilistico, metriche, calibrazione)
-│   └── data-engineer                 (acquisizione dati, open data, pipeline)
-├── engineering (lead: backend-engineer)
-│   ├── backend-engineer              (API, database, servizi)
-│   ├── mobile-engineer               (app Flutter iOS/Android)
-│   └── qa-tester                     (test, regressioni, test di campo)
-├── governance
-│   ├── privacy-compliance            (GDPR, privacy policy, DPIA, veto su privacy)
-│   ├── release-manager               (build, TestFlight, Play internal, store review)
-│   └── ops-watchdog                  (monitora novità, store policy, dipendenze, errori, problemi)
-└── marketing-sales (IT + EN)         (posizionamento, ASO, contenuti, piano go-to-market)
+ceo-orchestrator            pianifica, assegna, risolve conflitti; non scrive codice
+├── product-manager         requisiti, roadmap, criteri
+│   ├── ux-designer         flussi, testi IT/EN, accessibilità
+│   └── competitor-analyst  concorrenza
+├── data-scientist          modello, calibrazione, metriche
+│   └── data-engineer       fonti, licenze, pipeline
+├── backend-engineer        lead engineering: API, database, sicurezza
+│   ├── mobile-engineer     app Flutter
+│   └── qa-tester           test, test di privacy, test sul campo
+├── privacy-compliance      GDPR, DPIA, VETO sulla raccolta dati
+├── release-manager         build, store
+├── ops-watchdog            novità esterne, salute del progetto
+└── marketing-sales         posizionamento, ASO, sole bozze
 ```
 
-Ogni agente:
-- conosce il proprio ruolo nel file `.claude/agents/<nome>.md`;
-- può creare e assegnare task in `TASKS.md`;
-- può escalare al livello superiore se un task è bloccato o fuori competenza;
-- **non prende mai da solo le decisioni elencate in §4**.
+## 6. Autonomia
+- `TASKS.md` è la fonte unica di verità. Un agente libero prende il primo `Backlog` del proprio ruolo e lo segna `In corso`. Chiunque può aprire task.
+- **"Fatto" significa:** criteri soddisfatti, `make check` verde, documento di riferimento aggiornato, riga in `docs/STATO.md`.
+- Revisione incrociata solo qui: flussi di dati → `privacy-compliance`; modello → `qa-tester` riesegue le metriche.
+- Decisioni tecniche o di prodotto importanti → `docs/05-decisioni.md`, con data e motivo. Non si ridiscutono in chat.
+- Rischio privacy o legale: stop e task per `privacy-compliance`.
+- `ops-watchdog` scrive `docs/07-report-watchdog.md` a ogni ciclo e apre task.
 
-## 3. Come lavorano gli agenti in autonomia
-
-- **Board dei task:** `TASKS.md` è la fonte unica di verità. Ogni task ha: id, titolo, proprietario, stato, criteri di accettazione, dipendenze.
-- **Auto-assegnazione:** un agente libero prende il primo task `Backlog` del suo ruolo, lo sposta in `In corso` e scrive il proprio nome come proprietario.
-- **Creazione di task:** chiunque trovi un problema, un'opportunità o una novità (es. cambio di policy degli store, nuovo dataset, bug) apre un task nel board con priorità.
-- **Ciclo di controllo:** `ops-watchdog` verifica periodicamente lo stato del board, le novità esterne e lo stato di salute del progetto, e apre task di conseguenza.
-- **Tracciabilità:** ogni decisione tecnica o di prodotto importante va in `docs/05-decisioni.md` con data e motivazione.
-- **Stop:** se un agente incontra un rischio privacy o legale, si ferma e apre un task per `privacy-compliance` prima di continuare.
-
-## 4. Decisioni riservate all'umano (il fondatore)
-
-Gli agenti **preparano** queste decisioni con raccomandazione e alternative, ma non le eseguono:
-
-- creare o usare account (Apple Developer, Google Play Console, hosting, dominio, servizi a pagamento);
-- spendere denaro o sottoscrivere abbonamenti;
-- pubblicare qualsiasi cosa su store, social, sito o canali pubblici;
-- inviare email o messaggi a persone reali (le bozze di marketing restano bozze);
-- firmare o approvare documenti legali (privacy policy definitiva, termini d'uso, DPIA);
+## 7. Decisioni riservate al fondatore
+Gli agenti preparano (raccomandazione, alternative, costo) nella sezione "Decisioni richieste" di `TASKS.md` e si fermano:
+- creare o usare account; spendere denaro; pubblicare qualsiasi cosa;
+- inviare messaggi a persone o enti reali (le bozze restano bozze);
+- firmare o approvare documenti legali (privacy policy, termini, DPIA);
 - cancellare dati di utenti reali;
-- contattare il Comune di Milano, ATM o altri enti;
-- cambiare scope (città, funzionalità principali) o nome del prodotto.
+- contattare Comune di Milano, ATM o altri enti;
+- cambiare scope, nome del prodotto o modello di ricavo.
 
-## 5. Regole tecniche
-
-- Lingua del codice, commenti e nomi: inglese. Lingua dei documenti interni: italiano.
-- Nessun dato di Google Maps salvato in blocco. Google serve per percorsi e visualizzazione. Vedi `docs/06-dati.md`.
-- Nessuna credenziale, chiave API o segreto nel repository. Usare variabili d'ambiente e un file `.env` escluso da git.
-- Ogni modifica passa per test. Nessun merge senza test verdi.
-- Stack proposto (da confermare, vedi `docs/05-decisioni.md` D-003): Flutter (app), Python + FastAPI (backend e modello), PostgreSQL + PostGIS (dati geografici), hosting in regione UE.
-- Branch di lavoro: quello assegnato dalla sessione. Commit piccoli, messaggi chiari.
-
-## 6. Come aggiornarsi sulle novità
-
-`ops-watchdog` controlla almeno una volta per iterazione (e comunque a ogni richiesta):
-- policy di Apple App Store e Google Play (localizzazione in background, privacy, review);
-- Google Maps Platform (termini, prezzi, API deprecate);
-- normativa GDPR e interpretazioni del Garante privacy;
-- nuovi competitor, nuove funzioni dei concorrenti, nuovi dataset aperti del Comune di Milano;
-- versioni di librerie e vulnerabilità note.
-
-Ogni novità rilevante genera un task nel board con impatto stimato.
-
-## 7. Documenti chiave
-
-- `docs/01-visione-e-scope.md` — cosa stiamo costruendo e per chi
-- `docs/02-concorrenza.md` — analisi dei competitor, punti di forza e debolezza
-- `docs/03-privacy.md` — principi e vincoli privacy
-- `docs/04-roadmap.md` — iterazioni e criteri di uscita
-- `docs/05-decisioni.md` — registro decisioni (ADR)
-- `docs/06-dati.md` — fonti dati e strategia di raccolta
-- `TASKS.md` — board dei task
+## 8. Regole tecniche
+- Codice, commenti e nomi in inglese. Documenti interni in italiano.
+- Nessun segreto nel repository: variabili d'ambiente e `.env` escluso da git.
+- Il server non riceve mai coordinate: solo cella H3 e fascia oraria.
+- Nessun dato Google salvato o usato nel modello → `docs/05-decisioni.md`.
+- Ogni modifica passa per test. Nessun merge senza `make check` verde.
+- Stack e motivazioni → `docs/05-decisioni.md`.
+- Branch: quello assegnato dalla sessione. Commit piccoli, messaggi chiari.

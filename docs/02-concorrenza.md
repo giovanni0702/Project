@@ -1,22 +1,24 @@
 # 02 — Analisi della concorrenza
 
-Stato: **bozza iniziale** basata su una prima ricerca web (giugno–novembre 2026). Va approfondita dal `competitor-analyst` prima di ogni iterazione. Le informazioni marcate **[verificare]** non sono confermate sulle app o sui siti ufficiali.
+Stato: **bozza aggiornata il 2026-11-14 (T-004)**, ricerca web senza accesso agli store. Va approfondita dal `competitor-analyst` prima di ogni iterazione. Le informazioni marcate **[verificare]** non sono confermate sulle app o sui siti ufficiali.
 
 ## 1. Mappa dei competitor
 
 | Player | Tipo | Cosa fa | Previsione posti liberi | Fonte / stato |
 |---|---|---|---|---|
-| **EasyPark (Find & Park)** | Pagamento sosta + navigazione | Pagamento strisce blu. Funzione Find & Park che stima i posti liberi lungo il percorso, con colori verde→grigio | Sì, su strisce blu | Lancio a Milano nel 2019 (fonte: Quotidiano.net). Funzionamento attuale a Milano **[verificare]** |
-| **FindPark** | App parcheggio | Presentata come app che rende il parcheggio "più facile" a Milano | Da verificare | Articolo SicurAuto **[verificare funzioni]** |
-| **myCicero** | Navigazione + sosta | Mostra spazi liberi su strada con una funzione di navigazione "Find" | Sì, da verificare | Guida di Tom's Hardware **[verificare]** |
-| **Parkopedia** | Mappa parcheggi | Mostra parcheggi su mappa, soprattutto garage | No per strada (per garage sì, in parte) | Fastweb **[verificare]** |
+| **EasyPark (Find & Park)** | Pagamento sosta + navigazione | Pagamento strisce blu (a Milano dal 2015). Find & Park: strade colorate (verde, giallo, arancione, grigio scuro) con probabilità; tap sulla strada per il dettaglio. Risparmio "200 g CO2 e 4 min a sosta" dichiarato dal competitor | Sì, su strisce blu (stima) | Lancio Find & Park a Milano giugno 2019 (Quotidiano.net). Pagina help EasyPark ancora attiva, consultata 2026-11-14 (via ricerca; pagina non letta per intero). Non verificato in app che funzioni oggi a Milano **[verificare in app]** |
+| **FindPark** | App parcheggio | L'articolo SicurAuto "FindPark attivo a Milano" sembra riferirsi a Find & Park di EasyPark (stessa funzione, stesso lancio), non a un'app distinta. Nessuna app autonoma "FindPark" trovata negli store | Vedi EasyPark | SicurAuto, ricerca 2026-11-14. Probabile errore di nome, non un concorrente separato **[verificare titolo articolo]** |
+| **myCicero / MooneyGo** | Pagamento sosta + mobilità | Rinominata MooneyGo (ex myCicero). Funzione "FIND" citata come aiuto a trovare parcheggi liberi su strada (money.it); oltre 60 località (fonte datata). Nessuna fonte descrive il metodo né la copertura a Milano | Citata, non documentata **[verificare in app]** | money.it, Tom's Hardware, Aranzulla; ricerca 2026-11-14 |
+| **Parkopedia** | Mappa parcheggi + dati B2B | Consumer: soprattutto garage. B2B: dichiara "probabilità di trovare parcheggio" per segmento stradale con dati fusi (rilevamenti, sensori, transazioni, ML), 90 mln di posti. Copertura stradale in Italia/Milano non trovata | Sì in B2B (dichiarato); consumer su strada Milano non confermato **[verificare]** | business.parkopedia.com (analytics, blog), ricerca 2026-11-14 |
 | **Parclick** | Prenotazione e pagamento | Prenota garage, paga strisce blu a Milano | No | Sito Parclick |
 | **Telepass** | Pagamento sosta | Pagamento parcheggi a Milano centro | No | Sito Telepass |
 | **MooneyGo** | Pagamento sosta, abbonamenti | App autorizzata da ATM per abbonamenti | No | Sicurauto / Tom's Hardware |
 | **DropTicket** | Pagamento sosta | Pagamento strisce blu | No | Sicurauto |
 | **Google Maps** | Navigazione | Indicatore "difficoltà parcheggio" (Limited / Medium / Easy) da dati storici, dal 2017 | Stima storica, non in tempo reale | Blog Google Research 2017 |
 | **INRIX** | B2B, piattaforma predittiva | Predice disponibilità all'orario di arrivo, previsioni fino a 7 giorni. 22.000 città dichiarate | Sì, molto avanzata | Comunicati INRIX (giugno 2026). Accuratezza ~99% **auto-dichiarata** |
-| **SpotAngels** | Crowdsourcing + dashcam | "Waze del parcheggio", raccolta da membri della community | Sì (storico) | Finanziamento 2018. Stato attuale **[verificare]** |
+| **SpotAngels** | Crowdsourcing + dashcam | Attiva: listing App Store "SpotAngels Parking & Gas" con avvisi per pulizia strade/regole, salvataggio posizione auto (Bluetooth o manuale). Focus USA (NYC, Chicago, SF). Presenza in Italia/Milano non trovata **[verificare]**. Accuratezza ">95%" dichiarata dal competitor | Sì (storico), solo città USA | App Store listing e Product Hunt, ricerca 2026-11-14 |
+| **Google Maps (assistente parcheggio)** | Navigazione | Indicatore "Posti limitati / Parcheggio facile" attivo anche in Italia | Stima storica | SicurAuto, ricerca 2026-11-14 (data articolo non letta **[verificare]**) |
+| **PuliAMO** | Avvisi pulizia strade | App citata da un blog per notifiche sugli interventi di pulizia programmati. Non confermata su Comune/AMSA né sugli store | No | parkingmycar.it, 2026-11-14 **[verificare esistenza e copertura]** |
 | **ParkEz / SpotGenius** | App consumer | Probabilità di trovare posto (es. 4 livelli) | Sì | Store listing **[verificare]** |
 | **Ricerca MIT (feb. 2026)** | Ricerca accademica | Navigazione "parking-aware" con probabilità. Osservazioni crowdsourced con errore circa 7% | Conferma la fattibilità | Comunicato MIT |
 
@@ -58,6 +60,21 @@ Stato: **bozza iniziale** basata su una prima ricerca web (giugno–novembre 202
 - **Debolezza:** dashcam = privacy molto complessa in Europa; presenza attuale incerta.
 - **Cosa evitare:** raccolta video. Noi usiamo solo eventi anonimi e aggregati (vedi `03-privacy.md`).
 
+### Recensioni e temi ricorrenti (ricerca 2026-11-14)
+Gli host degli store (apps.apple.com, play.google.com) non erano raggiungibili dalla sessione: i temi vengono da Trustpilot, Altroconsumo e report terzi, quindi sono indicativi e vanno confermati sugli store **[verificare]**.
+- **EasyPark Italia:** (1) multa ricevuta nonostante sosta pagata, sospetto errore di posizione/sessione (Trustpilot, Altroconsumo, 2026); (2) sessioni che non si chiudono e notifiche inaffidabili; (3) pulsante/funzioni che smettono di funzionare dopo aggiornamenti. Nessuna recensione citata su Find & Park.
+- **MooneyGo (ex myCicero):** (1) affidabilità tecnica e UX da migliorare (Kimola, sintesi recensioni Google Play); (2) credito prepagato con residui non usati, vs app che addebitano l'importo esatto (forum fibra.click); (3) utenti che preferiscono EasyPark per le strisce blu.
+- **Implicazione:** il tema dominante è la fiducia (pagato ma multato), non la ricerca del posto. Nessuno cita "posto non trovato" o "troppi annunci".
+
+### Regole di zona, avviso lavaggio strade, "dove ho parcheggiato" a Milano
+- Nessun competitor trovato offre a Milano regole di zona più avviso pulizia strade integrati con la probabilità di posto. Il calendario pulizia è su blog (parkingmycar.it) e cartelli; PuliAMO non confermata.
+- SpotAngels offre avvisi pulizia e salvataggio posizione, ma in città USA; a Milano non confermato.
+- "Ricorda dove ho parcheggiato" non trovato su app milanesi (ricerca 2026-11-14).
+- **Spazio libero probabile**, ma verificare in app prima di dichiararlo.
+
+### Nuovi concorrenti a Milano
+Nessuna app o startup con previsione di posti su strada a Milano trovata (ricerca 2026-11-14). ParkingMyCar (Umbria, 2019) prenota garage. Sperimentazione comunale a San Siro: prenotazione su aree strutturate, fino al 31/12/2026.
+
 ## 4. Il nostro spazio (ipotesi da validare)
 
 Nessun competitor, per quanto emerso finora, combina tutti questi elementi:
@@ -91,3 +108,10 @@ Il `competitor-analyst` deve:
 - EasyPark, *Find & Park*: https://www.easypark.com/en-cy/help/parking/parking-find--27429871361820
 - Fastweb, *App per trovare parcheggio*: https://www.fastweb.it/smartphone-e-gadget/app-trovare-parcheggio
 - Tom's Hardware, *Come usare MooneyGo*: https://www.tomshw.it/automotive/come-usare-mooneygo-mycicero
+- Parkopedia Business, *Why Predictions Beat Real-Time*: https://business.parkopedia.com/blog/why-predictions-beat-real-time-every-time (consultata 2026-11-14)
+- money.it, *Come pagare il parcheggio da app*: https://www.money.it/Come-pagare-parcheggio-da-app-senza-contanti-carta (2026-11-14)
+- Kimola, *MooneyGo Google Play reviews*: https://kimola.com/reports/explore-user-insights-enhance-your-strategy-with-our-report-google-play-it-152951 (2026-11-14)
+- SpotAngels App Store: https://apps.apple.com/us/app/id897809583 (2026-11-14)
+- Trustpilot EasyPark Italia: https://se.trustpilot.com/review/easypark.com/it-it (2026-11-14)
+- ParkingMyCar, *Pulizia strade Milano 2026*: https://www.parkingmycar.it/blog/pulizia-strade-milano/ (2026-11-14)
+- SicurAuto, *Google Maps assistente parcheggio in Italia*: https://www.sicurauto.it/ricambi-e-accessori/google-maps-lassistente-al-parcheggio-e-ora-attivo-anche-in-italia/ (2026-11-14)

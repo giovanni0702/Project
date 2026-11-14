@@ -1,126 +1,119 @@
 # TASKS.md — Board dei task
 
-Fonte unica di verità per il lavoro degli agenti. Regole in `CLAUDE.md` §3.
+Fonte unica di verità. Regole in `CLAUDE.md` §6. Massimo 150 righe: i task `Fatto` passano in `docs/archivio/` a chiusura di iterazione.
 
-## Formato di un task
+Formato: `### T-id — titolo` · riga `Ruolo | Stato | Priorità | Budget (S/M/L) | Dipendenze` · `Criteri:` · `Note:` (facoltativa).
+Stati: Backlog · In corso (con nome del proprietario) · Bloccato · Fatto.
 
-```
-### T-<id> — <titolo>
-- Ruolo: <agente proprietario o "backlog" per ruolo>
-- Stato: Backlog | In corso | Bloccato | Fatto
-- Proprietario: <nome agente o vuoto>
-- Priorità: alta | media | bassa
-- Dipendenze: <id o nessuna>
-- Criteri di accettazione:
-  - [ ] ...
-- Note:
-```
+## Decisioni richieste al fondatore
 
-## Backlog iniziale — Iterazione 0
+1. **Rete della sessione:** abilitare i domini ufficiali non raggiungibili (`dati.comune.milano.it`, `support.google.com`, `developers.google.com`, `cloud.google.com`, `apps.apple.com`, `play.google.com`, `pub.dev`, pagine prezzi dei fornitori). Raccomandazione: sì. Sblocca T-001–T-004.
+2. **Stack (D-003):** A) Flutter + FastAPI + PostGIS su un server UE, 5–15 €/mese stimati; B) Postgres gestito a consumo. Raccomandazione: A. Nessuna spesa prima dell'iterazione 1.
+3. **Mappa (D-010):** A) MapLibre + OpenStreetMap, dopo la prova T-020; B) Google Maps. Raccomandazione: A.
+4. **Rilevazioni sul campo e 5 interviste** (iterazione 1, poche ore, le fai tu): sì o no. Raccomandazione: sì; senza, il modello non si può validare.
 
-### T-001 — Verificare il portale open data del Comune di Milano
-- Ruolo: data-engineer
-- Stato: Backlog
-- Priorità: alta
-- Criteri di accettazione:
-  - [ ] Elenco dei dataset su sosta, zone, tariffe, parcheggi, con link e licenza
-  - [ ] Esito chiaro: esiste o non esiste un dataset di stalli o sensori
-  - [ ] Documento aggiornato in `docs/06-dati.md`
+## Iterazione 0 — verifiche
 
-### T-002 — Verificare i termini ufficiali di Google Maps Platform
-- Ruolo: privacy-compliance
-- Stato: Backlog
-- Priorità: alta
-- Criteri di accettazione:
-  - [ ] Testo ufficiale dei termini citato con data
-  - [ ] Parere su caching, bulk, uso per modelli propri
-  - [ ] Decisione D-004 confermata o aggiornata in `docs/05-decisioni.md`
+### T-001 — Open data del Comune di Milano
+data-engineer | Bloccato (rete) | alta | M | —
+Criteri: [x] esito su stalli e sensori (non esistono, confidenza media) · [ ] riconferma sul catalogo · [ ] Area B/C, lavaggio strade, mercati, strutture · [x] `docs/06-dati.md` aggiornato
 
-### T-003 — Verificare i requisiti store per localizzazione in background
-- Ruolo: release-manager
-- Stato: Backlog
-- Priorità: alta
-- Criteri di accettazione:
-  - [ ] Requisiti Apple App Store (linee guida 5.1.x) con link ufficiale
-  - [ ] Requisiti Google Play per localizzazione in background con link ufficiale
-  - [ ] Lista di cosa serve per la prima release, in `docs/03-privacy.md`
+### T-002 — Termini Google Maps Platform e norme
+privacy-compliance | Bloccato (rete) | alta | M | —
+Criteri: [x] parere prudenziale (D-004) · [ ] testo corrente dei termini, sez. 3.2.3 · [ ] deep link Google/Waze · [ ] DSA su Google Play, testo EAA
 
-### T-004 — Approfondire i competitor sugli store
-- Ruolo: competitor-analyst
-- Stato: Backlog
-- Priorità: alta
-- Criteri di accettazione:
-  - [ ] Verifica sugli store di EasyPark, FindPark, myCicero, Parkopedia, ParkEz, SpotGenius
-  - [ ] Recensioni recenti (ultimi 12 mesi) con temi ricorrenti
-  - [ ] Stato di "Find & Park" a Milano nel 2026
-  - [ ] Tabella aggiornata in `docs/02-concorrenza.md`
+### T-003 — Requisiti store
+release-manager | Bloccato (rete) | alta | M | —
+Criteri: [x] requisiti Apple in `docs/10-release.md` · [ ] pagine Google Play (posizione, Data safety, tester chiusi, costo)
 
-### T-005 — Proposta di stack tecnico (conferma del fondatore)
-- Ruolo: backend-engineer
-- Stato: Backlog
-- Priorità: media
-- Dipendenze: nessuna
-- Criteri di accettazione:
-  - [ ] Confronto tra Flutter e React Native, con costi e rischi
-  - [ ] Scelta hosting in regione UE con costo mensile stimato
-  - [ ] Aggiornamento di D-003 in `docs/05-decisioni.md`
+### T-004 — Concorrenti sugli store
+competitor-analyst | Bloccato (rete) | alta | M | —
+Criteri: [x] `docs/02-concorrenza.md` aggiornato da fonti web · [ ] recensioni sugli store · [ ] Find & Park in app a Milano · [ ] SpotAngels e PuliAMO in Italia
+
+### T-005 — Stack e costi
+backend-engineer | Fatto (attende decisione 2) | media | S | —
+Note: D-003 aggiornata. Prezzi **[verificare]** sulle pagine ufficiali prima di attivare.
+
+### T-007 — Primo ciclo watchdog
+ops-watchdog | Fatto | media | S | —
+Note: `docs/07-report-watchdog.md`.
+
+## Backlog — prodotto (le 7 idee)
+
+### T-011 — Regole della zona e avviso lavaggio strade
+product-manager | Backlog | alta | M | T-001
+Criteri: [ ] requisiti e criteri di accettazione · [ ] fonte dati verificata e data della fonte visibile · [ ] avviso "vale la segnaletica" · [ ] riferimento a `02-concorrenza.md`
+
+### T-012 — "Ricorda dove ho parcheggiato" e timer di scadenza
+product-manager | Backlog | alta | M | T-018
+Criteri: [ ] tutto sul dispositivo · [ ] salvare l'auto propone l'evento "ho parcheggiato", ripartire "ho lasciato", con consenso · [ ] parere di `privacy-compliance`
+
+### T-013 — "Piano B": zona verde vicina, strutture, interscambio
+product-manager | Backlog | bassa | S | T-001
+Criteri: [ ] requisiti per l'iterazione 4 · [ ] fonti dei parcheggi di struttura verificate
+
+### T-014 — Sicurezza alla guida
+ux-designer | Backlog | alta | S | —
+Criteri: [ ] nessuna interazione richiesta in movimento · [ ] richieste di contributo solo a veicolo fermo · [ ] schermata leggibile in un colpo d'occhio · [ ] norma del Codice della Strada verificata · [ ] regole in `docs/08-ux.md`
+
+### T-015 — Contatore locale "hai aiutato N automobilisti"
+ux-designer | Backlog | bassa | S | T-012
+Criteri: [ ] calcolo solo sul dispositivo · [ ] testi IT/EN · [ ] nessuna classifica, nessun profilo
+
+### T-016 — Funzionamento offline
+mobile-engineer | Backlog | media | M | T-020
+Criteri: [ ] griglia e regole in cache · [ ] età della stima sempre visibile · [ ] invio differito dei contributi
+
+### T-017 — Opzioni di ricavo (3 alternative, senza pubblicità)
+marketing-sales | Backlog | bassa | S | T-004
+Criteri: [ ] pro, contro e vincoli privacy per ciascuna in `docs/11-marketing.md` · [ ] raccomandazione · [ ] decisione lasciata al fondatore, non prima dell'iterazione 3
+
+## Backlog — privacy, sicurezza, tecnica
+
+### T-018 — Parere sui vincoli tecnici v2 e test di re-identificazione
+privacy-compliance | Backlog | alta | M | —
+Criteri: [ ] ogni vincolo di `docs/03-privacy.md` "Vincoli tecnici (v2)" approvato o corretto · [ ] rotazione dell'identificatore e diritti motivati · [ ] specifica del test di re-identificazione · [ ] indice della DPIA
+
+### T-019 — Modello delle minacce e antiabuso
+backend-engineer | Backlog | media | M | T-018
+Criteri: [ ] `docs/12-sicurezza.md` completato · [ ] limiti di frequenza e controlli di plausibilità definiti · [ ] attestazione del dispositivo valutata con `privacy-compliance`
+
+### T-020 — Prova tecnica della mappa (MapLibre + PMTiles in Flutter)
+mobile-engineer | Backlog | alta | M | decisione 2
+Criteri: [ ] maturità del pacchetto verificata · [ ] prototipo con celle colorate su Milano · [ ] dimensione dei tasselli e costo stimato · [ ] D-010 confermata o cambiata
 
 ### T-006 — Scaffold del repository per l'iterazione 1
-- Ruolo: backend-engineer
-- Stato: Backlog
-- Priorità: media
-- Dipendenze: T-005
-- Criteri di accettazione:
-  - [ ] Struttura cartelle `backend/`, `model/`, `app/`, `docs/`
-  - [ ] Test di base eseguibili
-  - [ ] `.gitignore` con `.env` e dati locali
+backend-engineer | Backlog | media | S | decisione 2
+Criteri: [ ] cartelle `backend/`, `model/`, `app/`, `tests/` · [ ] contratto OpenAPI iniziale · [ ] test eseguiti da `make check`
 
-### T-007 — Primo ciclo di controllo novità e salute del progetto
-- Ruolo: ops-watchdog
-- Stato: Backlog
-- Priorità: media
-- Dipendenze: T-001, T-002, T-003, T-004
-- Criteri di accettazione:
-  - [ ] Report breve in `docs/07-report-watchdog.md` con novità, rischi e task aperti
-  - [ ] Task creati per ogni rischio alto
+## Backlog — modello e dati
 
-### T-008 — Piano marketing e posizionamento (IT + EN)
-- Ruolo: marketing-sales
-- Stato: Backlog
-- Priorità: media
-- Dipendenze: T-004
-- Criteri di accettazione:
-  - [ ] Proposta di posizionamento, messaggio chiave e tre varianti di titolo IT/EN
-  - [ ] Piano ASO iniziale (parole chiave, screenshot)
-  - [ ] Nessuna azione esterna: solo bozze
+### T-010 — Metriche di calibrazione e N minimo
+data-scientist | Backlog | alta | M | —
+Criteri: [ ] definizioni operative in `docs/09-modello.md` §6 · [ ] N minimo per dichiarare una metrica · [ ] metodo di test con dati sintetici etichettati
 
-### T-009 — Flusso utente e prime schermate (concept)
-- Ruolo: ux-designer
-- Stato: Backlog
-- Priorità: media
-- Dipendenze: T-004
-- Criteri di accettazione:
-  - [ ] Flusso di onboarding con consenso, mappa, "ho parcheggiato"
-  - [ ] Test del flusso con 5 persone di prova (se il fondatore le organizza)
-  - [ ] Documento in `docs/08-ux.md`
+### T-021 — Protocollo di rilevazione sul campo e traccia interviste
+data-scientist | Backlog | alta | S | decisione 4
+Criteri: [ ] protocollo di una pagina: zone, orari, cosa annotare, quante ripetizioni · [ ] modulo senza dati personali · [ ] 5 domande per le interviste (con `product-manager`)
 
-### T-010 — Definizione delle metriche di calibrazione
-- Ruolo: data-scientist
-- Stato: Backlog
-- Priorità: alta
-- Criteri di accettazione:
-  - [ ] Definizione di calibrazione, Brier score e tolleranza
-  - [ ] Metodo di test con dati sintetici etichettati
-  - [ ] Documento in `docs/09-modello.md`
+### T-022 — Risoluzione della griglia H3 (9 o 10)
+data-scientist | Backlog | media | S | T-006
+Criteri: [ ] confronto su numero di celle, eventi attesi per cella, effetto sulla soglia k · [ ] decisione in `docs/05-decisioni.md`
+
+### T-023 — Modello a tassi con concorrenza e penetrazione (ricerca)
+data-scientist | Backlog | bassa | L | T-010
+Criteri: [ ] formulazione scritta · [ ] condizioni per adottarlo rispetto al Beta-Binomiale
+
+## Backlog — UX e marketing
+
+### T-009 — Flussi e schermate
+ux-designer | Backlog | media | M | T-004
+Criteri: [ ] onboarding con consenso, mappa, contributi, diritti in 3 tap · [ ] zone leggibili senza colore · [ ] `docs/08-ux.md` completato
+
+### T-008 — Posizionamento e ASO (IT + EN)
+marketing-sales | Backlog | media | M | T-004
+Criteri: [ ] messaggio chiave e tre titoli IT/EN · [ ] parole chiave e screenshot · [ ] solo bozze in `docs/11-marketing.md`
 
 ## In corso
-
-_Nessun task._
-
-## Bloccati
-
-_Nessun task._
-
-## Fatti
 
 _Nessun task._
