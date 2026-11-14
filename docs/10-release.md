@@ -1,7 +1,7 @@
 # 10 - Release e requisiti degli store
 
-Ultima verifica: 2026-11-14 (release-manager, task T-003). Le voci **[verificare]** non sono state confermate su pagina ufficiale.
-Nota: `support.google.com` non era raggiungibile dalla sessione (dominio non consentito), quindi tutte le pagine Play Console Help sono da verificare.
+Ultima verifica: 2026-11-14 (release-manager, T-003, ripresa). Le voci **[verificare]** non sono confermate su pagina ufficiale.
+Nota: `support.google.com`, `play.google.com` e `firebase.google.com` non risolvono il DNS dalla sessione (fuori dai domini consentiti). Letti solo developer.android.com e developer.apple.com.
 
 ## 1. Profilo dell'app (base per i requisiti)
 - Flutter, iOS + Android. Localizzazione **solo in uso** (foreground); background solo opzionale, off di default.
@@ -43,19 +43,50 @@ Fonte: https://developer.apple.com/app-store/app-privacy-details/ (2026-11-14, l
 ## 3. Google Play
 | Tema | Requisito | Fonte | Verifica |
 |---|---|---|---|
-| Target API | Dal 2026-08-31 nuove app e aggiornamenti devono avere target Android 16 (API 36) o superiore. Proroga fino al 2026-11-01 (scaduta) | https://developer.android.com/google/play/requirements/target-sdk | 2026-11-14 |
-| Permessi posizione (policy) | Dichiarazione dei permessi, prominent disclosure in-app prima della richiesta, video dimostrativo per background location | https://support.google.com/googleplay/android-developer/answer/9799150 | **[verificare]** (non raggiungibile) |
-| Background location | Richiede `ACCESS_BACKGROUND_LOCATION`, form di dichiarazione e revisione dedicata; da evitare in beta e nella v1 | stessa pagina | **[verificare]** |
-| Android 11+ | Foreground e background chiesti separatamente; il background si concede dalle impostazioni | developer.android.com (pagina target-sdk) | 2026-11-14 |
-| Android 12+ | `ACCESS_COARSE_LOCATION` va richiesto sempre insieme a `ACCESS_FINE_LOCATION`; l'utente puo' concedere solo l'approssimata | idem | 2026-11-14 |
-| Data safety | Compilazione obbligatoria per tutte le app, coerente con il comportamento reale e con la privacy policy | https://support.google.com/googleplay/android-developer/answer/10787469 | **[verificare]** (non raggiungibile) |
-| Test per account personali nuovi | Test chiuso con un minimo di tester per un numero minimo di giorni prima di chiedere l'accesso alla produzione. Memoria: 12 tester, 14 giorni | https://support.google.com/googleplay/android-developer/answer/14151465 | **[verificare]** numeri e condizioni attuali |
-| Costo account | Quota una tantum (memoria: 25 USD) e verifica d'identita' | https://support.google.com/googleplay/android-developer/answer/6112435 | **[verificare]** |
+| Target API | Dal 2026-08-31 nuove app e aggiornamenti devono targetare API 36 (Android 16). La proroga al 2026-11-01 e' scaduta: oggi serve API 36 | https://developer.android.com/google/play/requirements/target-sdk | letta 2026-11-14 |
+| Permessi posizione (policy) | Dichiarazione permessi, prominent disclosure in-app prima del prompt, video per background location | https://support.google.com/googleplay/android-developer/answer/9799150 | **[verificare]** bloccata |
+| Background location | `ACCESS_BACKGROUND_LOCATION` solo se la funzione core lo richiede; form e revisione dedicata. Da evitare in beta e v1 | stessa pagina; developer.android.com/training/location/permissions (letta) | policy **[verificare]**; tecnica letta 2026-11-14 |
+| Android 11+ | Foreground e background chiesti separatamente; il background si concede dalle impostazioni, non dal dialog | developer.android.com/training/location/permissions (letta) | 2026-11-14 |
+| Android 12+ | `ACCESS_COARSE_LOCATION` sempre insieme a `FINE`; l'utente puo' concedere solo l'approssimata: l'app deve funzionare anche cosi' | idem | 2026-11-14 |
+| Data safety | Obbligatoria per tutte le app, coerente con il comportamento reale e con la privacy policy | https://support.google.com/googleplay/android-developer/answer/10787469 | **[verificare]** bloccata |
+| Test chiusi per account personali nuovi | Memoria: 12 tester per 14 giorni prima di chiedere la produzione | https://support.google.com/googleplay/android-developer/answer/14151465 | **[verificare]** bloccata |
+| Costo account | Memoria: 25 USD una tantum. La FAQ di verifica sviluppatore Android (letta 2026-11-14) cita "Play's $25 registration fee" come riferimento | https://support.google.com/googleplay/android-developer/answer/6112435 | importo **parziale**; pagina ufficiale **[verificare]** |
 
 Scelta consigliata: nella v1 NON dichiarare background location (meno revisione, meno rischio). Se mai servira', aprire un task dedicato prima.
 
+## 3bis. Beta Android a costo zero (decisione fondatore: solo Android, nessuna spesa, APK diretto)
+
+**Esito: fattibile, sì.** Oggi un APK firmato e non registrato si installa in Italia. La verifica sviluppatore Android parte il 2026-09-30 solo in Brasile, Indonesia, Singapore e Thailandia, ed e' annunciata a livello globale per il 2027 (FAQ letta). Il 2027 e' il rischio principale.
+
+### Verifica sviluppatore Android (developer.android.com, letta 2026-11-14)
+- **Obbligatorieta':** dal 2026-09-30 solo negli store partecipanti di quattro paesi. Gli APK distribuiti direttamente non sono coperti da quella scadenza. L'Italia non e' citata. Estensione globale nel 2027, mese non indicato: **[verificare]**.
+- **Costo:** account completo 25 USD (Android Developer Console, "similar to Play's $25 registration fee"), con documento d'identita' governativo. Esonerato per l'account limitato.
+- **Account a distribuzione limitata:** gratuito, senza documento, fino a 20 dispositivi, per studenti e hobbisti, lancio agosto 2026. Conversione solo verso l'account completo. Procedura di creazione e necessita' di un account Play Console **[verificare]**.
+- **Dal 2027 (da confermare):** app non registrate installabili solo con "advanced flow" (modalita' sviluppatore, attesa di 24 h, riavvio, conferma biometrica, poi avviso "Installa comunque") o via ADB. Con advanced flow disattivato, gli aggiornamenti delle app non registrate falliscono.
+- **Firma:** chiave persa = pacchetto non registrabile. Keystore del fondatore fuori dal repo, con backup offline.
+
+### Passi
+1. Fondatore: decide se aprire l'account limitato ora (gratuito, consigliato) o piu' avanti. L'agente non crea account.
+2. Fissare `applicationId` definitivo (cambiarlo perde gli aggiornamenti) e `versionCode` crescente.
+3. Build APK release con target API 36 e firma v2 (obbligatoria da Android 11, letta) con il keystore del fondatore. Nessuna chiave nel bundle.
+4. `qa-tester`: test su un dispositivo Android reale e un emulatore API 36 (installazione, permessi, rifiuto posizione).
+5. Il fondatore invia l'APK e il SHA-256 ai tester con un canale privato a sua scelta. Invio = decisione riservata (CLAUDE §7).
+6. Istruzioni IT/EN per i tester: attivare "Installa app sconosciute" per il gestore file o il browser; se compare l'avviso Play Protect, scegliere "Installa comunque". Testo esatto dell'avviso **[verificare]** su device.
+7. Aggiornamenti manuali: APK nuovo con stessa firma e `versionCode` maggiore, installato sopra il precedente.
+
+### Alternative gratuite
+- **Firebase App Distribution:** non verificata (firebase.google.com bloccato). Richiede progetto Firebase e raccoglie dati dei tester presso Google, in contrasto con "nessun dato Google" (CLAUDE §8) finche' `privacy-compliance` non lo valuta. **[verificare]** prezzi e quote.
+- **F-Droid / Obtainium:** cenni, non valutati. Richiedono un repository pubblico, non adatto a una beta chiusa.
+
+### Rischi
+- Perdita della chiave: nessun aggiornamento possibile.
+- Avvisi Play Protect: fiducia bassa e tester che abbandonano.
+- Limite di 20 dispositivi sull'account limitato: oltre serve l'account completo (25 USD e documento).
+- Dati dei tester (email, canale): trattamento di dati personali. **Parere `privacy-compliance` prima dell'invio.**
+- Posizione in beta: solo "in uso", spiegazione IT/EN prima del prompt, nessun background.
+
 ## 4. Checklist prima beta (TestFlight / Play internal)
-- [ ] Fondatore ha creato account Apple Developer e Play Console (non lo facciamo noi)
+- [ ] Fondatore: account Apple Developer (solo per iOS, fuori dalla beta) e account limitato Android (§3bis); non lo creiamo noi
 - [ ] Test verdi (`qa-tester`), nessun test privacy fallito
 - [ ] Permesso posizione solo "in uso"; schermata di spiegazione prima del prompt di sistema (IT/EN)
 - [ ] Purpose string IT/EN presenti; nessuna chiave "Always" / `ACCESS_BACKGROUND_LOCATION` nel manifest
@@ -66,7 +97,7 @@ Scelta consigliata: nella v1 NON dichiarare background location (meno revisione,
 - [ ] Nessuna chiave o segreto nel bundle; firma con certificati forniti dal fondatore, fuori dal repo
 - [ ] Privacy policy provvisoria IT/EN pubblicata a un URL (decisione e firma del fondatore)
 - [ ] Changelog e versione semantica (es. 0.1.0+1)
-- [ ] Play: tester chiusi reclutati e conteggio giorni avviato **[verificare]** requisiti
+- [ ] Play (solo per il lancio, non per la beta §3bis): tester chiusi e conteggio giorni **[verificare]** requisiti
 - [ ] OK esplicito del fondatore prima di ogni invio
 
 ## 5. Checklist release pubblica
