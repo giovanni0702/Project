@@ -86,6 +86,7 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 3px s
   <span><i style="background:var(--mid)"></i>Possibile</span>
   <span><i style="background:var(--low)"></i>Difficile</span>
   <span><i style="background:var(--unknown)"></i>Nessun dato</span>
+  <span><i style="background:var(--accent);width:12px;height:12px;border-radius:6px"></i>Parcheggio in struttura</span>
 </div>
 
 <div class="panel sheet" id="sheet" hidden>
@@ -105,7 +106,7 @@ const LEVELS = ['high', 'mid', 'low', 'unknown'];
 const VERDICT = { high: 'Facile trovare posto', mid: 'Posto possibile', low: 'Difficile trovare posto', unknown: 'Nessun dato reale' };
 const [W, S, E, N] = DATA.bbox, Q = DATA.q;
 const kx = Math.cos((S + N) / 2 * Math.PI / 180) * (E - W) / (N - S);   // aspect of the quantised square
-let mode = 'demo', vehicle = 'medium', slot = 37, selected = -1;
+let mode = 'demo', vehicle = 'medium', slot = 37, selected = -1, selectedPark = -1;
 let view = { cx: DATA.center[0], cy: DATA.center[1], scale: 0 };       // scale: css px per quantised unit (y)
 const pieces = DATA.pieces.map((p) => {
   const pts = new Float32Array(p.length - 2); let x = 0, y = 0;
@@ -160,6 +161,16 @@ function draw() {
   const groups = { high: [], mid: [], low: [], unknown: [] };
   for (const i of visible) { const c = pieces[i].cell; groups[levels[c] || (levels[c] = levelOf(c))].push(i); }
   for (const name of LEVELS) stroke(groups[name], css('--' + name), thin);
+  const parks = DATA.carParks || [], size = Math.max(7, Math.min(13, zoom * 2.2));
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = '700 ' + Math.round(size * 1.15) + 'px ' + css('--font');
+  parks.forEach((c, i) => {
+    const x = sx(c[0]), y = sy(c[1]);
+    if (x < -20 || x > innerWidth + 20 || y < -20 || y > innerHeight + 20) return;
+    ctx.beginPath(); ctx.arc(x, y, size, 0, Math.PI * 2);
+    ctx.fillStyle = i === selectedPark ? css('--ink') : css('--accent'); ctx.fill();
+    ctx.lineWidth = 2; ctx.strokeStyle = css('--surface'); ctx.stroke();
+    ctx.fillStyle = i === selectedPark ? css('--surface') : css('--on-accent'); ctx.fillText('P', x, y + 0.5);
+  });
   if (selected >= 0) { stroke([selected], css('--ink'), base + 4); stroke([selected], css('--' + levelOf(pieces[selected].cell)), Math.max(2.5, thin + 1)); }
 }
 
@@ -179,6 +190,15 @@ function pick(px, py) {
 }
 function showSheet() {
   const sheet = document.getElementById('sheet');
+  if (selectedPark >= 0) {
+    const c = DATA.carParks[selectedPark];
+    document.getElementById('sheet-tag').textContent = 'Parcheggio in struttura · dato del Comune';
+    document.getElementById('sheet-name').textContent = c[3] + (c[5] ? ' · ' + c[5] : '');
+    document.getElementById('sheet-verdict').textContent = c[2];
+    document.getElementById('sheet-meta').textContent = (c[4] ? c[4].toLocaleString('it-IT') + ' posti. ' : 'Numero di posti non indicato. ') + (c[6] ? c[6] + '. ' : '');
+    document.getElementById('sheet-spaces').textContent = 'Tariffe, orari e posti liberi in tempo reale non sono ancora disponibili.';
+    sheet.hidden = false; return;
+  }
   if (selected < 0) { sheet.hidden = true; return; }
   const level = levelOf(pieces[selected].cell);
   document.getElementById('sheet-tag').textContent = mode === 'demo' ? 'Dimostrazione · dati finti' : 'Stato reale';
@@ -220,7 +240,10 @@ canvas.addEventListener('pointermove', (e) => {
   draw();
 });
 const release = (e) => {
-  if (pointers.has(e.pointerId) && pointers.size === 1 && !moved) { selected = pick(e.clientX, e.clientY); showSheet(); draw(); }
+  if (pointers.has(e.pointerId) && pointers.size === 1 && !moved) {
+    selectedPark = (DATA.carParks || []).findIndex((c) => Math.hypot(sx(c[0]) - e.clientX, sy(c[1]) - e.clientY) < 20);
+    selected = selectedPark >= 0 ? -1 : pick(e.clientX, e.clientY); showSheet(); draw();
+  }
   pointers.delete(e.pointerId); pinch = 0;
 };
 canvas.addEventListener('pointerup', release); canvas.addEventListener('pointercancel', release);

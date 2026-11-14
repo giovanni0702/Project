@@ -231,3 +231,16 @@ Formato: ogni decisione ha data, stato, contesto, scelta e conseguenze. Le decis
 - **Fatto:** dal Database Topografico del Comune (strato `AC_VEI`, aree "PARCHEGGIO") sono state estratte **3.090 aree di sosta mappate**; dalla loro forma si stimano circa **123.000 posti** (circa 102.000 in aree grandi, 19.000 in fasce a pettine o a spina, 3.000 in fasce in linea), assegnati a 1.758 tratti di strada in 826 celle. Comandi: `scripts/build_parking.py`. Regole di stima in `parking_core/capacity.py`.
 - **Limiti da dichiarare:** è una stima dalla geometria, non un conteggio di stalli; dati del 2020; le aree grandi possono includere parcheggi privati o di strutture; **i posti lungo il marciapiede dipinti sulla carreggiata non sono in questo strato**, e a Milano sono la maggior parte della sosta su strada. Il numero non è confrontato con una fonte ufficiale.
 - **Prossimi passi (T-041):** censire la sosta lungo il marciapiede (lunghezza dei tratti per lato, corretta da passi carrai, incroci e divieti; OpenStreetMap se raggiungibile; contributi degli utenti), distinguere strisce blu, bianche, gialle e stalli moto, usare i posti per tratto come variabile del modello e validarla sugli esiti reali.
+
+## D-031 — Parcheggi in struttura sulla mappa; immagini aeree come ripiego
+- **Data:** 2026-11-14
+- **Stato:** decisa dal fondatore
+- **Scelta:** oltre alla sosta su strada, la mappa mostra i parcheggi al coperto e a pagamento (autorimesse, parcheggi pubblici, interscambio).
+- **Fatto:** 74 strutture con nome, indirizzo e posti (circa 29.000 posti) dai dataset del Comune ds342 e ds45 (CC BY), nell'adattatore di Milano e nella pagina di anteprima.
+- **Mancano:** tariffe, orari, posti liberi in tempo reale (nessuna fonte pubblica trovata); autorimesse private non convenzionate.
+- **Ripiego per la sosta lungo il marciapiede:** se né il Database Topografico né OpenStreetMap bastano, si usano immagini aeree con licenza aperta (ortofoto pubbliche, fonte e licenza da verificare) per riconoscere le file di auto in sosta. Le immagini satellitari di Google non si possono usare: i loro termini vietano di ricavarne contenuti (D-004). Costo: alto (scarico e riconoscimento delle immagini); si tenta solo dopo le altre vie (T-041).
+
+## D-032 — Ciclo autonomo alleggerito e in una chat separata
+- **Data:** 2026-11-14
+- **Stato:** decisa dal fondatore (il ciclo giornaliero consumava troppo e riempiva la chat principale)
+- **Scelta:** il ciclo gira in una sessione dedicata ("App parcheggi - cicli autonomi"), il martedì e il venerdì alle 03:41, con al massimo 2 deleghe. La chat principale resta per le decisioni. Sostituisce la cadenza indicata in D-028.

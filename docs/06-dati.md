@@ -120,3 +120,9 @@ Senza stalli né sensori, la capacità per segmento va stimata da OSM (`parking:
 - `scripts/fetch_osm.py <città>` è pronto, ma dal 2026-11-14 la connessione a `overpass-api.de`, `overpass.kumi.systems` e `download.geofabrik.de` viene interrotta dalla rete della sessione anche se i siti sono abilitati.
 - Scarico manuale possibile dal fondatore (gratis, senza account): `overpass-turbo.eu` con la richiesta contenuta nello script, poi "Esporta → dati grezzi"; il file va in `data/raw/<città>/osm_streets.json`.
 - Licenza ODbL: attribuzione obbligatoria e vincoli sulla cessione di dati derivati (T-024).
+
+## Parcheggi: aree di sosta e strutture (D-030, D-031)
+
+- **Aree di sosta mappate:** strato `AC_VEI` del Database Topografico, poligoni con nome "PARCHEGGIO": 3.090 aree, circa 123.000 posti stimati dalla forma (`parking_core/capacity.py`). Non comprende la sosta dipinta sulla carreggiata.
+- **Parcheggi in struttura:** ds342 "localizzazione dei parcheggi pubblici" (53, con posti e tipo) e ds45 "parcheggi di interscambio" (21, con posti), CC BY: 74 strutture, circa 29.000 posti. Senza tariffe né orari.
+- **Comando:** `scripts/build_parking.py milano` → `build/parking/milano/parking.json`.

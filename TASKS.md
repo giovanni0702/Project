@@ -25,7 +25,7 @@ Criteri: [ ] livelli: zona, quartiere, settore, città; ogni strada usa il più 
 
 ### T-041 — Posti per strada: sosta lungo il marciapiede, colori delle strisce, moto (D-030)
 data-engineer | In corso | alta | L | —
-Criteri: [x] aree di sosta mappate e stima dei posti (`scripts/build_parking.py`) · [ ] sosta lungo il marciapiede per tratto e per lato · [ ] confronto con una fonte ufficiale · [ ] OpenStreetMap se la rete lo consente · [ ] tariffe e orari per ambito da fonte ufficiale · [ ] stalli moto · [ ] griglia limitata alle celle con strade e al confine comunale
+Criteri: [x] aree di sosta mappate e stima dei posti (`scripts/build_parking.py`) · [x] 74 parcheggi in struttura con posti (D-031) · [ ] tariffe e orari delle strutture · [ ] ripiego: immagini aeree con licenza aperta · [ ] sosta lungo il marciapiede per tratto e per lato · [ ] confronto con una fonte ufficiale · [ ] OpenStreetMap se la rete lo consente · [ ] tariffe e orari per ambito da fonte ufficiale · [ ] stalli moto · [ ] griglia limitata alle celle con strade e al confine comunale
 
 ### T-042 — Testo del GDPR e norme non raggiungibili
 legal-analyst | Bloccato (EUR-Lex e Garante restituiscono pagine vuote) | media | S | —

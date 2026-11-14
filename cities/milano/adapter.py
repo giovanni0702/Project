@@ -14,6 +14,10 @@ RAW = ROOT / "data" / "raw" / "milano"
 ATTRIBUTION = "Comune di Milano, Database Topografico 2020 e Ambiti della sosta (CC BY 4.0)"
 DBT_URL = "https://gisportal.comune.milano.it/download/area_download/SIT/DBT2020/DBT_2020.zip"
 DBT_LAYERS = ("EL_STR", "LIM_COM", "AC_VEI")
+CAR_PARKS_URL = ("https://dati.comune.milano.it/dataset/2f4246df-2949-4530-909a-9016652cc8f9/resource/"
+                 "5d418fa5-a0a0-4fd8-92f2-006f1fa6e0df/download/park_pub.geojson")       # ds342, CC BY
+PARK_RIDE_URL = ("https://dati.comune.milano.it/dataset/411cdd38-56f9-4ff1-b369-a2ed04778d84/resource/"
+                 "63c3e729-55e4-4134-a890-6fb900d7920a/download/park_interscambio.geojson")  # ds45, CC BY
 AMBITI_URL = ("https://dati.comune.milano.it/dataset/85ed8636-fbd0-4bf6-aaf7-7f3f2f610d48/resource/"
               "c871e6f8-954a-4fde-8210-071860eb0dea/download/sosta_ambiti.geojson")
 # Not public streets with kerbside parking.
@@ -35,9 +39,12 @@ def fetch() -> list[str]:
             if info.filename.startswith("DBT 2020 - SHAPE/") and stem in DBT_LAYERS and ext.lower() in ("shp", "dbf", "shx", "prj"):
                 (out / name).write_bytes(archive.read(info.filename))
                 saved.append(name)
-    request = urllib.request.Request(AMBITI_URL, headers={"User-Agent": "Mozilla/5.0"})
-    (RAW / "sosta_ambiti.geojson").write_bytes(urllib.request.urlopen(request, timeout=60).read())
-    return saved + ["sosta_ambiti.geojson"]
+    for name, url in (("sosta_ambiti.geojson", AMBITI_URL), ("park_pub.geojson", CAR_PARKS_URL),
+                      ("park_interscambio.geojson", PARK_RIDE_URL)):
+        request = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        (RAW / name).write_bytes(urllib.request.urlopen(request, timeout=60).read())
+        saved.append(name)
+    return saved
 
 
 def street_lines():
@@ -81,3 +88,25 @@ def parking_areas():
         cy = sum(y for _, y in ring) / len(ring)
         lon, lat = to_wgs84.transform(cx, cy)
         yield {"id": item.record["CLASSID"], "ring_m": ring, "centroid": (lat, lon)}
+
+
+def car_parks():
+    """Yield off-street car parks (garages, public car parks, park-and-ride) with capacity.
+
+    Source datasets carry no tariffs or opening hours.
+    """
+    import json
+    import re
+
+    kinds = {"AUTORIMESSA CONVENZIONATA": "garage", "PUBBLICI": "public",
+             "PUBBLICI/RESIDENTI": "public_residents", "RESIDENTI/PUBBLICI": "public_residents"}
+    for feature in json.loads((RAW / "park_pub.geojson").read_text(encoding="utf-8"))["features"]:
+        props, (lon, lat) = feature["properties"], feature["geometry"]["coordinates"][:2]
+        yield {"name": props["nome"], "kind": kinds.get(props["tipo"], "public"), "address": props.get("indirizzo") or "",
+               "spaces": int(props["n_posti"]) if props.get("n_posti") else None, "lat": lat, "lon": lon}
+    for feature in json.loads((RAW / "park_interscambio.geojson").read_text(encoding="utf-8"))["features"]:
+        props, (lon, lat) = feature["properties"], feature["geometry"]["coordinates"][:2]
+        match = re.search(r"\d+", props.get("TAB1") or "")
+        yield {"name": props["Nome"].title(), "kind": "park_and_ride", "address": (props.get("indirizzo") or "").title(),
+               "spaces": int(match.group()) if match else None, "lat": lat, "lon": lon,
+               "note": (props.get("INFO") or "").capitalize()}

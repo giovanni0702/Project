@@ -50,8 +50,10 @@ for area in adapter.parking_areas():
 out = ROOT / "build" / "parking" / city["id"] / "parking.json"
 out.parent.mkdir(parents=True, exist_ok=True)
 payload = {"city": city["id"], "attribution": adapter.ATTRIBUTION, "method": "estimate from mapped parking-area geometry",
+           "car_parks": list(adapter.car_parks()),
            "per_piece": {str(k): v for k, v in per_piece.items()}, "per_cell": dict(per_cell), "areas": areas}
 out.write_text(json.dumps(payload, separators=(",", ":")), encoding="utf-8")
-print(json.dumps({"file": str(out.relative_to(ROOT)), "areas": len(areas), "estimated_spaces": sum(per_cell.values()),
+print(json.dumps({"file": str(out.relative_to(ROOT)), "car_parks": len(payload["car_parks"]),
+                  "car_park_spaces": sum(c["spaces"] or 0 for c in payload["car_parks"]), "areas": len(areas), "estimated_spaces": sum(per_cell.values()),
                   "by_kind": dict(kinds), "pieces_with_spaces": len(per_piece), "cells_with_spaces": len(per_cell),
                   "unassigned_spaces": unassigned}))

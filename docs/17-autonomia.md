@@ -7,9 +7,9 @@ Deciso dal fondatore il 2026-11-14 (D-028): il team lavora anche senza richiesta
 - **Capi area:** `product-manager` (con `ux-designer`, `visual-designer`, `competitor-analyst`), `data-scientist` (con `data-engineer`), `backend-engineer` (con `mobile-engineer`, `qa-tester`), `privacy-compliance` (con `privacy-engineer`, `privacy-redteam`, `legal-analyst`), `release-manager`, `ops-watchdog`, `marketing-sales`.
 - **Fondatore:** le decisioni di `CLAUDE.md` §7 e la direzione del prodotto.
 
-## 2. Il ciclo (ogni giorno alle 03:41, e a ogni `vai`)
+## 2. Il ciclo (martedì e venerdì alle 03:41 in una sessione dedicata, D-032; e a ogni `vai`)
 1. Leggere `STATO.md` e `TASKS.md`.
-2. Scegliere i task **sbloccati** con priorità più alta che avvicinano alla beta valida (§4). Al massimo 4 deleghe per ciclo.
+2. Scegliere i task **sbloccati** con priorità più alta che avvicinano alla beta valida (§4). Al massimo 2 deleghe per ciclo programmato (4 se lo chiede il fondatore in chat).
 3. Prima di ogni ricerca web: provare un sito con `scripts/fetch_text.py`. Rete bloccata = non si delega la ricerca.
 4. Delegare in parallelo con file non sovrapposti. Ogni delega: obiettivo, file, criteri, vincoli, budget, tetto di chiamate.
 5. Integrare: `make check` e `make reid` verdi, altrimenti non si fa push.
@@ -21,7 +21,7 @@ Deciso dal fondatore il 2026-11-14 (D-028): il team lavora anche senza richiesta
 - Nessun account, spesa, pubblicazione, contatto esterno, firma: restano del fondatore.
 - Veto di `privacy-compliance`: nessuna raccolta nuova senza il suo parere.
 - Niente lavoro inventato: se nessun task è sbloccato, il ciclo lo scrive e si ferma.
-- Costo: un ciclo con 4 deleghe consuma indicativamente da 300.000 a 600.000 token. Il fondatore può sospendere o diradare il ciclo quando vuole (attività programmata "App parcheggi - ciclo autonomo giornaliero").
+- Costo: un ciclo con 2 deleghe consuma indicativamente da 150.000 a 300.000 token. Il fondatore può sospendere o cambiare la cadenza quando vuole (attività programmata "App parcheggi - ciclo autonomo (mar e ven)").
 - Due cicli consecutivi senza progresso misurabile: il ciclo successivo riduce le deleghe a 1 e lo segnala.
 
 ## 4. Definizione di "beta valida" (non una beta di base)
@@ -30,6 +30,7 @@ La beta è valida quando tutte le voci sono vere. Stato al 2026-11-14 tra parent
 **Dati e modello**
 - [x] Strade reali di Milano collegate alle celle (30.727 tratti dal Database Topografico del Comune).
 - [ ] Posti per strada: fatte le aree di sosta mappate (circa 123.000 posti stimati); manca la sosta lungo il marciapiede (D-030).
+- [x] Parcheggi in struttura: 74 con posti (D-031). [ ] Tariffe e orari.
 - [ ] Regole di sosta per strada: ambiti, orari, tariffe (ambiti scaricati; tariffe e orari senza fonte verificata).
 - [x] Modello con componente "adesso", stime per altri orari, correzione per veicolo (valori provvisori).
 - [ ] Stalli e regole per le moto.

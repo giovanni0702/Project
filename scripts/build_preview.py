@@ -28,7 +28,8 @@ def qy(lat): return round((lat - south) / (north - south) * Q)
 
 
 parking_file = ROOT / "build" / "parking" / city["id"] / "parking.json"
-per_piece = json.loads(parking_file.read_text(encoding="utf-8"))["per_piece"] if parking_file.exists() else {}
+parking = json.loads(parking_file.read_text(encoding="utf-8")) if parking_file.exists() else {}
+per_piece = parking.get("per_piece", {})
 names, name_index, cells, cell_index, out, stalls = [], {}, [], {}, [], []
 for number, piece in enumerate(pieces):
     if piece["cell"] not in cell_index:
@@ -49,8 +50,12 @@ for number, piece in enumerate(pieces):
         out.append(row)
         stalls.append(per_piece.get(str(number), 0))
 
+KIND_LABEL = {"garage": "Autorimessa convenzionata", "public": "Parcheggio pubblico",
+              "public_residents": "Parcheggio pubblico e residenti", "park_and_ride": "Parcheggio di interscambio"}
+car_parks = [[qx(c["lon"]), qy(c["lat"]), c["name"], KIND_LABEL[c["kind"]], c["spaces"], c.get("address", ""), c.get("note", "")]
+             for c in parking.get("car_parks", [])]
 center = [sum(c[0] for c in cells) / len(cells), sum(c[1] for c in cells) / len(cells)]
-data = {"bbox": [west, south, east, north], "q": Q, "names": names, "cells": cells, "pieces": out, "stalls": stalls,
+data = {"bbox": [west, south, east, north], "q": Q, "names": names, "cells": cells, "pieces": out, "stalls": stalls, "carParks": car_parks,
         "odds": city["vehicles"]["odds"], "thresholds": city["display"]["thresholds"], "center": center}
 html = (ROOT / "web" / "preview_template.html").read_text(encoding="utf-8")
 html = html.replace("/*DATA*/null", json.dumps(data, separators=(",", ":"), ensure_ascii=False))
