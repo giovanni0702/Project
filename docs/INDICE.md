@@ -24,6 +24,7 @@ Una riga per file: cosa contiene e quando leggerlo. Aggiorna questa riga se camb
 | `16-grafica.md` | Sistema visivo, token, link alle schermate | Lavoro su interfaccia e bozze |
 | `17-autonomia.md` | Ciclo autonomo, limiti, definizione di "beta valida" | Ogni ciclo, pianificazione |
 | `18-nota-tester.md` | Bozza di nota informativa per i tester | Preparazione della beta |
+| `../web/`, `../scripts/build_webapp.py` | Versione web di SostaMi | Lavoro sull'interfaccia vera |
 | `fonti.md` | Cache delle ricerche web con scadenza | Prima di ogni ricerca web |
 | `archivio/` | Task chiusi delle iterazioni passate | Quasi mai |
 | `../prompts/` | Prompt del fondatore | Mai (gli agenti non lo leggono) |

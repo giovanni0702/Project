@@ -7,11 +7,11 @@ Stati: Backlog · In corso (con nome del proprietario) · Bloccato · Fatto.
 
 ## Decisioni richieste al fondatore
 
-Decise il 2026-11-14: nome SostaMi (D-033), vista live regola A (D-034).
+Decise il 2026-11-14: nome SostaMi (D-033), vista live regola A (D-034), versione web (D-035).
 
-1. **Come si scarica la beta.** Oggi è decisa l'installazione diretta, gratis, fuori dagli store (D-017): nessuno trova l'app da solo, arrivano solo le persone a cui mandi il link, e Android mostra un avviso che scoraggia. A) restare così, costo zero; B) Google Play, 25 USD una volta sola: si scarica dallo store come un'app normale, ma servono prima 12 tester per 14 giorni e l'approvazione di Google per la posizione in background; C) anche iPhone tramite App Store, 99 USD l'anno. Raccomandazione: B, perché vuoi tanti download; è un'eccezione a "nessuna spesa fino al lancio" (D-014).
-2. **Durata della beta:** A) 6 settimane; B) 4. Raccomandazione: A.
-3. **Azioni solo tue prima della beta** (`docs/17-autonomia.md` §5).
+1. **Forma della beta.** A) **sito web** (link pubblico gratuito, funziona su iPhone, Android e computer, si aggiunge alla schermata Home, nessuno store); B) app Android con installazione diretta; C) Google Play (25 USD) o App Store (99 USD l'anno). Raccomandazione: A, con B o C più avanti. Il rilevamento automatico in background non è possibile in un sito: resterebbero le segnalazioni a un tocco e la sosta salvata.
+2. **Pubblicare il sito** (per esempio GitHub Pages, gratuito): sì o no. Serve prima: verifica del red team (T-047), DPIA firmata, servizio online (T-030). La pubblicazione è un'azione tua.
+3. **Durata della beta:** A) 6 settimane; B) 4. Raccomandazione: A.
 
 ## Iterazione 1 — in corso
 
@@ -39,9 +39,9 @@ Criteri: [ ] articoli 4, 6, 7, 11, 25, 35, 36 e considerando 26 letti alla fonte
 mobile-engineer | Backlog | alta | L | T-040
 Criteri: [ ] Flutter e Android SDK installabili nell'ambiente (siti da abilitare elencati) · [ ] scheletro con mappa delle strade, vista live e altri orari, veicolo, contributi · [ ] contratto API dal backend · [ ] testi IT/EN · [ ] requisito: invio con ritardo casuale (C7)
 
-### T-044 — Pagina interna: stato reale dal backend
-backend-engineer | Backlog | media | S | T-040
-Criteri: [ ] la pagina `web/` legge la griglia pubblicata dal backend al posto dei dati dimostrativi · [ ] comando unico per avviare tutto in locale
+### T-044 — Versione web collegata al servizio (D-035)
+backend-engineer | Backlog | alta | M | T-047
+Criteri: [ ] la web app legge la griglia pubblicata e invia le segnalazioni con consenso, pseudonimo per cella e ritardo casuale · [ ] GPS con consenso, ridotto a cella sul dispositivo · [ ] versione installabile sulla schermata Home · [ ] mappa di sfondo: dati del Comune o tasselli con licenza adatta · [ ] comando unico per avviare tutto in locale
 
 ### T-036 — Veicolo: taglie, moto, elenco modelli (D-023)
 data-scientist | Backlog | alta | M | T-034

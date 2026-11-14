@@ -1,0 +1,408 @@
+<title>SostaMi</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap">
+<style>
+/* Layout: one-screen map app. The map fills the screen; controls float top-left, the detail sheet bottom-right (bottom on phones). */
+:root {
+  --ground: #EEF1F4; --block: #E2E6EA; --green: #D3E6D2; --water: #BFD9EE; --parking: #D6DEF6; --rail: #AAB3BD;
+  --street: #FFFFFF; --surface: #FFFFFF; --ink: #14202B; --ink-soft: #51606E; --line: #D5DCE3; --soft: #EEF1F5;
+  --accent: #2251CC; --on-accent: #FFFFFF; --brand: #0E8C73; --brand-bg: #37C9AC;
+  --high: #1FA68A; --mid: #E0A21A; --low: #8E2A4B; --unknown: #A3ADB8; --label: #3A4855;
+  --font: Inter, system-ui, sans-serif; --display: "Space Grotesk", Inter, system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --ground: #0F171F; --block: #18222C; --green: #16291F; --water: #14293B; --parking: #1B2746; --rail: #46535F;
+  --street: #2A3643; --surface: #1A2530; --ink: #F1F4F7; --ink-soft: #A9B5C1; --line: #33414E; --soft: #24303C;
+  --accent: #8FAEFF; --on-accent: #0B1622; --brand: #5FD3BC; --brand-bg: #37C9AC;
+  --high: #37C9AC; --mid: #F2BC45; --low: #E0739A; --unknown: #5F6D7A; --label: #B8C3CE; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --ground: #0F171F; --block: #18222C; --green: #16291F; --water: #14293B; --parking: #1B2746; --rail: #46535F;
+  --street: #2A3643; --surface: #1A2530; --ink: #F1F4F7; --ink-soft: #A9B5C1; --line: #33414E; --soft: #24303C;
+  --accent: #8FAEFF; --on-accent: #0B1622; --brand: #5FD3BC; --brand-bg: #37C9AC;
+  --high: #37C9AC; --mid: #F2BC45; --low: #E0739A; --unknown: #5F6D7A; --label: #B8C3CE; color-scheme: dark }
+html, body { height: 100%; }
+body { background: var(--ground); color: var(--ink); font-family: var(--font); overflow: hidden; }
+#map { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; }
+#map:active { cursor: grabbing; }
+button, select, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.card { background: var(--surface); border-radius: 18px; box-shadow: 0 2px 12px rgba(0,0,0,.16); }
+.top { position: fixed; top: calc(12px + env(safe-area-inset-top, 0px)); left: max(16px, env(safe-area-inset-left, 0px));
+  width: min(400px, calc(100% - 32px)); display: flex; flex-direction: column; gap: 8px; }
+.brand { padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
+.brand-row { display: flex; align-items: center; gap: 10px; }
+.brand-name { font: 700 19px var(--display); letter-spacing: -.01em; }
+.brand-name b { color: var(--brand); font-weight: 700; }
+.search { position: relative; flex: 1; min-width: 0; }
+.search input { width: 100%; box-sizing: border-box; height: 40px; padding: 0 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--soft); font-size: 14px; }
+.results { position: absolute; top: 44px; left: 0; right: 0; padding: 4px; display: flex; flex-direction: column; z-index: 5; }
+.results button { text-align: left; padding: 10px 12px; border: 0; border-radius: 10px; background: transparent; font-size: 14px; }
+.results button:hover { background: var(--soft); }
+.status { margin: 0; font-size: 12.5px; line-height: 1.4; color: var(--ink-soft); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { min-height: 40px; padding: 0 14px; border: 0; border-radius: 20px; background: var(--surface); box-shadow: 0 1px 6px rgba(0,0,0,.14);
+  font: 500 13px var(--font); display: inline-flex; align-items: center; gap: 8px; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--surface); font-weight: 600; }
+.chip .dot { width: 8px; height: 8px; border-radius: 4px; background: var(--brand-bg); }
+select.chip { appearance: none; }
+.when { padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; font-size: 13px; }
+.when .days { display: flex; gap: 4px; flex-wrap: wrap; }
+.when .days button { min-width: 40px; min-height: 36px; border: 1px solid var(--line); border-radius: 10px; background: transparent; font-size: 12.5px; }
+.when .days button[aria-pressed="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); font-weight: 600; }
+.when label { display: flex; align-items: center; gap: 10px; }
+.when input[type=range] { flex: 1; accent-color: var(--accent); }
+.when output { font-weight: 600; font-variant-numeric: tabular-nums; min-width: 44px; }
+.tabs { position: fixed; top: calc(12px + env(safe-area-inset-top, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); padding: 4px; display: flex; gap: 2px; }
+.tabs button { min-height: 40px; padding: 0 14px; white-space: nowrap; border: 0; border-radius: 14px; background: transparent; font: 500 13px var(--font); }
+.tabs button[aria-pressed="true"] { background: var(--ink); color: var(--surface); font-weight: 600; }
+.sheet { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  width: min(380px, calc(100% - 32px)); max-height: calc(100% - 180px); overflow: auto; padding: 18px; display: flex; flex-direction: column; gap: 10px; box-sizing: border-box; }
+.tag { align-self: flex-start; font: 600 11px var(--font); letter-spacing: .04em; text-transform: uppercase; padding: 4px 8px; border-radius: 8px; background: var(--soft); color: var(--ink-soft); }
+.tag.live { background: var(--ink); color: var(--surface); }
+.sheet h2 { margin: 0; font: 700 22px var(--display); line-height: 1.15; text-wrap: balance; }
+.sheet .name { font-size: 13px; color: var(--ink-soft); }
+.sheet p { margin: 0; font-size: 13.5px; line-height: 1.45; color: var(--ink-soft); }
+.rows { display: flex; flex-direction: column; gap: 6px; padding: 10px 12px; border-radius: 12px; background: var(--soft); font-size: 13.5px; }
+.rows div { display: flex; justify-content: space-between; gap: 12px; }
+.rows span:last-child { font-weight: 600; text-align: right; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.btn { min-height: 44px; padding: 0 14px; border: 0; border-radius: 13px; background: var(--soft); font: 600 14px var(--font); display: inline-flex; align-items: center; justify-content: center; text-decoration: none; color: var(--ink); }
+.btn.primary { background: var(--accent); color: var(--on-accent); }
+.btn.wide { flex: 1; }
+.btn.danger { background: var(--low); color: #FFFFFF; }
+.outcomes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.outcomes .btn { font-size: 12.5px; padding: 0 6px; line-height: 1.2; }
+.close { position: absolute; top: 10px; right: 10px; width: 36px; height: 36px; border: 0; border-radius: 18px; background: var(--soft); font-size: 18px; line-height: 1; }
+.sheet { position: fixed; }
+.legend { position: fixed; left: max(16px, env(safe-area-inset-left, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); padding: 8px 14px;
+  display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; max-width: min(560px, calc(100% - 440px)); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 22px; height: 4px; border-radius: 2px; display: inline-block; }
+.credit { font-size: 11px; color: var(--ink-soft); }
+.big { font: 700 28px var(--display); font-variant-numeric: tabular-nums; }
+@media (max-width: 760px) {
+  .tabs { top: auto; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); left: 50%; right: auto; transform: translateX(-50%); }
+  .sheet { left: max(16px, env(safe-area-inset-left, 0px)); right: auto; bottom: calc(72px + env(safe-area-inset-bottom, 0px)); max-height: 44%; padding: 14px; gap: 8px; }
+  .sheet h2 { font-size: 19px; }
+  .tabs button { padding: 0 11px; }
+  .status { display: none; }
+  .legend { display: none; }
+}
+@media (prefers-reduced-motion: no-preference) { .sheet { transition: opacity .15s; } }
+</style>
+
+<canvas id="map" aria-label="Mappa di Milano con le strade colorate per facilità di parcheggio"></canvas>
+
+<div class="top">
+  <div class="card brand">
+    <div class="brand-row">
+      <svg width="34" height="34" viewBox="0 0 112 112" role="img" aria-label="SostaMi"><rect width="112" height="112" rx="27" fill="#14202B"/><path d="M75 37 C75 22 37 21 37 42 C37 61 76 53 76 74 C76 92 44 93 38 80" fill="none" stroke="#37C9AC" stroke-width="12" stroke-linecap="round"/><circle cx="38" cy="80" r="10.5" fill="#FFFFFF"/></svg>
+      <div class="brand-name">Sosta<b>Mi</b></div>
+      <div class="search">
+        <input id="search" type="search" placeholder="Cerca una via" autocomplete="off" aria-label="Cerca una via">
+        <div class="card results" id="results" hidden></div>
+      </div>
+    </div>
+    <p class="status" id="status"></p>
+  </div>
+  <div class="chips">
+    <button type="button" class="chip" id="live" aria-pressed="true"><span class="dot"></span>Live adesso</button>
+    <button type="button" class="chip" id="other" aria-pressed="false">Altro orario</button>
+    <select class="chip" id="vehicle" aria-label="Il mio veicolo">
+      <option value="moto">Moto o scooter</option><option value="small">Auto piccola</option>
+      <option value="medium">Auto media</option><option value="large">Auto grande</option>
+    </select>
+    <button type="button" class="chip" id="example" aria-pressed="false">Mostra esempio</button>
+  </div>
+  <div class="card when" id="when" hidden>
+    <div class="days" id="days" role="group" aria-label="Giorno"></div>
+    <label><span>Ora</span><input type="range" id="hour" min="0" max="47" step="1" value="37"><output id="hour-out" for="hour">18:30</output></label>
+  </div>
+</div>
+
+<div class="card tabs" role="group" aria-label="Sezioni">
+  <button type="button" id="tab-map" aria-pressed="true">Mappa</button>
+  <button type="button" id="tab-car" aria-pressed="false">Il mio veicolo</button>
+  <button type="button" id="tab-privacy" aria-pressed="false">Privacy</button>
+</div>
+
+<div class="card legend" aria-label="Legenda">
+  <span><i style="background:var(--high)"></i>Facile</span><span><i style="background:var(--mid)"></i>Possibile</span>
+  <span><i style="background:var(--low)"></i>Difficile</span><span><i style="background:var(--unknown)"></i>Nessun dato</span>
+  <span><i style="background:var(--accent);width:12px;height:12px;border-radius:6px"></i>Parcheggio in struttura</span>
+  <span><i style="background:var(--parking);width:14px;height:10px;border:1px solid var(--line)"></i>Area di sosta</span>
+  <span class="credit" id="credit"></span>
+</div>
+
+<div class="card sheet" id="sheet" hidden></div>
+
+<script>
+const DATA = /*DATA*/null;
+const $ = (id) => document.getElementById(id);
+const canvas = $('map'), ctx = canvas.getContext('2d');
+const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const [W, S, E, N] = DATA.bbox, Q = DATA.q;
+const kx = Math.cos((S + N) / 2 * Math.PI / 180) * (E - W) / (N - S);
+const metresPerUnit = (N - S) * 111320 / Q;
+const VERDICT = { high: 'Facile trovare posto', mid: 'Posto possibile', low: 'Difficile trovare posto', unknown: 'Nessun dato reale' };
+const VEHICLE = { moto: 'moto o scooter', small: 'auto piccola', medium: 'auto media', large: 'auto grande' };
+const DAYS = ['Oggi', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
+
+// ---- state, kept on this device only
+const KEY = 'sostami.v1';
+let store = { vehicle: 'medium', parked: null, outcomes: [] };
+try { store = Object.assign(store, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) {} };
+let example = false, live = true, day = 0, slot = 37, tab = 'map', selected = -1, selectedPark = -1, confirmWipe = false;
+let view = { cx: DATA.center[0], cy: DATA.center[1], scale: 0 };
+
+// ---- decode geometry
+function decode(row, skip) {
+  const pts = new Float32Array(row.length - skip); let x = 0, y = 0, a = 1e9, b = 1e9, c = -1e9, d = -1e9;
+  for (let i = skip; i < row.length; i += 2) { x += row[i]; y += row[i + 1]; pts[i - skip] = x; pts[i - skip + 1] = y;
+    if (x < a) a = x; if (x > c) c = x; if (y < b) b = y; if (y > d) d = y; }
+  return { pts, a, b, c, d };
+}
+const pieces = DATA.pieces.map((p) => Object.assign(decode(p, 2), { cell: p[0], name: p[1] }));
+const layers = {}; for (const k in DATA.layers) layers[k] = DATA.layers[k].map((r) => decode(r, 0));
+const lower = DATA.names.map((n) => n.toLowerCase());
+
+// ---- estimates
+function hash(i) { let h = (i + 1) * 2654435761 >>> 0; h ^= h >>> 15; return (h % 1000) / 1000; }
+function nowSlot() { const t = new Date(); return t.getHours() * 2 + (t.getMinutes() >= 30 ? 1 : 0); }
+function exampleProbability(cell) {            // EXAMPLE ONLY: plausible shape, no real observations
+  const [x, y] = DATA.cells[cell];
+  const d = Math.hypot((x - DATA.center[0]) * kx, y - DATA.center[1]) / Q;
+  const hour = (live ? nowSlot() : slot) / 2;
+  const weekend = !live && day >= 6 ? 0.55 : 1;
+  const busy = weekend * (Math.exp(-((hour - 10) ** 2) / 8) + 1.1 * Math.exp(-((hour - 19) ** 2) / 6) + 0.45 * Math.exp(-((hour - 13.5) ** 2) / 5));
+  const night = hour < 6 || hour > 23 ? 0.12 : 0;
+  return Math.min(0.95, Math.max(0.05, 0.45 + 2.2 * d - 0.32 * busy * Math.max(0, 1 - 3 * d) - night + 0.3 * (hash(cell) - 0.5)));
+}
+function levelOf(cell) {
+  if (!example) return 'unknown';
+  const p = exampleProbability(cell), o = p / (1 - p) * DATA.odds[store.vehicle], q = o / (1 + o);
+  return q >= DATA.thresholds.high ? 'high' : q <= DATA.thresholds.low ? 'low' : 'mid';
+}
+
+// ---- drawing
+const sx = (x) => (x - view.cx) * view.scale * kx + innerWidth / 2;
+const sy = (y) => (view.cy - y) * view.scale + innerHeight / 2;
+let queued = false;
+function redraw() { if (!queued) { queued = true; requestAnimationFrame(() => { queued = false; draw(); }); } }
+function resize() {
+  const r = window.devicePixelRatio || 1;
+  canvas.width = Math.round(innerWidth * r); canvas.height = Math.round(innerHeight * r);
+  if (!view.scale) view.scale = Math.max(innerWidth / (Q * kx), innerHeight / Q) * 2.8;
+  redraw();
+}
+function draw() {
+  const r = window.devicePixelRatio || 1;
+  ctx.setTransform(r, 0, 0, r, 0, 0);
+  ctx.fillStyle = css('--ground'); ctx.fillRect(0, 0, innerWidth, innerHeight);
+  const x0 = view.cx - innerWidth / 2 / (view.scale * kx), x1 = view.cx + innerWidth / 2 / (view.scale * kx);
+  const y0 = view.cy - innerHeight / 2 / view.scale, y1 = view.cy + innerHeight / 2 / view.scale;
+  const seen = (g) => g.c >= x0 && g.a <= x1 && g.d >= y0 && g.b <= y1;
+  const pxPerM = view.scale / metresPerUnit;
+  const path = (g) => { const p = g.pts; ctx.moveTo(sx(p[0]), sy(p[1])); for (let j = 2; j < p.length; j += 2) ctx.lineTo(sx(p[j]), sy(p[j + 1])); };
+  const fill = (name, color, minPx) => {
+    ctx.beginPath();
+    for (const g of layers[name]) if (seen(g) && (g.c - g.a) * view.scale * kx + (g.d - g.b) * view.scale > minPx) { path(g); ctx.closePath(); }
+    ctx.fillStyle = color; ctx.fill();
+  };
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  fill('green', css('--green'), 3); fill('water', css('--water'), 2);
+  if (pxPerM > 0.22) fill('building', css('--block'), 3);
+  if (pxPerM > 0.12) fill('parking', css('--parking'), 2);
+  if (pxPerM > 0.05) { ctx.beginPath(); for (const g of layers.rail) if (seen(g)) path(g); ctx.strokeStyle = css('--rail'); ctx.lineWidth = Math.max(1, 2.5 * pxPerM); ctx.setLineDash([6, 4]); ctx.stroke(); ctx.setLineDash([]); }
+
+  const base = Math.max(1.4, 8 * pxPerM), thin = Math.max(1.2, Math.min(5, base * 0.36));
+  const visible = []; for (let i = 0; i < pieces.length; i++) if (seen(pieces[i])) visible.push(i);
+  const stroke = (list, color, width) => { ctx.beginPath(); for (const i of list) path(pieces[i]); ctx.strokeStyle = color; ctx.lineWidth = width; ctx.stroke(); };
+  stroke(visible, css('--street'), base);
+  const groups = { high: [], mid: [], low: [], unknown: [] }, levels = {};
+  for (const i of visible) { const c = pieces[i].cell; groups[levels[c] || (levels[c] = levelOf(c))].push(i); }
+  for (const name of ['unknown', 'high', 'mid', 'low']) stroke(groups[name], css('--' + name), thin);
+  if (selected >= 0) { stroke([selected], css('--ink'), Math.max(base, thin) + 5); stroke([selected], css('--' + levelOf(pieces[selected].cell)), Math.max(3, thin + 1)); }
+
+  if (pxPerM > 0.55) {                        // street names along the streets
+    ctx.font = '500 11px ' + css('--font'); ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillStyle = css('--label'); ctx.strokeStyle = css('--ground'); ctx.lineWidth = 3;
+    const used = new Set(), taken = new Set();
+    for (const i of visible) {
+      const g = pieces[i]; if (used.has(g.name)) continue;
+      const p = g.pts; let bestLen = 0, bj = -1;
+      for (let j = 0; j < p.length - 2; j += 2) { const l = Math.hypot((p[j + 2] - p[j]) * kx, p[j + 3] - p[j + 1]) * view.scale; if (l > bestLen) { bestLen = l; bj = j; } }
+      const text = DATA.names[g.name]; if (bj < 0 || !text || bestLen < ctx.measureText(text).width + 12) continue;
+      const ax = sx(p[bj]), ay = sy(p[bj + 1]), bx = sx(p[bj + 2]), by = sy(p[bj + 3]), mx = (ax + bx) / 2, my = (ay + by) / 2;
+      if (mx < 0 || mx > innerWidth || my < 0 || my > innerHeight) continue;
+      const slotKey = Math.round(mx / 90) + ':' + Math.round(my / 26); if (taken.has(slotKey)) continue;
+      taken.add(slotKey); used.add(g.name);
+      let angle = Math.atan2(by - ay, bx - ax); if (angle > Math.PI / 2) angle -= Math.PI; if (angle < -Math.PI / 2) angle += Math.PI;
+      ctx.save(); ctx.translate(mx, my); ctx.rotate(angle); ctx.strokeText(text, 0, -base / 2 - 7); ctx.fillText(text, 0, -base / 2 - 7); ctx.restore();
+    }
+  }
+  const size = Math.max(8, Math.min(13, 4 + pxPerM * 9));
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = '700 ' + Math.round(size * 1.15) + 'px ' + css('--font');
+  DATA.carParks.forEach((c, i) => {
+    const x = sx(c[0]), y = sy(c[1]); if (x < -20 || x > innerWidth + 20 || y < -20 || y > innerHeight + 20) return;
+    ctx.beginPath(); ctx.arc(x, y, size, 0, Math.PI * 2); ctx.fillStyle = i === selectedPark ? css('--ink') : css('--accent'); ctx.fill();
+    ctx.lineWidth = 2; ctx.strokeStyle = css('--surface'); ctx.stroke();
+    ctx.fillStyle = i === selectedPark ? css('--surface') : css('--on-accent'); ctx.fillText('P', x, y + 0.5);
+  });
+  if (store.parked) {
+    const x = sx(store.parked.x), y = sy(store.parked.y);
+    ctx.beginPath(); ctx.arc(x, y, 12, 0, Math.PI * 2); ctx.fillStyle = css('--brand-bg'); ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = css('--ink'); ctx.stroke();
+    ctx.beginPath(); ctx.arc(x, y, 4, 0, Math.PI * 2); ctx.fillStyle = css('--ink'); ctx.fill();
+  }
+}
+
+// ---- picking and helpers
+function pick(px, py) {
+  let best = -1, bestD = 20 * 20;
+  for (let i = 0; i < pieces.length; i++) {
+    const g = pieces[i]; if (sx(g.c) < px - 20 || sx(g.a) > px + 20 || sy(g.b) < py - 20 || sy(g.d) > py + 20) continue;
+    const p = g.pts;
+    for (let j = 0; j < p.length - 2; j += 2) {
+      const ax = sx(p[j]), ay = sy(p[j + 1]), dx = sx(p[j + 2]) - ax, dy = sy(p[j + 3]) - ay;
+      const t = Math.max(0, Math.min(1, ((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy || 1)));
+      const d = (px - ax - t * dx) ** 2 + (py - ay - t * dy) ** 2; if (d < bestD) { bestD = d; best = i; }
+    }
+  }
+  return best;
+}
+const lonLat = (x, y) => [(S + y / Q * (N - S)).toFixed(6), (W + x / Q * (E - W)).toFixed(6)];
+const middle = (g) => { const j = Math.floor(g.pts.length / 4) * 2; return [g.pts[j], g.pts[j + 1]]; };
+function navLinks(x, y) {
+  const [lat, lon] = lonLat(x, y);
+  return '<div class="actions">' +
+    '<a class="btn primary wide" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=' + lat + ',' + lon + '">Portami lì</a>' +
+    '<a class="btn" target="_blank" rel="noopener" href="https://maps.apple.com/?daddr=' + lat + ',' + lon + '">Mappe</a>' +
+    '<a class="btn" target="_blank" rel="noopener" href="https://waze.com/ul?ll=' + lat + ',' + lon + '&navigate=yes">Waze</a></div>';
+}
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const clock = (s) => String(Math.floor(s / 2)).padStart(2, '0') + ':' + (s % 2 ? '30' : '00');
+function whenLabel() { return live ? 'Live adesso' : 'Stima · ' + (day ? DAYS[day] : 'oggi') + ' alle ' + clock(slot); }
+function flyTo(x, y, scale) { view.cx = x; view.cy = y; if (scale) view.scale = scale; redraw(); }
+
+// ---- sheet
+function render() {
+  const sheet = $('sheet'); let html = '<button type="button" class="close" id="close" aria-label="Chiudi">×</button>';
+  if (tab === 'car') {
+    const p = store.parked;
+    html += '<span class="tag">Il mio veicolo</span><h2>' + (p ? esc(p.name) : 'Nessuna sosta salvata') + '</h2>';
+    if (p) {
+      const left = p.until ? Math.max(0, Math.round((p.until - Date.now()) / 60000)) : null;
+      html += '<p>Salvata alle ' + new Date(p.t).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' }) + ', solo su questo dispositivo.</p>';
+      html += left === null ? '<div class="actions"><select id="timer" class="btn" aria-label="Durata della sosta"><option value="30">30 min</option><option value="60" selected>1 ora</option><option value="90">1 ora e 30</option><option value="120">2 ore</option><option value="180">3 ore</option></select><button type="button" class="btn wide" id="timer-start">Avvia il timer</button></div>'
+        : '<div class="rows"><div><span>Sosta in scadenza tra</span><span class="big">' + Math.floor(left / 60) + ':' + String(left % 60).padStart(2, '0') + '</span></div></div><p>In questa versione il timer si vede solo con la pagina aperta: non può mandare notifiche.</p>';
+      html += '<div class="actions"><button type="button" class="btn primary wide" id="find">Trovala sulla mappa</button><button type="button" class="btn" id="leave">Sto ripartendo</button></div>' + navLinks(p.x, p.y);
+    } else html += '<p>Tocca una strada sulla mappa e scegli "Ho parcheggiato qui": la posizione resta su questo dispositivo.</p>';
+    html += '<div class="rows"><div><span>Veicolo</span><span>' + VEHICLE[store.vehicle] + '</span></div><div><span>Esiti che hai segnato</span><span>' + store.outcomes.length + '</span></div></div>';
+  } else if (tab === 'privacy') {
+    html += '<span class="tag">Privacy</span><h2>Resta tutto su questo dispositivo</h2>' +
+      '<p>Questa versione non invia nulla: niente posizione, niente account, niente pubblicità. Veicolo, sosta salvata ed esiti segnati sono conservati solo nel tuo browser.</p>' +
+      '<p>La pagina non può leggere la tua posizione: scegli tu la strada sulla mappa o con la ricerca.</p>' +
+      '<div class="rows"><div><span>Sosta salvata</span><span>' + (store.parked ? 'sì' : 'no') + '</span></div><div><span>Esiti segnati</span><span>' + store.outcomes.length + '</span></div></div>' +
+      '<div class="actions"><button type="button" class="btn ' + (confirmWipe ? 'danger' : '') + ' wide" id="wipe">' + (confirmWipe ? 'Conferma: cancella tutto' : 'Cancella i miei dati') + '</button></div>';
+  } else if (selectedPark >= 0) {
+    const c = DATA.carParks[selectedPark];
+    html += '<span class="tag">Parcheggio in struttura · dato del Comune</span><div class="name">' + esc(c[3]) + (c[5] ? ' · ' + esc(c[5]) : '') + '</div><h2>' + esc(c[2]) + '</h2>' +
+      '<div class="rows"><div><span>Posti</span><span>' + (c[4] ? c[4].toLocaleString('it-IT') : 'non indicati') + '</span></div>' + (c[6] ? '<div><span>Note</span><span>' + esc(c[6]) + '</span></div>' : '') +
+      '<div><span>Tariffe e orari</span><span>non ancora disponibili</span></div></div>' + navLinks(c[0], c[1]);
+  } else if (selected >= 0) {
+    const g = pieces[selected], level = levelOf(g.cell), n = DATA.stalls[selected], [mx, my] = middle(g), name = DATA.names[g.name] || 'Strada senza nome';
+    html += '<span class="tag ' + (example ? '' : 'live') + '">' + (example ? 'Esempio · dati finti' : whenLabel()) + '</span><div class="name">' + esc(name) + '</div><h2>' + VERDICT[level] + '</h2>';
+    html += example ? '<p>Colore di esempio per ' + VEHICLE[store.vehicle] + ', ' + whenLabel().toLowerCase() + '. Non descrive la situazione vera di questa strada.</p>'
+      : '<p>Nessuno ha ancora segnalato com\'è la sosta qui. La mappa si colora quando arrivano i contributi di chi usa SostaMi.</p>';
+    html += '<div class="rows"><div><span>Aree di sosta mappate qui</span><span>' + (n ? 'circa ' + n.toLocaleString('it-IT') + ' posti' : 'nessuna') + '</span></div>' +
+      '<div><span>Posti lungo il marciapiede</span><span>non ancora censiti</span></div><div><span>Tariffa e orari</span><span>non ancora disponibili</span></div></div>' + navLinks(mx, my);
+    html += '<p style="font-weight:600;color:var(--ink)">Hai cercato posto qui? Com\'è andata?</p><div class="outcomes">' +
+      '<button type="button" class="btn" data-outcome="subito">Trovato subito</button><button type="button" class="btn" data-outcome="dopo">Dopo un po\'</button><button type="button" class="btn" data-outcome="no">Non c\'era posto</button></div>' +
+      '<p id="saved" hidden>Segnato su questo dispositivo. Verrà inviato quando il servizio sarà attivo e avrai dato il consenso.</p>' +
+      '<div class="actions"><button type="button" class="btn wide" id="park-here">Ho parcheggiato qui</button></div>';
+  } else { sheet.hidden = true; return; }
+  sheet.innerHTML = html; sheet.hidden = false;
+  $('close').onclick = () => { selected = selectedPark = -1; setTab('map'); };
+  sheet.querySelectorAll('[data-outcome]').forEach((b) => b.onclick = () => {
+    store.outcomes.push({ name: DATA.names[pieces[selected].name], outcome: b.dataset.outcome, t: Date.now() }); save(); $('saved').hidden = false;
+  });
+  const on = (id, fn) => { const el = $(id); if (el) el.onclick = fn; };
+  on('park-here', () => { const [x, y] = middle(pieces[selected]); store.parked = { x, y, name: DATA.names[pieces[selected].name], t: Date.now(), until: null }; save(); setTab('car'); });
+  on('timer-start', () => { store.parked.until = Date.now() + +$('timer').value * 60000; save(); render(); });
+  on('find', () => flyTo(store.parked.x, store.parked.y, Math.max(view.scale, metresPerUnit * 1.2)));
+  on('leave', () => { store.parked = null; save(); render(); redraw(); });
+  on('wipe', () => { if (confirmWipe) { store = { vehicle: 'medium', parked: null, outcomes: [] }; save(); $('vehicle').value = 'medium'; confirmWipe = false; } else confirmWipe = true; render(); redraw(); });
+}
+function setTab(name) {
+  tab = name; confirmWipe = false;
+  for (const t of ['map', 'car', 'privacy']) $('tab-' + (t === 'map' ? 'map' : t)).setAttribute('aria-pressed', t === name);
+  render(); redraw();
+}
+function setStatus() {
+  $('status').textContent = example ? 'Stai guardando un esempio: i colori sono finti, le strade e i parcheggi sono veri.'
+    : 'Strade e parcheggi veri di ' + DATA.city + '. Non ci sono ancora segnalazioni: le strade restano grigie.';
+  $('example').setAttribute('aria-pressed', example); $('example').textContent = example ? 'Nascondi esempio' : 'Mostra esempio';
+  $('live').setAttribute('aria-pressed', live); $('other').setAttribute('aria-pressed', !live); $('when').hidden = live;
+  $('other').textContent = live ? 'Altro orario' : (day ? DAYS[day] : 'Oggi') + ' ' + clock(slot);
+}
+
+// ---- interaction
+const pointers = new Map(); let moved = false, pinch = 0;
+canvas.addEventListener('pointerdown', (e) => { canvas.setPointerCapture(e.pointerId); pointers.set(e.pointerId, [e.clientX, e.clientY]); moved = false; pinch = 0; });
+canvas.addEventListener('pointermove', (e) => {
+  if (!pointers.has(e.pointerId)) return;
+  const prev = pointers.get(e.pointerId); pointers.set(e.pointerId, [e.clientX, e.clientY]);
+  if (pointers.size === 1) { const dx = e.clientX - prev[0], dy = e.clientY - prev[1]; if (Math.abs(dx) + Math.abs(dy) > 2) moved = true; view.cx -= dx / (view.scale * kx); view.cy += dy / view.scale; }
+  else if (pointers.size === 2) { const [a, b] = [...pointers.values()], dist = Math.hypot(a[0] - b[0], a[1] - b[1]); if (pinch) zoomAt((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, dist / pinch); pinch = dist; moved = true; }
+  redraw();
+});
+const release = (e) => {
+  if (pointers.has(e.pointerId) && pointers.size === 1 && !moved) {
+    selectedPark = DATA.carParks.findIndex((c) => Math.hypot(sx(c[0]) - e.clientX, sy(c[1]) - e.clientY) < 20);
+    selected = selectedPark >= 0 ? -1 : pick(e.clientX, e.clientY); setTab('map');
+  }
+  pointers.delete(e.pointerId); pinch = 0;
+};
+canvas.addEventListener('pointerup', release); canvas.addEventListener('pointercancel', release);
+function zoomAt(px, py, factor) {
+  const min = Math.min(innerWidth / (Q * kx), innerHeight / Q) * 0.8, next = Math.max(min, Math.min(metresPerUnit * 6, view.scale * factor));
+  const wx = view.cx + (px - innerWidth / 2) / (view.scale * kx), wy = view.cy - (py - innerHeight / 2) / view.scale;
+  view.scale = next; view.cx = wx - (px - innerWidth / 2) / (view.scale * kx); view.cy = wy + (py - innerHeight / 2) / view.scale;
+}
+canvas.addEventListener('wheel', (e) => { e.preventDefault(); zoomAt(e.clientX, e.clientY, Math.exp(-e.deltaY * 0.0015)); redraw(); }, { passive: false });
+
+$('search').addEventListener('input', (e) => {
+  const q = e.target.value.trim().toLowerCase(), box = $('results'); box.innerHTML = '';
+  if (q.length < 2) { box.hidden = true; return; }
+  const hits = []; for (let i = 0; i < lower.length && hits.length < 7; i++) if (lower[i].includes(q)) hits.push(i);
+  for (const i of hits) { const b = document.createElement('button'); b.type = 'button'; b.textContent = DATA.names[i]; b.onclick = () => goToStreet(i); box.appendChild(b); }
+  if (!hits.length) { const p = document.createElement('p'); p.className = 'status'; p.style.padding = '10px 12px'; p.textContent = 'Nessuna via trovata.'; box.appendChild(p); }
+  box.hidden = false;
+});
+function goToStreet(nameIndex) {
+  const mine = []; let a = 1e9, b = 1e9, c = -1e9, d = -1e9;
+  pieces.forEach((g, i) => { if (g.name === nameIndex) { mine.push(i); a = Math.min(a, g.a); b = Math.min(b, g.b); c = Math.max(c, g.c); d = Math.max(d, g.d); } });
+  if (!mine.length) return;
+  const fit = Math.min(innerWidth / ((c - a + 400) * kx), innerHeight / (d - b + 400)) * 0.7;
+  selectedPark = -1; selected = mine[Math.floor(mine.length / 2)]; $('results').hidden = true; $('search').value = DATA.names[nameIndex];
+  flyTo((a + c) / 2, (b + d) / 2, Math.min(metresPerUnit * 2, Math.max(fit, metresPerUnit * 0.25))); setTab('map');
+}
+$('live').onclick = () => { live = true; setStatus(); render(); redraw(); };
+$('other').onclick = () => { live = false; setStatus(); render(); redraw(); };
+$('example').onclick = () => { example = !example; setStatus(); render(); redraw(); };
+$('vehicle').value = store.vehicle;
+$('vehicle').onchange = (e) => { store.vehicle = e.target.value; save(); render(); redraw(); };
+$('hour').oninput = (e) => { slot = +e.target.value; $('hour-out').textContent = clock(slot); setStatus(); render(); redraw(); };
+DAYS.forEach((label, i) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = label; b.setAttribute('aria-pressed', i === 0);
+  b.onclick = () => { day = i; [...$('days').children].forEach((el, j) => el.setAttribute('aria-pressed', j === i)); setStatus(); render(); redraw(); }; $('days').appendChild(b); });
+$('tab-map').onclick = () => setTab('map'); $('tab-car').onclick = () => setTab('car'); $('tab-privacy').onclick = () => setTab('privacy');
+$('credit').textContent = DATA.attribution;
+addEventListener('resize', resize);
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', redraw);
+new MutationObserver(redraw).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+setInterval(() => { if (tab === 'car' && store.parked && store.parked.until) render(); if (example && live) redraw(); }, 30000);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(redraw);
+setStatus(); resize();
+</script>

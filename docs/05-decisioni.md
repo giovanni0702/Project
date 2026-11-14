@@ -255,3 +255,11 @@ Formato: ogni decisione ha data, stato, contesto, scelta e conseguenze. Le decis
 - **Data:** 2026-11-14
 - **Stato:** decisa dal fondatore, subordinata alla conferma del red team (T-047)
 - **Scelta:** chi ha già contribuito in una zona entra subito nel dato live; i nuovi contributori entrano ogni 30 minuti. Resta l'aggiornamento ogni 5 minuti.
+
+## D-035 — Versione web di SostaMi (computer e telefono)
+- **Data:** 2026-11-14
+- **Stato:** decisa dal fondatore (vuole usarla da computer e da iPhone); prima versione pubblicata come pagina privata
+- **Fatto:** `web/app_template.html` e `scripts/build_webapp.py` producono un'app in una sola pagina con la **mappa vera di Milano** disegnata dai dati del Comune (strade con nome, edifici, verde, acqua, ferrovie, aree di sosta, parcheggi in struttura), ricerca delle vie, vista live e altri orari, veicolo, sosta salvata con timer, segnalazione dell'esito, collegamenti di navigazione, pagina privacy. Link: https://claude.ai/artifact/RCK6XaPgv7oTuTKun7Wk87
+- **Limiti di questa forma (pagina dentro Claude):** è privata del fondatore finché non la condivide; non può leggere la posizione GPS; non può caricare una mappa di sfondo da altri siti; non comunica con il nostro servizio, quindi le segnalazioni restano sul dispositivo e la mappa reale resta grigia. I colori si vedono solo con "Mostra esempio", dichiarato finto.
+- **Passo successivo proposto:** pubblicare la stessa app come sito vero (per esempio GitHub Pages, gratuito): avrebbe un link pubblico, si installa sulla schermata Home dell'iPhone, può usare il GPS e collegarsi al servizio. Pubblicare è una decisione del fondatore e richiede prima la verifica del red team (T-047), la DPIA firmata e un servizio online (T-030).
+- **Conseguenza per la beta:** la versione web può sostituire o affiancare l'app Android: nessuno store, nessuna installazione, funziona su iPhone, Android e computer.

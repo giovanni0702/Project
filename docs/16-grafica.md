@@ -2,6 +2,9 @@
 
 Stato: **direzione approvata dal fondatore il 2026-11-14 (D-024): mantenerla.** Seconda bozza, non ancora provata su telefono né con utenti. Proprietario: `visual-designer`. Flussi e testi: [`08-ux.md`](08-ux.md).
 
+## Versione web funzionante
+https://claude.ai/artifact/RCK6XaPgv7oTuTKun7Wk87 (sorgente `web/app_template.html`).
+
 ## Dove vederla
 - Tavole pubblicate (private, del fondatore): https://claude.ai/artifact/ChLZtfNZZvJ3Aji8uCQe6L
 - Sorgente nel repository: `design/schermate/`
