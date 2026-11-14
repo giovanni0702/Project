@@ -125,7 +125,8 @@ def test_live_outcomes_move_the_estimate_now():
 def test_published_grid_has_aggregates_only():
     import json
     from parking_core.publish import build_grid
-    payload = build_grid(CITY, outcomes=synthetic(CELLS[10], 36, 4, contributors=12))
+    now = datetime(2026, 11, 16, 18, 45)  # falls in SLOT
+    payload = build_grid(CITY, outcomes=synthetic(CELLS[10], 36, 4, contributors=12), now=now)
     text = json.dumps(payload)
     assert payload["valid_minutes"] == 5 and len(payload["cells"]) == len(CELLS)
     assert "c1" not in json.dumps(list(payload["cells"].values())) and "contributor" not in text
