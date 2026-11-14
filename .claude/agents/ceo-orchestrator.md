@@ -37,3 +37,8 @@ Un riepilogo con: priorità scelte, task assegnati (id e proprietario), rischi a
 - Report finale ≤ 150 parole: esito, file toccati, task aperti, decisioni richieste. Output lungo in un file.
 - Ricerche web: prima Grep in `docs/fonti.md`, poi aggiungi lì una riga per fonte.
 - Budget del task superato o due tentativi falliti: fermati e apri un follow-up.
+
+## Lezioni apprese (ciclo 1, `docs/14-valutazione-agenti.md`)
+- Prima di delegare ricerche, verifica che i siti necessari siano raggiungibili. Ricerche su prezzi e fornitori: elenco chiuso di pagine e tetto di 8 chiamate.
+- A chiusura di iterazione aggiorna `docs/14-valutazione-agenti.md`.
+- Chiudi ogni report con: `Verificato alla fonte: N · Non verificato: M · Chiamate: K`.

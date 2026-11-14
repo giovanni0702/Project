@@ -38,6 +38,7 @@ Questo file è caricato a ogni turno: **massimo 100 righe, si modifica raramente
 ceo-orchestrator            pianifica, assegna, risolve conflitti; non scrive codice
 ├── product-manager         requisiti, roadmap, criteri
 │   ├── ux-designer         flussi, testi IT/EN, accessibilità
+│   │   └── visual-designer solo grafica: colori, tipografia, icone, bozze
 │   └── competitor-analyst  concorrenza
 ├── data-scientist          modello, calibrazione, metriche
 │   └── data-engineer       fonti, licenze, pipeline

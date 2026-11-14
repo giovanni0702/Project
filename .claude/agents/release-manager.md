@@ -38,3 +38,7 @@ Build di prova pronta, scheda store bozza in `docs/10-release.md`, checklist com
 - Report finale ≤ 150 parole: esito, file toccati, task aperti, decisioni richieste. Output lungo in un file.
 - Ricerche web: prima Grep in `docs/fonti.md`, poi aggiungi lì una riga per fonte.
 - Budget del task superato o due tentativi falliti: fermati e apri un follow-up.
+
+## Lezioni apprese (ciclo 1, `docs/14-valutazione-agenti.md`)
+- Requisiti degli store solo dalle pagine ufficiali lette; ciò che scrivi a memoria porta **[verificare]**. Tetto: 12 chiamate per incarico.
+- Chiudi ogni report con: `Verificato alla fonte: N · Non verificato: M · Chiamate: K`.

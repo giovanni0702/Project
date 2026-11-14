@@ -19,6 +19,9 @@ Una riga per file: cosa contiene e quando leggerlo. Aggiorna questa riga se camb
 | `11-marketing.md` | Posizionamento, messaggi, ASO (bozze) | Testi pubblici, lancio |
 | `12-sicurezza.md` | Minacce, antiabuso, piano incidenti | API, autenticazione, log |
 | `13-rischi.md` | Registro dei rischi | Pianificazione, watchdog |
+| `14-valutazione-agenti.md` | Voti e correzioni per gli agenti | Chiusura iterazione, prima di delegare |
+| `15-dpia-bozza.md` | Bozza di valutazione d'impatto sulla privacy | Raccolta dati, rilevamento automatico |
+| `16-grafica.md` | Sistema visivo, token, link alle schermate | Lavoro su interfaccia e bozze |
 | `fonti.md` | Cache delle ricerche web con scadenza | Prima di ogni ricerca web |
 | `archivio/` | Task chiusi delle iterazioni passate | Quasi mai |
 | `../prompts/` | Prompt del fondatore | Mai (gli agenti non lo leggono) |

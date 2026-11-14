@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Consenso alla posizione</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#2251CC}a:hover{color:#173A99}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 32px 24px 28px; background: #14202B; font-family: Inter, system-ui, sans-serif; color: #FFFFFF; display: flex; flex-direction: column; gap: 24px">
+
+<div style="display: flex; gap: 6px" role="img" aria-label="Passo 2 di 3">
+<span style="flex: 1; height: 4px; border-radius: 2px; background: #FFFFFF"></span>
+<span style="flex: 1; height: 4px; border-radius: 2px; background: #FFFFFF"></span>
+<span style="flex: 1; height: 4px; border-radius: 2px; background: #45525F"></span>
+</div>
+
+<svg width="132" height="132" viewBox="0 0 132 132" aria-hidden="true" style="display: block; margin-top: 12px">
+<polygon points="110,66 88,104.1 44,104.1 22,66 44,27.9 88,27.9" fill="#1FA68A" fill-opacity="0.28" stroke="#5FD3BC" stroke-width="3"></polygon>
+<circle cx="66" cy="66" r="12" fill="#FFFFFF"></circle>
+<circle cx="66" cy="66" r="4.5" fill="#14202B"></circle>
+</svg>
+
+<div style="display: flex; flex-direction: column; gap: 12px">
+<div style="font: 700 30px 'Space Grotesk', Inter, sans-serif; line-height: 1.12">Sappiamo la zona, non dove sei</div>
+<div style="font: 400 16px Inter, system-ui, sans-serif; line-height: 1.5; color: #C9D2DB">Per dirti dove è più facile parcheggiare ci serve la tua posizione mentre usi l'app.</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 16px">
+<div style="display: flex; gap: 14px; align-items: flex-start">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5FD3BC" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+<div style="font: 400 15px Inter, system-ui, sans-serif; line-height: 1.45">Il telefono trasforma la posizione in una zona di qualche isolato. Le coordinate non vengono mai inviate.</div>
+</div>
+<div style="display: flex; gap: 14px; align-items: flex-start">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5FD3BC" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+<div style="font: 400 15px Inter, system-ui, sans-serif; line-height: 1.45">Nessun nome, nessuna email, nessun account. Nessuna pubblicità.</div>
+</div>
+<div style="display: flex; gap: 14px; align-items: flex-start">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5FD3BC" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+<div style="font: 400 15px Inter, system-ui, sans-serif; line-height: 1.45">Puoi cambiare idea quando vuoi, dalla sezione Privacy.</div>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 10px; margin-top: auto">
+<a href="Main.dc.html" style="height: 56px; display: flex; align-items: center; justify-content: center; border-radius: 16px; background: #FFFFFF; color: #14202B; font: 600 16px Inter, system-ui, sans-serif; text-decoration: none">Consenti mentre uso l'app</a>
+<a href="Main.dc.html" style="height: 52px; display: flex; align-items: center; justify-content: center; border-radius: 16px; border: 1px solid #5C6B79; color: #FFFFFF; font: 600 15px Inter, system-ui, sans-serif; text-decoration: none">Non ora</a>
+<div style="text-align: center; font: 400 13px Inter, system-ui, sans-serif; line-height: 1.4; color: #C9D2DB">Senza posizione puoi comunque vedere la mappa e le regole di sosta.</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

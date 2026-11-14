@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>La mia auto e contributo</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#2251CC}a:hover{color:#173A99}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; position: relative; background: #F4F6F8; font-family: Inter, system-ui, sans-serif; color: #14202B">
+
+<div style="box-sizing: border-box; height: 772px; padding: 24px 20px 20px; display: flex; flex-direction: column; gap: 16px">
+
+<div style="font: 700 26px 'Space Grotesk', Inter, sans-serif; line-height: 1.1">Com'è andata?</div>
+<div style="font: 400 15px Inter, system-ui, sans-serif; line-height: 1.4; color: #2A3947; margin-top: -8px">Un tocco aiuta chi sta cercando posto adesso. Resta anonimo.</div>
+
+<div style="display: flex; flex-direction: column; gap: 10px">
+<button type="button" style="height: 64px; padding: 0 18px; border: 0; border-radius: 18px; background: #FFFFFF; color: #14202B; display: flex; align-items: center; gap: 14px; font: 600 16px Inter, system-ui, sans-serif; text-align: left">
+<span style="width: 36px; height: 36px; border-radius: 12px; background: #D6F1EA; display: flex; align-items: center; justify-content: center; flex: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B6B57" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>
+<span>Trovato subito</span>
+</button>
+<button type="button" style="height: 64px; padding: 0 18px; border: 0; border-radius: 18px; background: #FFFFFF; color: #14202B; display: flex; align-items: center; gap: 14px; font: 600 16px Inter, system-ui, sans-serif; text-align: left">
+<span style="width: 36px; height: 36px; border-radius: 12px; background: #FBEBC4; display: flex; align-items: center; justify-content: center; flex: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7A4E00" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8"></circle><path d="M12 7.5V12l3 2"></path></svg></span>
+<span>Trovato dopo un po'</span>
+</button>
+<button type="button" style="height: 64px; padding: 0 18px; border: 0; border-radius: 18px; background: #FFFFFF; color: #14202B; display: flex; align-items: center; gap: 14px; font: 600 16px Inter, system-ui, sans-serif; text-align: left">
+<span style="width: 36px; height: 36px; border-radius: 12px; background: #F3D9E2; display: flex; align-items: center; justify-content: center; flex: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8E2A4B" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></span>
+<span>Non c'era posto</span>
+</button>
+</div>
+
+<div style="padding: 18px 20px; background: #FFFFFF; border-radius: 20px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<div style="font: 600 14px Inter, system-ui, sans-serif; color: #51606E">La mia auto</div>
+<div style="font: 600 17px Inter, system-ui, sans-serif">Via Solferino</div>
+<div style="font: 400 13px Inter, system-ui, sans-serif; color: #51606E">Salvata solo su questo telefono</div>
+</div>
+<a href="Main.dc.html" style="height: 44px; padding: 0 16px; display: flex; align-items: center; border-radius: 14px; background: #EEF1F5; color: #14202B; font: 600 14px Inter, system-ui, sans-serif; text-decoration: none">Ritrova</a>
+</div>
+<div style="height: 1px; background: #E3E8ED"></div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<div style="font: 600 15px Inter, system-ui, sans-serif">Sosta in scadenza</div>
+<div style="font: 400 13px Inter, system-ui, sans-serif; color: #51606E">Ti avviso 10 minuti prima</div>
+</div>
+<div style="font: 700 24px 'Space Grotesk', Inter, sans-serif">0:42</div>
+</div>
+<button type="button" style="height: 52px; border: 0; border-radius: 16px; background: #2251CC; color: #FFFFFF; font: 600 16px Inter, system-ui, sans-serif">Sto ripartendo</button>
+</div>
+
+<div style="padding: 16px 20px; background: #FFFFFF; border-radius: 20px; display: flex; align-items: center; justify-content: space-between; gap: 14px">
+<div style="display: flex; flex-direction: column; gap: 3px; min-width: 0">
+<div style="font: 600 15px Inter, system-ui, sans-serif">Rilevamento automatico</div>
+<div style="font: 400 13px Inter, system-ui, sans-serif; line-height: 1.35; color: #51606E">Spento. Se lo attivi, il telefono capisce da solo quando parcheggi. Il percorso non lascia mai il telefono.</div>
+</div>
+<button type="button" role="switch" aria-checked="false" aria-label="Rilevamento automatico" style="width: 52px; height: 44px; padding: 6px 0; border: 0; background: transparent; flex: none">
+<span style="display: block; width: 52px; height: 32px; box-sizing: border-box; padding: 3px; border-radius: 16px; background: #AAB4BE"><span style="display: block; width: 26px; height: 26px; border-radius: 13px; background: #FFFFFF"></span></span>
+</button>
+</div>
+
+<div style="margin-top: auto; text-align: center; font: 500 13px Inter, system-ui, sans-serif; color: #51606E">Finora hai aiutato [N] automobilisti</div>
+
+</div>
+
+<nav aria-label="Sezioni" style="position: absolute; left: 0; right: 0; bottom: 0; height: 72px; box-sizing: border-box; padding: 0 12px; background: #FFFFFF; border-top: 1px solid #E3E8ED; display: flex; align-items: center; justify-content: space-around">
+<a href="Main.dc.html" style="min-width: 88px; height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: #51606E; font: 500 12px Inter, system-ui, sans-serif; text-decoration: none">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M9 4L3 6.5v13.5L9 17.5l6 2.5 6-2.5V4l-6 2.5L9 4zM9 4v13.5M15 6.5V20"></path></svg>
+<span>Mappa</span>
+</a>
+<a href="Auto.dc.html" aria-current="page" style="min-width: 88px; height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: #2251CC; font: 600 12px Inter, system-ui, sans-serif; text-decoration: none">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16v-3.5l2-5.5h12l2 5.5V16M4 16h16M4 16v2.5M20 16v2.5"></path><circle cx="7.5" cy="13" r="1"></circle><circle cx="16.5" cy="13" r="1"></circle></svg>
+<span>La mia auto</span>
+</a>
+<a href="Consenso.dc.html" style="min-width: 88px; height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: #51606E; font: 500 12px Inter, system-ui, sans-serif; text-decoration: none">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7.5 3v5.5c0 4.5-3 8-7.5 9.5-4.5-1.5-7.5-5-7.5-9.5V6L12 3z"></path></svg>
+<span>Privacy</span>
+</a>
+</nav>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>

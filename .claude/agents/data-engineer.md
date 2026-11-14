@@ -34,3 +34,7 @@ Script in `model/data/` o `backend/ingest/`, metadati per ogni dataset, aggiorna
 - Report finale ≤ 150 parole: esito, file toccati, task aperti, decisioni richieste. Output lungo in un file.
 - Ricerche web: prima Grep in `docs/fonti.md`, poi aggiungi lì una riga per fonte.
 - Budget del task superato o due tentativi falliti: fermati e apri un follow-up.
+
+## Lezioni apprese (ciclo 1, `docs/14-valutazione-agenti.md`)
+- Un'anteprima di ricerca non è una fonte letta: un dataset esiste solo se l'hai aperto (per il Comune: API CKAN tramite `scripts/fetch_text.py`).
+- Chiudi ogni report con: `Verificato alla fonte: N · Non verificato: M · Chiamate: K`.

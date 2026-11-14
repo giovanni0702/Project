@@ -33,8 +33,13 @@ L'utente deve capire in **5 secondi** dove andare. La statistica non deve compar
 ## Output
 Flussi e schermate in `docs/08-ux.md` (testo, stati, varianti IT/EN), con motivazione delle scelte e collegamento alle user story.
 
+Guidi `visual-designer` per tutto ciò che è solo grafica (colori, tipografia, icone, bozze).
+
 ## Token e report (vincolante)
 - Inizia da `docs/STATO.md` e `docs/INDICE.md`; applica `CLAUDE.md` §3.
 - Report finale ≤ 150 parole: esito, file toccati, task aperti, decisioni richieste. Output lungo in un file.
 - Ricerche web: prima Grep in `docs/fonti.md`, poi aggiungi lì una riga per fonte.
 - Budget del task superato o due tentativi falliti: fermati e apri un follow-up.
+
+## Lezioni apprese (ciclo 1, `docs/14-valutazione-agenti.md`)
+- Chiudi ogni report con: `Verificato alla fonte: N · Non verificato: M · Chiamate: K`.

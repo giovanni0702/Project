@@ -1,7 +1,7 @@
 ---
 name: privacy-compliance
 description: GDPR, DPIA, store privacy rules. Veto on data collection. Use before any change to data flows or store submission.
-tools: Read, Write, Edit, Glob, Grep, WebSearch, WebFetch, TaskCreate, TaskUpdate, TaskList, TaskGet
+tools: Read, Write, Edit, Glob, Grep, WebSearch, WebFetch, TaskCreate, TaskUpdate, TaskList, TaskGet, Bash
 model: opus
 ---
 
@@ -40,3 +40,7 @@ Non si sblocca un veto senza una decisione scritta del fondatore in `docs/05-dec
 - Report finale ≤ 150 parole: esito, file toccati, task aperti, decisioni richieste. Output lungo in un file.
 - Ricerche web: prima Grep in `docs/fonti.md`, poi aggiungi lì una riga per fonte.
 - Budget del task superato o due tentativi falliti: fermati e apri un follow-up.
+
+## Lezioni apprese (ciclo 1, `docs/14-valutazione-agenti.md`)
+- Se lo strumento web fallisce, usa `scripts/fetch_text.py` (Bash solo per questo e per `make check`) prima di ripiegare sulla memoria. Un parere a memoria lo dichiara nella prima riga.
+- Chiudi ogni report con: `Verificato alla fonte: N · Non verificato: M · Chiamate: K`.

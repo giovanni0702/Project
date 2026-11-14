@@ -134,7 +134,7 @@ Formato: ogni decisione ha data, stato, contesto, scelta e conseguenze. Le decis
 
 ## D-018 — L'app impara da sola: rilevamento automatico tramite posizione
 - **Data:** 2026-11-14
-- **Stato:** **voluta dal fondatore; si attiva solo dopo la DPIA** (T-028), che il fondatore firma. Il parere preliminare di `privacy-compliance` era contrario per la prima beta: la DPIA deve mostrare che le condizioni qui sotto bastano.
+- **Stato:** **voluta dal fondatore; veto di `privacy-compliance` su questa forma (2026-11-14)**. Approvata solo con le condizioni C1–C12 di `15-dpia-bozza.md`, per la beta chiusa: attende la decisione del fondatore e poi la firma della DPIA. Il parere preliminare di `privacy-compliance` era contrario per la prima beta: la DPIA deve mostrare che le condizioni qui sotto bastano.
 - **Scelta:** con il consenso dell'utente, il telefono capisce da solo quando il conducente sta cercando posto, quando ha parcheggiato, quanto ci ha messo e quando riparte.
 - **Perché conta:** il tempo di ricerca misurato è esattamente il bersaglio del modello ("posto trovato entro 5 minuti"). È il dato migliore che possiamo avere, e arriva senza chiedere nulla all'utente.
 - **Condizioni di progetto (non negoziabili):**
@@ -146,6 +146,11 @@ Formato: ogni decisione ha data, stato, contesto, scelta e conseguenze. Le decis
   6. Consumo di batteria misurato in beta, con soglia massima da fissare.
 - **Come l'app si migliora da sola:** ogni esito aggiorna la stima al ciclo successivo; emivita, peso dei dati recenti e soglie si ricalibrano periodicamente su dati reali tenuti da parte; un peggioramento della calibrazione apre un task automatico (T-032).
 - **Vincoli esterni:** per la beta con installazione diretta non serve l'approvazione di Google. Per Google Play la posizione in background richiede dichiarazione e approvazione: va dimostrato che è essenziale alla funzione principale (`10-release.md`).
+
+## D-020 — Agente dedicato alla grafica e valutazione periodica degli agenti
+- **Data:** 2026-11-14
+- **Stato:** decisa dal fondatore
+- **Scelta:** nuovo agente `visual-designer` (solo grafica, sotto `ux-designer`). Gli agenti si valutano a ogni chiusura di iterazione in `14-valutazione-agenti.md`; le correzioni entrano nelle loro definizioni ("Lezioni apprese"). `privacy-compliance` e `competitor-analyst` ricevono Bash, limitato allo script di lettura delle fonti.
 
 ## D-019 — Aggiornamento ogni 5 minuti
 - **Data:** 2026-11-14

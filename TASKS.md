@@ -7,22 +7,22 @@ Stati: Backlog · In corso (con nome del proprietario) · Bloccato · Fatto.
 
 ## Decisioni richieste al fondatore
 
-Nessuna urgente. Decise il 2026-11-14: D-003, D-010, D-013–D-017 (`docs/05-decisioni.md`).
-
-1. **Prima della beta (non ora):** creare un account gratuito per il server della beta, quando T-030 avrà indicato quale. Lo crei tu.
+1. **Condizioni privacy C1–C12 per il rilevamento automatico** (`docs/15-dpia-bozza.md` §condizioni). `privacy-compliance` mantiene il veto su D-018 com'è scritta e la approva solo con queste condizioni, per la sola beta chiusa. A) accettarle; B) rinunciare al rilevamento automatico nella prima beta. Raccomandazione: A. Costo: i dati compaiono sulla mappa con qualche minuto di ritardo (invio ritardato 0–10 minuti; una zona si aggiorna solo con almeno 2 nuovi contributori).
+2. **Direzione grafica** della prima bozza (`docs/16-grafica.md`): va bene, o cosa cambiare.
+3. **Prima della beta (non ora):** firma della DPIA dopo revisione di un professionista; account gratuito per il server (T-030).
 
 ## Iterazione 1 — in corso
 
-### T-028 — DPIA e progetto del rilevamento automatico (posizione e Bluetooth, D-018)
-privacy-compliance | Backlog | alta | L | T-018
-Criteri: [ ] bozza di DPIA per tap, "ricorda dove ho parcheggiato", posizione in background e Bluetooth · [ ] verifica che le condizioni di D-018 bastino, o correzioni · [ ] condizioni: consenso separato, scelta dell'auto, zone escluse sul dispositivo, nessun identificativo Bluetooth inviato · [ ] effetto sulla dichiarazione di posizione in background · [ ] pronta per la firma del fondatore
+### T-034 — Allineare codice e contratto alle condizioni C1–C12
+backend-engineer | Bloccato (decisione 1) | alta | M | —
+Criteri: [ ] pseudonimo per cella al posto dell'identificatore a 24 ore · [ ] griglia: probabilità a classi, nessun conteggio; cella aggiornata solo con almeno 2 nuovi contributori · [ ] server: ora di arrivo scartata, nessun IP nei log · [ ] test di re-identificazione automatico in `make check`
 
 ### T-029 — Dati reali visibili con pochi tester (soglia k) e piano di validazione
 data-scientist | Backlog | alta | M | T-010
 Criteri: [ ] stima di quanti esiti servono per superare k con 10–20 tester · [ ] proposta per la beta: zone, dimensione delle celle, larghezza delle fasce · [ ] missioni di copertura · [ ] quota di esiti riservata alla validazione · [ ] parere di `privacy-compliance`
 
 ### T-032 — Rilevamento sul dispositivo e miglioramento automatico
-data-scientist | Backlog | alta | L | T-028
+data-scientist | Backlog | alta | L | decisione 1
 Criteri: [ ] regole per riconoscere inizio ricerca, sosta e partenza (con `mobile-engineer`) · [ ] scaglioni del tempo di ricerca · [ ] ricalibrazione periodica automatica dei parametri su dati reali riservati · [ ] allarme automatico se la calibrazione peggiora · [ ] misura dei falsi parcheggi e della batteria in beta
 
 ### T-030 — Server gratuito per la beta
@@ -46,7 +46,7 @@ product-manager | Backlog | alta | M | T-031
 Criteri: [ ] requisiti e criteri di accettazione · [ ] fonte dati verificata e data della fonte visibile · [ ] avviso "vale la segnaletica" · [ ] riferimento a `02-concorrenza.md`
 
 ### T-012 — "Ricorda dove ho parcheggiato" e timer di scadenza
-product-manager | Backlog | alta | M | T-018
+product-manager | Backlog | alta | M | —
 Criteri: [ ] tutto sul dispositivo · [ ] salvare l'auto propone l'evento "ho parcheggiato", ripartire "ho lasciato", con consenso · [ ] parere di `privacy-compliance`
 
 ### T-013 — "Piano B": zona verde vicina, strutture, interscambio
@@ -71,12 +71,8 @@ Criteri: [ ] include il dato in licenza a terzi (D-013) · [ ] pro, contro e vin
 
 ## Backlog — privacy, sicurezza, tecnica
 
-### T-018 — Parere sui vincoli tecnici v2 e test di re-identificazione
-privacy-compliance | Backlog | alta | M | —
-Criteri: [ ] ogni vincolo di `docs/03-privacy.md` "Vincoli tecnici (v2)" approvato o corretto · [ ] rotazione dell'identificatore e diritti motivati · [ ] specifica del test di re-identificazione · [ ] indice della DPIA
-
 ### T-019 — Modello delle minacce e antiabuso
-backend-engineer | Backlog | media | M | T-018
+backend-engineer | Backlog | media | M | —
 Criteri: [ ] `docs/12-sicurezza.md` completato · [ ] limiti di frequenza e controlli di plausibilità definiti · [ ] attestazione del dispositivo valutata con `privacy-compliance`
 
 ### T-020 — Prova tecnica della mappa (MapLibre + PMTiles in Flutter)
@@ -114,6 +110,10 @@ data-scientist | Backlog | bassa | L | T-010
 Criteri: [ ] formulazione scritta · [ ] condizioni per adottarlo rispetto al Beta-Binomiale
 
 ## Backlog — UX e marketing
+
+### T-033 — Sistema visivo e schermate mancanti
+visual-designer | Backlog | media | M | T-009
+Criteri: [ ] direzione confermata dal fondatore sulla prima bozza (`docs/16-grafica.md`) · [ ] modalità scura · [ ] privacy e diritti, onboarding completo, stato senza rete · [ ] stile della mappa reale (con T-020) · [ ] token pronti per `mobile-engineer`
 
 ### T-009 — Flussi e schermate
 ux-designer | Backlog | media | M | T-004

@@ -31,20 +31,24 @@ Stato: **principi di progetto**. Non sostituiscono un parere legale. Prima del l
 
 ## Vincoli tecnici (v2)
 
-Proposti il 2026-11-14, da confermare da `privacy-compliance` in T-018 prima di scrivere codice di raccolta.
+Rivisti da `privacy-compliance` il 2026-11-14 (T-018, T-028). Motivi e condizioni C1–C12 → [`15-dpia-bozza.md`](15-dpia-bozza.md) (bozza non firmata). Ogni voce è marcata confermato, corretto o nuovo.
 
-- **Riduzione sul dispositivo:** la posizione diventa cella H3 e l'orario è arrotondato alla fascia **prima** dell'invio. Il server non riceve mai coordinate.
-- **La mappa non rivela dove guarda l'utente:** l'app scarica la griglia intera di Milano come file statico. Nessuna richiesta contiene posizione o destinazione.
-- **Sotto soglia k** la cella mostra solo il prior, con affidabilità bassa. La soglia vale per gli aggregati derivati dagli utenti.
-- **Rilevamento automatico tramite posizione** (D-018): solo dopo DPIA firmata; percorso mai inviato e cancellato sul telefono; al server solo evento, cella, fascia e tempo di ricerca a scaglioni; zone escluse; spento in partenza.
-- **Pubblicazione a intervalli fissi** (ogni 5 minuti, D-019), per impedire di isolare un contributo confrontando due versioni.
-- **Rotazione dell'identificatore** (proposta: ogni 24 ore). Gli eventi "ho parcheggiato" e "ho lasciato" non sono collegati tra loro sul server.
-- **Diritti e rotazione:** accesso e cancellazione valgono per gli identificatori ancora sul dispositivo; dopo la rotazione il dato non è più riconducibile. Scelta da motivare nella DPIA.
-- **Log** senza indirizzi IP e senza posizione, verificati da test automatico.
-- **Senza consenso** l'app resta utilizzabile: mappa e regole di sosta.
-- **Funzioni solo sul dispositivo** ("ricorda dove ho parcheggiato", timer, contatore dei contributi): nessun dato lascia il telefono.
-- **Segnalazione dei crash** solo con consenso e senza posizione.
-- **Test di re-identificazione** prima di ogni release: uno script tenta di isolare singoli contributori dagli aggregati. Se riesce, la release è bloccata.
+- [confermato] **Riduzione sul dispositivo:** la posizione diventa cella H3 e l'orario è arrotondato alla fascia **prima** dell'invio. Il server non riceve mai coordinate.
+- [confermato] **La mappa non rivela dove guarda l'utente:** l'app scarica la griglia intera di Milano come file statico. Nessuna richiesta contiene posizione o destinazione.
+- [corretto] **Soglia k = 5 pseudonimi distinti** per cella, fascia e tipo, nella finestra "adesso" e nello storico; sotto soglia solo il prior. **k non si abbassa in beta** (si allargano celle e fasce, T-029). (C2)
+- [corretto] **Rilevamento automatico** (D-018): **veto sulla forma attuale di D-018**; ammesso in beta chiusa solo con C1–C12, decisione scritta del fondatore e DPIA firmata. Innesco Bluetooth + attività "in auto", GPS solo nella fase di ricerca, notifica visibile; percorso solo in memoria. Al server solo sosta (con scaglione) e ripartenza: niente "inizio ricerca", niente durata della sosta. (C3–C5)
+- [corretto] **Pubblicazione a intervalli fissi** (5 minuti, D-019): da sola **non** impedisce il confronto tra versioni. Una cella si aggiorna solo con ≥ 2 nuovi pseudonimi; probabilità in classi, affidabilità in 3 livelli, mai conteggi. (C6)
+- [nuovo] **Invio ritardato** 0–10 min a caso; il server scarta l'ora di arrivo. (C7)
+- [corretto] **Identificatore:** non più un ID unico a rotazione 24h (lega le soste di un giorno), ma uno **pseudonimo per cella** `HMAC(segreto, tipo‖cella‖epoca 28 gg)`, con segreto solo sul telefono. Sosta e ripartenza non collegabili. (C1)
+- [corretto] **Diritti:** il telefono tiene il registro locale dei propri contributi e ricalcola gli pseudonimi per accesso e cancellazione; dopo 30 giorni restano solo aggregati senza pseudonimi. (C10)
+- [nuovo] **Zone escluse proposte in automatico** (notte, orari di lavoro, calcolo locale) e **massimo 1 evento per tipo e cella al giorno**. (C8, C9)
+- [nuovo] **Nessun backup cloud** di coordinate, zone escluse, segreto e registro. (C11)
+- [nuovo] **Informativa ai tester:** chi li conosce potrebbe dedurne la presenza in una zona; T3 non è condizione per la beta. (C12)
+- [corretto] **Log** senza indirizzi IP, posizione né ora esatta, anche presso il fornitore (vincolo per T-030); verificati da test automatico.
+- [confermato] **Senza consenso** l'app resta utilizzabile: mappa e regole di sosta.
+- [confermato] **Funzioni solo sul dispositivo** ("ricorda dove ho parcheggiato", timer, contatore dei contributi): nessun dato lascia il telefono.
+- [confermato] **Segnalazione dei crash** solo con consenso e senza posizione.
+- [corretto] **Test di re-identificazione** (`make reid`) prima di ogni build distribuita: specifica in [`15-dpia-bozza.md` §9](15-dpia-bozza.md#9-test-di-re-identificazione-prima-di-ogni-release). Se un attacco riesce, la release è bloccata.
 - Antiabuso e piano incidenti → [`12-sicurezza.md`](12-sicurezza.md).
 
 ## Requisiti store

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<title>Scheda della zona</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#2251CC}a:hover{color:#173A99}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 20px 20px 24px; background: #F4F6F8; font-family: Inter, system-ui, sans-serif; color: #14202B; display: flex; flex-direction: column; gap: 16px">
+
+<div style="display: flex; align-items: center; gap: 8px">
+<a href="Main.dc.html" aria-label="Torna alla mappa" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 22px; background: #FFFFFF; color: #14202B">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg>
+</a>
+<div style="font: 600 16px Inter, system-ui, sans-serif">Brera</div>
+</div>
+
+<div style="padding: 20px; background: #FFFFFF; border-radius: 20px; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; align-items: center; gap: 12px">
+<div style="width: 48px; height: 48px; border-radius: 16px; background: #D6F1EA; display: flex; align-items: center; justify-content: center; flex: none">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0B6B57" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+</div>
+<div style="font: 700 26px 'Space Grotesk', Inter, sans-serif; line-height: 1.1">Facile trovare posto</div>
+</div>
+<div style="font: 400 16px Inter, system-ui, sans-serif; line-height: 1.45; color: #2A3947">Circa <strong style="font-weight: 600">7 volte su 10</strong> si trova posto entro 5 minuti.</div>
+<div style="height: 1px; background: #E3E8ED"></div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<div style="font: 600 14px Inter, system-ui, sans-serif">Affidabilità alta</div>
+<div style="font: 400 13px Inter, system-ui, sans-serif; color: #51606E">Dati recenti · aggiornata 3 min fa</div>
+</div>
+<div style="display: flex; gap: 4px" role="img" aria-label="Affidabilità 3 su 3">
+<span style="width: 22px; height: 8px; border-radius: 4px; background: #14202B"></span>
+<span style="width: 22px; height: 8px; border-radius: 4px; background: #14202B"></span>
+<span style="width: 22px; height: 8px; border-radius: 4px; background: #14202B"></span>
+</div>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 10px">
+<div style="font: 600 14px Inter, system-ui, sans-serif; color: #51606E">Se arrivi più tardi</div>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px">
+<button type="button" aria-pressed="true" style="height: 76px; border: 2px solid #14202B; border-radius: 16px; background: #FFFFFF; color: #14202B; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; font: 600 13px Inter, system-ui, sans-serif">
+<span>Adesso</span>
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B6B57" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Facile"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+</button>
+<button type="button" aria-pressed="false" style="height: 76px; border: 1px solid #D5DCE3; border-radius: 16px; background: #FFFFFF; color: #14202B; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; font: 500 13px Inter, system-ui, sans-serif">
+<span>18:30</span>
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7A4E00" stroke-width="3" stroke-linecap="round" role="img" aria-label="Possibile"><path d="M5 12h14"></path></svg>
+</button>
+<button type="button" aria-pressed="false" style="height: 76px; border: 1px solid #D5DCE3; border-radius: 16px; background: #FFFFFF; color: #14202B; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; font: 500 13px Inter, system-ui, sans-serif">
+<span>19:30</span>
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8E2A4B" stroke-width="3" stroke-linecap="round" role="img" aria-label="Difficile"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+</button>
+<button type="button" aria-pressed="false" style="height: 76px; border: 1px solid #D5DCE3; border-radius: 16px; background: #FFFFFF; color: #14202B; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; font: 500 13px Inter, system-ui, sans-serif">
+<span>20:30</span>
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7A4E00" stroke-width="3" stroke-linecap="round" role="img" aria-label="Possibile"><path d="M5 12h14"></path></svg>
+</button>
+</div>
+</div>
+
+<div style="padding: 18px 20px; background: #FFFFFF; border-radius: 20px; display: flex; flex-direction: column; gap: 12px">
+<div style="font: 600 14px Inter, system-ui, sans-serif; color: #51606E">Regole di sosta qui</div>
+<div style="display: flex; justify-content: space-between; gap: 12px; font: 400 15px Inter, system-ui, sans-serif"><span>Strisce blu</span><span style="font-weight: 600">[TARIFFA] €/ora</span></div>
+<div style="display: flex; justify-content: space-between; gap: 12px; font: 400 15px Inter, system-ui, sans-serif"><span>A pagamento</span><span style="font-weight: 600">[GIORNI E ORARI]</span></div>
+<div style="display: flex; justify-content: space-between; gap: 12px; font: 400 15px Inter, system-ui, sans-serif"><span>Lavaggio strade</span><span style="font-weight: 600">[GIORNO E ORA]</span></div>
+<div style="font: 400 13px Inter, system-ui, sans-serif; color: #51606E">Vale sempre la segnaletica sul posto.</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 10px; margin-top: auto">
+<a href="Auto.dc.html" style="height: 54px; display: flex; align-items: center; justify-content: center; gap: 10px; border-radius: 16px; background: #2251CC; color: #FFFFFF; font: 600 16px Inter, system-ui, sans-serif; text-decoration: none">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11l16-7-7 16-2-7-7-2z"></path></svg>
+<span>Portami lì</span>
+</a>
+<div style="text-align: center; font: 400 13px Inter, system-ui, sans-serif; color: #51606E">Si apre nella tua app di navigazione</div>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>
