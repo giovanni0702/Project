@@ -1,0 +1,35 @@
+# City configuration (D-013): everything city-specific lives here, never in parking_core.
+id: milano
+name: Milano
+country: IT
+timezone: Europe/Rome
+locales: [it, en]
+currency: EUR
+
+grid:
+  h3_resolution: 9          # to be confirmed by T-022 (9 vs 10)
+  # Provisional bounding box; replaced by the official municipal boundary in the data pipeline.
+  bbox: {south: 45.386, west: 9.040, north: 45.536, east: 9.278}
+
+time:
+  slot_minutes: 30
+  day_types: [weekday, saturday, holiday]
+
+model:
+  target_minutes: 5          # "spot found within N minutes"
+  prior_strength: 4.0        # pseudo-observations behind the prior
+  prior_mean_default: 0.5    # used until proxies provide a per-cell prior (unvalidated, see D-015)
+  half_life_days: 21         # to be validated on real outcomes
+  neighbor_weight: 0.3       # spatial shrinkage toward neighbouring cells
+  max_weight_per_contributor: 3.0
+
+privacy:
+  min_contributors: 5        # k: below this only the prior is published
+  raw_retention_days: 30
+
+display:
+  thresholds: {high: 0.65, low: 0.35}   # provisional, on calibrated probabilities
+  hysteresis: 0.05
+  reliability:
+    high: {min_outcomes: 30, max_age_days: 7}
+    medium: {min_outcomes: 10, max_age_days: 30}
