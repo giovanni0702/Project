@@ -7,40 +7,38 @@ Stati: Backlog · In corso (con nome del proprietario) · Bloccato · Fatto.
 
 ## Decisioni richieste al fondatore
 
-Decise il 2026-11-14 (→ `docs/05-decisioni.md` D-003, D-010, D-014, D-015): rete abilitata; nessuna spesa fino al lancio; MapLibre ora e Google Maps previsto; nessuna rilevazione sul campo.
+Nessuna urgente. Decise il 2026-11-14: D-003, D-010, D-013–D-017 (`docs/05-decisioni.md`).
 
-1. **Beta su iPhone (iterazione 2):** TestFlight richiede l'account Apple a pagamento (99 USD l'anno). Con D-014: A) beta solo Android, con installazione diretta e gratuita del file dell'app; B) eccezione per l'account Apple. Raccomandazione: A. Non urgente.
+1. **Prima della beta (non ora):** creare un account gratuito per il server della beta, quando T-030 avrà indicato quale. Lo crei tu.
 
-## Iterazione 0 — verifiche
+## Iterazione 1 — in corso
 
-### T-001 — Open data del Comune di Milano
-data-engineer | Backlog (rete abilitata, da riprovare) | alta | M | —
-Criteri: [x] esito su stalli e sensori (non esistono, confidenza media) · [ ] riconferma sul catalogo · [ ] Area B/C, lavaggio strade, mercati, strutture · [x] `docs/06-dati.md` aggiornato
+### T-028 — DPIA e progetto del rilevamento via Bluetooth
+privacy-compliance | Backlog | alta | L | T-018
+Criteri: [ ] bozza di DPIA per tap, "ricorda dove ho parcheggiato" e Bluetooth · [ ] condizioni: consenso separato, scelta dell'auto, zone escluse sul dispositivo, nessun identificativo Bluetooth inviato · [ ] effetto sulla dichiarazione di posizione in background · [ ] pronta per la firma del fondatore
 
-### T-002 — Termini Google Maps Platform e norme
-privacy-compliance | Backlog (rete abilitata, da riprovare) | alta | M | —
-Criteri: [x] parere prudenziale (D-004) · [ ] testo corrente dei termini, sez. 3.2.3 · [ ] deep link Google/Waze · [ ] DSA su Google Play, testo EAA
+### T-029 — Dati reali visibili con pochi tester (soglia k) e piano di validazione
+data-scientist | Backlog | alta | M | T-010
+Criteri: [ ] stima di quanti esiti servono per superare k con 10–20 tester · [ ] proposta per la beta: zone, dimensione delle celle, larghezza delle fasce · [ ] missioni di copertura · [ ] quota di esiti riservata alla validazione · [ ] parere di `privacy-compliance`
 
-### T-003 — Requisiti store
-release-manager | Backlog (rete abilitata, da riprovare) | alta | M | —
-Criteri: [x] requisiti Apple in `docs/10-release.md` · [ ] pagine Google Play (posizione, Data safety, tester chiusi, costo)
+### T-030 — Server gratuito per la beta
+backend-engineer | Backlog | media | S | —
+Criteri: [ ] pagine ufficiali lette (regione UE, PostGIS, carta richiesta, sospensione) · [ ] una combinazione raccomandata e un ripiego · [ ] host da abilitare nella rete elencati
+
+### T-031 — Variabili di contesto in tempo reale
+data-engineer | Backlog | media | M | T-026
+Criteri: [ ] meteo con licenza adatta all'uso commerciale · [ ] scioperi ed eventi · [ ] BikeMi GBFS provato · [ ] termini TomTom letti (conservazione, uso in modelli) · [ ] fonte ufficiale di tariffe e lavaggio strade (assenti dal catalogo)
+
+## Verifiche residue
 
 ### T-004 — Concorrenti sugli store
-competitor-analyst | Backlog (rete abilitata, da riprovare) | alta | M | —
+competitor-analyst | Backlog (usare `scripts/fetch_text.py`) | alta | M | —
 Criteri: [x] `docs/02-concorrenza.md` aggiornato da fonti web · [ ] recensioni sugli store · [ ] Find & Park in app a Milano · [ ] SpotAngels e PuliAMO in Italia
-
-### T-005 — Stack e costi
-backend-engineer | Fatto | media | S | —
-Note: D-003 aggiornata. Prezzi **[verificare]** sulle pagine ufficiali prima di attivare.
-
-### T-007 — Primo ciclo watchdog
-ops-watchdog | Fatto | media | S | —
-Note: `docs/07-report-watchdog.md`.
 
 ## Backlog — prodotto (le 7 idee)
 
 ### T-011 — Regole della zona e avviso lavaggio strade
-product-manager | Backlog | alta | M | T-001
+product-manager | Backlog | alta | M | T-031
 Criteri: [ ] requisiti e criteri di accettazione · [ ] fonte dati verificata e data della fonte visibile · [ ] avviso "vale la segnaletica" · [ ] riferimento a `02-concorrenza.md`
 
 ### T-012 — "Ricorda dove ho parcheggiato" e timer di scadenza
@@ -48,7 +46,7 @@ product-manager | Backlog | alta | M | T-018
 Criteri: [ ] tutto sul dispositivo · [ ] salvare l'auto propone l'evento "ho parcheggiato", ripartire "ho lasciato", con consenso · [ ] parere di `privacy-compliance`
 
 ### T-013 — "Piano B": zona verde vicina, strutture, interscambio
-product-manager | Backlog | bassa | S | T-001
+product-manager | Backlog | bassa | S | —
 Criteri: [ ] requisiti per l'iterazione 4 · [ ] fonti dei parcheggi di struttura verificate
 
 ### T-014 — Sicurezza alla guida
@@ -91,10 +89,6 @@ Criteri: [ ] tutto eseguibile in locale, senza servizi a pagamento (D-014) · [ 
 data-scientist | Backlog | alta | M | —
 Criteri: [ ] definizioni operative in `docs/09-modello.md` §6 · [ ] N minimo per dichiarare una metrica · [ ] metodo di test con dati sintetici etichettati
 
-### T-021 — Validazione senza rilevazioni sul campo
-data-scientist | Backlog | alta | M | T-010
-Criteri: [ ] piano di validazione basato solo sugli esiti dei tester (D-015) · [ ] "missioni" per i tester: zone e orari da coprire, senza dati personali · [ ] quota di esiti tenuta da parte per la sola validazione · [ ] ricerca di dati pubblici di riferimento (studi, altre città) · [ ] `docs/09-modello.md` §2 aggiornato
-
 ### T-022 — Risoluzione della griglia H3 (9 o 10)
 data-scientist | Backlog | media | S | T-006
 Criteri: [ ] confronto su numero di celle, eventi attesi per cella, effetto sulla soglia k · [ ] decisione in `docs/05-decisioni.md`
@@ -108,7 +102,7 @@ competitor-analyst | Backlog | bassa | M | T-004
 Criteri: [ ] chi fornisce oggi dati di sosta a mappe e case auto, e come · [ ] programmi per partner di Google, Apple, Waze · [ ] cosa chiedono (copertura, prove di qualità) · [ ] sezione in `docs/02-concorrenza.md` · [ ] nessun contatto esterno
 
 ### T-026 — Schema "città come configurazione" e adattatori
-backend-engineer | Backlog | alta | M | —
+backend-engineer | In corso (avviato: `cities/milano`, `parking_core`, test) | alta | M | —
 Criteri: [ ] schema del file di città e dell'interfaccia degli adattatori · [ ] `cities/milano` come primo caso · [ ] test che fallisce se il nucleo contiene valori di Milano · [ ] con `data-scientist`: variabili del modello definite in modo indipendente dalla città
 
 ### T-023 — Modello a tassi con concorrenza e penetrazione (ricerca)

@@ -2,15 +2,15 @@
 
 Ogni iterazione produce qualcosa di usabile e misurabile, e ha un criterio di **uscita** e uno di **abbandono**.
 
-## Iterazione 0 — Fondamenta (in chiusura)
+## Iterazione 0 — Fondamenta (chiusa il 2026-11-14, con conferma del fondatore)
 - [x] Regole, team di agenti, documenti 01–13, board, `make check`, CI
 - [x] Prima verifica di open data, termini Google, store, concorrenti, costi (parziale: → `STATO.md`)
-- [ ] Verifiche da riprovare con la rete abilitata (T-001–T-004)
+- [x] Verifiche T-001–T-003 rifatte sui testi ufficiali; T-004 (concorrenti sugli store) passa all'iterazione 1
 - [x] Stack (D-003) e mappa (D-010) confermati dal fondatore; nessuna spesa fino al lancio (D-014)
 
 **Uscita:** documenti approvati dal fondatore, board pronto.
 
-## Iterazione 1 — Dati, modello v0, prova dell'ipotesi (backend e pagina web interna)
+## Iterazione 1 — Dati, modello v0 (backend e pagina web interna) — in corso
 - Rete stradale e sosta da OpenStreetMap (attribuzione ODbL); dataset del Comune verificati.
 - Configurazione della città (`cities/milano`), secondo D-013: nessun valore di Milano nel codice.
 - Griglia H3 su tutta Milano; regole di sosta per cella (tariffe, orari, lavaggio strade se disponibili).
@@ -25,8 +25,8 @@ Ogni iterazione produce qualcosa di usabile e misurabile, e ha un criterio di **
 ## Iterazione 2 — Beta chiusa (centro)
 - App Flutter IT/EN: onboarding con consenso, mappa, affidabilità, contributi a un tap.
 - Regole della zona e avviso lavaggio strade (T-011); "ricorda dove ho parcheggiato" e timer (T-012); funzionamento offline (T-016); contatore locale (T-015); regole di sicurezza alla guida (T-014).
-- Rilevamento automatico solo opzionale e solo dopo DPIA.
-- 10–30 tester. Con D-014: prima Android con installazione diretta; TestFlight e Play internal testing solo con decisione del fondatore. Server su piano gratuito.
+- Dati reali e attuali secondo D-016: tap, "ricorda dove ho parcheggiato", Bluetooth dell'auto dopo DPIA, missioni, griglia pubblicata ogni 15 minuti.
+- 10–20 tester, solo Android, installazione diretta, server su piano gratuito (D-017).
 - Missioni di copertura per i tester e quota di esiti riservata alla validazione.
 
 **Uscita:** ≥ 500 esiti reali in centro; calibrazione misurata e documentata; app compresa in meno di 1 minuto; ≥ 30% dei tester contribuisce almeno una volta a settimana; privacy policy e DPIA pronte per la firma; test di re-identificazione superato.

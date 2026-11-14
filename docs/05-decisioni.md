@@ -27,7 +27,7 @@ Formato: ogni decisione ha data, stato, contesto, scelta e conseguenze. Le decis
 
 ## D-004 — Nessun dato Google nel modello
 - **Data:** 2026-11-14 (aggiornata dopo T-002)
-- **Stato:** approvata in principio; testo corrente dei termini ancora **[verificare]**
+- **Stato:** approvata; testo ufficiale corrente letto il 2026-11-14 (sez. 3.2.3: divieto di estrazione, cache, contenuti derivati e uso con mappe non Google). I link a Google Maps non richiedono chiave API. Mostrare i nostri dati sopra una mappa Google è ammesso secondo la nostra lettura, da confermare da un legale prima del lancio
 - **Contesto:** i termini di servizio specifici (versione archiviata del 22/05/2024) consentono solo cache temporanea e vietano l'uso di alcuni contenuti con mappe non Google. Il testo corrente non è stato raggiungibile.
 - **Scelta:** nessun dato Google viene salvato o usato come input del modello. Google Maps, Apple Maps e Waze si aprono solo tramite deep link per la navigazione.
 - **Conseguenze:** il modello usa eventi propri, open data e OSM. Prima della release serve rileggere i termini correnti e i requisiti dei deep link.
@@ -110,3 +110,23 @@ Formato: ogni decisione ha data, stato, contesto, scelta e conseguenze. Le decis
 - **Stato:** decisa dal fondatore
 - **Scelta:** il fondatore non può fare rilevazioni in strada. I primi dati reali sono gli esiti dei tester della beta.
 - **Conseguenze:** fino alla beta il prior **non è validato** e va mostrato sempre con affidabilità bassa. La validazione usa una quota di esiti dei tester tenuta da parte e "missioni" di copertura (T-021). Il criterio di abbandono sul prior si sposta dall'iterazione 1 alla 2.
+
+## D-016 — Beta su dati reali e in tempo reale
+- **Data:** 2026-11-14
+- **Stato:** decisa dal fondatore (obiettivo); modalità proposte, soggette al parere di `privacy-compliance`
+- **Contesto:** il fondatore vuole una beta basata su dati veri e attuali, non su stime storiche. Verifica T-027: per Milano **non esiste alcuna fonte pubblica in tempo reale sull'occupazione della sosta su strada** (nessun sensore, nessun feed dei parcheggi ATM). L'unica misura reale sono i contributi degli utenti.
+- **Scelta — tutte le vie per avere dati reali, in ordine:**
+  1. **Tap manuale** con esito ("trovato subito / dopo un po' / non trovato"). Ammesso in beta con consenso.
+  2. **"Ricorda dove ho parcheggiato"**: salvare e riprendere l'auto genera gli eventi di sosta e di partenza.
+  3. **Rilevamento automatico via Bluetooth dell'auto** (la disconnessione segnala la sosta, la riconnessione la partenza). Tutto sul dispositivo, l'utente sceglie l'auto, zone escluse (casa, lavoro). **Solo dopo DPIA** (T-028).
+  4. **Missioni per i tester**: zone e orari da coprire, scelti da noi.
+  5. **Contesto in tempo reale** come variabili: meteo, scioperi, eventi, stazioni BikeMi; traffico TomTom solo se i termini lo permettono (T-031).
+  6. **Pubblicazione frequente** della griglia (proposta: ogni 15 minuti), con età della stima sempre visibile.
+- **Escluso:** riconoscimento dell'attività con posizione in background (parere negativo per la prima beta); dati Google (D-004); Waze (richiede un accordo, decisione del fondatore).
+- **Limite da risolvere (T-029):** con 10–20 tester la soglia di k = 5 contributori per cella e fascia non si raggiunge quasi mai, e i dati reali resterebbero invisibili. Proposte da valutare: beta concentrata in poche zone del centro, celle più grandi e fasce più larghe durante la beta.
+
+## D-017 — Beta solo Android, a costo zero
+- **Data:** 2026-11-14
+- **Stato:** decisa dal fondatore
+- **Scelta:** la beta parte solo su Android, con installazione diretta del file dell'app. Dettagli e rischi in `10-release.md`.
+- **Conseguenze:** nessun account a pagamento. L'account Android gratuito a distribuzione limitata (fino a 20 dispositivi) serve solo dal 2027 e lo crea il fondatore. iPhone, TestFlight e Google Play (25 USD, 12 tester per 14 giorni) si rinviano al lancio. Server della beta: solo piani gratuiti, da verificare sulle pagine ufficiali (T-030).

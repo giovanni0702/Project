@@ -1,34 +1,23 @@
 # STATO
 
-Aggiornato: 2026-11-14 · Iterazione **0 — Fondamenta (in chiusura)**
+Aggiornato: 2026-11-14 · Iterazione **1 — Dati e modello v0 (in corso)** · Iterazione 0 chiusa con conferma del fondatore.
 
 ## Ultimi fatti
-1. Applicato il prompt v2: `CLAUDE.md` ridotto, `INDICE`, `fonti`, `make check`, CI, agenti con descrizioni brevi e modelli riassegnati (D-008).
-2. Nuovi documenti: 07–13. Nuove decisioni: D-008–D-012; D-003 e D-004 aggiornate.
-3. Le 7 idee di prodotto sono nel board (T-011–T-017) e nella roadmap.
-4. Verifiche T-001–T-004 eseguite in parte: molti siti ufficiali non raggiungibili dalla rete della sessione.
-5. Stima costi: 5–15 €/mese fino a 10.000 utenti, da riverificare sulle pagine ufficiali.
+1. Nucleo indipendente dalla città: `cities/milano/city.yaml`, `parking_core/` (griglia H3, fasce, modello Beta-Binomiale con soglia k, metriche), 12 test su dati sintetici in `make check`.
+2. Testi ufficiali letti: termini Google (D-004 confermata), Google Play, verifica sviluppatore Android, ODbL, catalogo del Comune.
+3. Decisioni: beta solo Android a costo zero (D-017); beta su dati reali e attuali (D-016); nessuna spesa fino al lancio (D-014); nessuna rilevazione sul campo (D-015); visione multi-città (D-013).
+4. `scripts/fetch_text.py` legge i siti consentiti quando WebFetch non li raggiunge.
 
-6. **Visione ampliata dal fondatore (D-013):** altre città italiane, poi altri paesi, poi dato in licenza alle app di mappe. Da subito cambia solo il modo di costruire (città come configurazione); Milano resta l'unico scope operativo. Task T-024–T-026.
-
-## Cosa sappiamo di nuovo
-- Nessun dataset aperto di stalli o sensori per le strisce blu (confidenza media).
-- "FindPark" è quasi certamente Find & Park di EasyPark. Nessun concorrente unisce a Milano regole di zona, lavaggio strade e "dove ho parcheggiato" (da riconfermare).
-- Apple richiede il consenso anche per dati anonimi.
-- Dati Google: non usabili nel modello, per prudenza (D-004).
-
-## Decisioni del fondatore (2026-11-14)
-- Rete: creato l'ambiente "Project" con i siti ufficiali abilitati.
-- Stack approvato; **nessuna spesa fino al lancio** (D-014).
-- Mappa: MapLibre ora, Google Maps previsto per il prodotto sul mercato (D-010).
-- **Nessuna rilevazione sul campo** (D-015): il prior resta non validato fino alla beta.
+## Cosa sappiamo
+- **Nessuna fonte pubblica in tempo reale sull'occupazione della sosta su strada a Milano.** I dati reali sono solo i contributi dei tester.
+- Il catalogo del Comune non ha stalli, sensori, tariffe né lavaggio strade.
+- Beta Android gratuita fattibile con installazione diretta.
+- Con pochi tester la soglia k non si raggiunge: problema aperto (T-029, R-20).
 
 ## Prossimi passi
-1. Riprovare T-001–T-004 con la rete abilitata (in parallelo).
-2. T-018 (parere privacy), T-010 (metriche), T-021 (validazione senza campo), T-026 (schema città).
-3. Conferma del fondatore per chiudere l'iterazione 0 e aprire la 1.
+1. T-026: adattatore OSM (strade e sosta) e confine comunale; poi pubblicazione statica della griglia e pagina interna.
+2. T-010 e T-029 (metriche, soglia k in beta); T-018 e T-028 (parere privacy, DPIA).
+3. T-030 (server gratuito), T-031 (contesto in tempo reale), T-004 (concorrenti sugli store).
 
 ## Blocchi
-- Nessuno. Decisione aperta non urgente: beta su iPhone (`TASKS.md`).
-
-## Non iniziare l'iterazione 1 senza conferma del fondatore.
+- Nessuno. Siti dei fornitori di hosting non ancora abilitati nella rete (T-030).

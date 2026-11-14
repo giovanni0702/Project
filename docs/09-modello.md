@@ -12,7 +12,7 @@ Senza un Y osservabile non esiste calibrazione: ogni fonte di dati deve produrre
 | Fonte | Esito | Uso | Quando |
 |---|---|---|---|
 | Contributo manuale a un tap: "trovato subito" / "trovato dopo un po'" / "non trovato" | Y diretto | Addestramento | Iterazione 2 |
-| Rilevamento sul dispositivo: tempo tra arrivo in zona e sosta | Y derivato | Addestramento | Solo dopo DPIA |
+| Rilevamento sul dispositivo tramite Bluetooth dell'auto (D-016) | Eventi di sosta e partenza | Addestramento | Solo dopo DPIA (T-028) |
 | Quota di esiti dei tester tenuta da parte, più "missioni" di copertura (T-021, D-015) | Y diretto | **Solo validazione**, mai addestramento | Iterazione 2 |
 
 Non sono previste rilevazioni sul campo: **fino alla beta il prior non è validato** e si mostra sempre con affidabilità bassa.

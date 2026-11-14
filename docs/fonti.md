@@ -1,6 +1,6 @@
 # Fonti — cache delle ricerche web
 
-Prima di una ricerca: Grep qui. Dopo: una riga per fonte. Scadenza: 90 giorni per policy, prezzi e concorrenti; 180 per dati e norme. Una fonte scaduta va riletta.
+Se WebFetch non raggiunge un sito consentito: `scripts/fetch_text.py <url>`, poi Grep sul file salvato. Prima di una ricerca: Grep qui. Dopo: una riga per fonte. Scadenza: 90 giorni per policy, prezzi e concorrenti; 180 per dati e norme. Una fonte scaduta va riletta.
 Stato: **letta** (pagina ufficiale aperta) · **parziale** (troncata o solo titolo) · **secondaria** (snippet o terzi) · **bloccata** (host non raggiungibile).
 
 | Tema | URL | Data | Stato | Risultato |
@@ -31,3 +31,19 @@ Stato: **letta** (pagina ufficiale aperta) · **parziale** (troncata o solo tito
 | Costi | developers.cloudflare.com/r2/pricing | 2026-11-14 | secondaria | Gratis 10 GB, uscita dati gratuita; residenza UE non verificata |
 | Costi | neon (blog di terzi) | 2026-11-14 | secondaria | Piano gratuito limitato; PostGIS e regione UE non verificati |
 | Costi | maptiler.com/cloud/pricing | 2026-11-14 | secondaria | Piano gratuito solo non commerciale; a pagamento da circa 25 $/mese |
+| Google | cloud.google.com/maps-platform/terms | 2026-11-14 | letta | Sez. 3.2.3: vietati estrazione, cache, contenuti derivati, uso dei servizi con mappe non Google |
+| Google | developers.google.com/maps/documentation/urls/get-started | 2026-11-14 | letta | I link a Google Maps non richiedono chiave API |
+| Licenze | opendatacommons.org/licenses/odbl/1-0/ | 2026-11-14 | letta | Definizioni di database derivato e di opera prodotta; l'opera prodotta richiede solo l'avviso. Interpretazione sul nostro caso: parere legale |
+| Store | support.google.com/googleplay/android-developer/answer/14151465 | 2026-11-14 | letta | Account personali: test chiuso con almeno 12 tester per 14 giorni prima della produzione |
+| Store | support.google.com/googleplay/android-developer/answer/6112435 | 2026-11-14 | letta | Registrazione Google Play: 25 USD una tantum |
+| Store | support.google.com/googleplay/android-developer/answer/9799150 | 2026-11-14 | letta | Posizione in background solo se essenziale alla funzione principale, con dichiarazione e approvazione |
+| Store | developer.android.com/developer-verification/guides/faq | 2026-11-14 | letta | Verifica sviluppatore: dal 2026-09-30 in 4 paesi, globale nel 2027; account limitato gratuito fino a 20 dispositivi |
+| Store | developer.android.com/training/location/permissions | 2026-11-14 | letta | Permessi di posizione; background dalle impostazioni su Android 11+ |
+| Dati | dati.comune.milano.it/api/3 (ricerche: sosta, parcheggi, area c, mercati) | 2026-11-14 | letta | 2617 dataset; nessuno su stalli, sensori, tariffe, lavaggio strade; presenti ds83, ds342, ds45, ds82, ds574, mercati |
+| Dati | dati.comune.milano.it/gtfs.zip | 2026-11-14 | letta | GTFS valido 2026-10-26 / 2026-11-30 |
+| Dati | bikemi.com/en/open-data/realtime | 2026-11-14 | secondaria | GBFS ogni 10 secondi |
+| Dati | developer.tomtom.com/pricing | 2026-11-14 | secondaria | 2.500 richieste al giorno gratis; termini su conservazione e modelli da leggere |
+| Dati | open-meteo.com/en/pricing | 2026-11-14 | secondaria | Gratis solo non commerciale; commerciale circa 29 USD/mese |
+| Dati | ATM, posti liberi dei parcheggi di interscambio | 2026-11-14 | secondaria | Nessun feed pubblico in tempo reale |
+| Costi | pub.dev/packages/maplibre (e changelog) | 2026-11-14 | letta | Versione 0.3.7+1; PMTiles su Android dalla 0.2.1 |
+| Costi | Neon, Supabase, Cloudflare R2/Pages (pagine ufficiali non raggiungibili) | 2026-11-14 | secondaria | Piani gratuiti esistono; regione UE, PostGIS, carta richiesta: non verificati. Pages: 25 MiB per file |
