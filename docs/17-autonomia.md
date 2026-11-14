@@ -32,7 +32,7 @@ La beta è valida quando tutte le voci sono vere. Stato al 2026-11-14 tra parent
 - [ ] Regole di sosta per strada: ambiti, orari, tariffe (ambiti scaricati; tariffe e orari senza fonte verificata).
 - [x] Modello con componente "adesso", stime per altri orari, correzione per veicolo (valori provvisori).
 - [ ] Stalli e regole per le moto.
-- [ ] Piano perché i dati reali compaiano con pochi tester (in corso).
+- [ ] Dato reale visibile su tutto il Comune tramite la stima a livelli (D-029, T-045).
 
 **Servizio**
 - [ ] API che riceve gli eventi e pubblica la griglia ogni 5 minuti, in locale (in corso).
@@ -52,7 +52,7 @@ La beta è valida quando tutte le voci sono vere. Stato al 2026-11-14 tra parent
 - [ ] Nota informativa per i tester. **Approvazione del fondatore.**
 
 **Persone**
-- [ ] 10–20 tester reclutati. **Li trova il fondatore.**
+- [ ] Tester reclutati su tutta la città: più sono, più la mappa è dettagliata. **Li trova il fondatore.**
 
 ## 5. Cosa può fare solo il fondatore, in ordine di urgenza
 1. Abilitare i siti necessari quando arriva la richiesta (un tocco).

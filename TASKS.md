@@ -7,15 +7,21 @@ Stati: Backlog · In corso (con nome del proprietario) · Bloccato · Fatto.
 
 ## Decisioni richieste al fondatore
 
-1. **Come mostrare dati reali in beta** (`docs/09-modello.md` §10). Con la soglia privacy di 5 contributori, zone piccole e fasce da 30 minuti la mappa non mostra mai dati reali, né con 20 né con 100 tester. A) beta concentrata in circa 3 km² del centro, con zone più grandi (risoluzione 8) e blocchi di 3 ore, 20 tester con 5 esiti a settimana guidati da missioni; B) restare con zone piccole e vedere solo stime. Raccomandazione: A.
-2. **Durata della beta:** A) 6 settimane, per avere abbastanza esiti da misurare la calibrazione; B) 4 settimane. Raccomandazione: A.
-3. **Prima della beta, azioni solo tue** (`docs/17-autonomia.md` §5): account gratuito per il server, prova su telefono Android, firma della DPIA dopo revisione, reclutamento dei tester.
+Decisa il 2026-11-14: la beta copre tutto il Comune (D-029).
+
+1. **Quanti tester puoi reclutare?** Su tutta la città il dettaglio della mappa dipende quasi solo da questo. Con 20 si vedrà soprattutto il dato a livello di città e di settore; per il dettaglio di quartiere ne servono alcune centinaia (stima da fare in T-045).
+2. **Durata della beta:** A) 6 settimane; B) 4. Raccomandazione: A.
+3. **Azioni solo tue prima della beta** (`docs/17-autonomia.md` §5): account gratuito per il server, prova su telefono Android, firma della DPIA dopo revisione, reclutamento.
 
 ## Iterazione 1 — in corso
 
 ### T-040 — Chiudere le 5 falle trovate dal red team
 privacy-engineer | In corso | alta | L | —
 Criteri: [ ] taglia del veicolo non salvata negli eventi · [ ] nessun giorno né orario nello storico · [ ] k contata nella stessa epoca · [ ] ammissioni a intervalli larghi · [ ] test del red team verdi senza indebolirli · **release bloccata finché non è chiuso**
+
+### T-045 — Stima a livelli su tutto il Comune (D-029)
+data-scientist | Backlog | alta | L | T-040
+Criteri: [ ] livelli: zona, quartiere, settore, città; ogni strada usa il più fine che raggiunge k · [ ] quanta mappa mostra dati reali, per livello, con 20, 100, 300, 1.000 tester · [ ] progetto con `privacy-engineer` contro la sottrazione tra livelli · [ ] attacco del red team superato · [ ] parere di `privacy-compliance` · [ ] il livello è dichiarato nella scheda della strada
 
 ### T-041 — Attributi di sosta per strada e stalli moto
 data-engineer | Backlog | alta | L | —

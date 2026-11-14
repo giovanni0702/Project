@@ -22,14 +22,14 @@ Ogni iterazione produce qualcosa di usabile e misurabile, e ha un criterio di **
 **Uscita:** test automatico che fallisce se il nucleo contiene valori specifici di Milano; ≥ 90% delle strade con sosta coperte da una stima; pipeline riproducibile con un comando; `make check` verde; nessun segreto o dato personale nel repository.
 **Limite dichiarato:** a fine iterazione il prior non è validato su dati reali.
 
-## Iterazione 2 — Beta chiusa (centro)
+## Iterazione 2 — Beta chiusa su tutto il Comune di Milano (D-029)
 - App Flutter IT/EN: onboarding con consenso, mappa, affidabilità, contributi a un tap.
 - Regole della zona e avviso lavaggio strade (T-011); "ricorda dove ho parcheggiato" e timer (T-012); funzionamento offline (T-016); contatore locale (T-015); regole di sicurezza alla guida (T-014).
 - Dati reali e attuali secondo D-016: tap, "ricorda dove ho parcheggiato", rilevamento automatico tramite posizione e Bluetooth dopo DPIA firmata (D-018), missioni, griglia pubblicata ogni 5 minuti (D-019).
 - 10–20 tester, solo Android, installazione diretta, server su piano gratuito (D-017).
 - Missioni di copertura per i tester e quota di esiti riservata alla validazione.
 
-**Uscita:** ≥ 500 esiti reali in centro; calibrazione misurata e documentata; app compresa in meno di 1 minuto; ≥ 30% dei tester contribuisce almeno una volta a settimana; privacy policy e DPIA pronte per la firma; test di re-identificazione superato.
+**Uscita:** ≥ 500 esiti reali sul territorio comunale; dato reale visibile su tutta la mappa almeno al livello "intera città" e, dove i contributi bastano, a livelli più fini (T-045); calibrazione misurata e documentata; app compresa in meno di 1 minuto; ≥ 30% dei tester contribuisce almeno una volta a settimana; privacy policy e DPIA pronte per la firma; test di re-identificazione superato.
 **Abbandono o cambio di rotta:** se i tester non contribuiscono, si rivede il meccanismo di contributo prima di qualsiasi lancio. Se sugli esiti reali il prior non fa meglio del caso, il prodotto principale diventa "regole di sosta e lavaggio strade" e il modello si rivede.
 
 ## Iterazione 3 — Pilota pubblico

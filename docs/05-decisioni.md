@@ -213,3 +213,13 @@ Formato: ogni decisione ha data, stato, contesto, scelta e conseguenze. Le decis
 - **Stato:** decisa dal fondatore
 - **Scelta:** il team lavora anche senza richiesta, con la sessione principale come CEO. Un'attività programmata esegue un ciclo ogni giorno alle 03:41 (ora italiana) in questa stessa sessione. Procedura, limiti di costo e definizione di "beta valida" in `17-autonomia.md`.
 - **Limiti invariati:** le decisioni di `CLAUDE.md` §7 restano del fondatore. In particolare **gli agenti non creano account**: un account lega legalmente una persona e richiede la sua email e la sua identità. Quando serve, il ciclo prepara tutto e indica il singolo passo da fare.
+
+## D-029 — La beta copre tutto il Comune di Milano
+- **Data:** 2026-11-14
+- **Stato:** decisa dal fondatore (tassativa). La proposta di una beta concentrata in un quartiere è respinta.
+- **Conseguenza da gestire:** con la soglia di 5 contributori (mai abbassata) e zone piccole, su tutta la città i dati reali non raggiungono quasi mai la soglia (`09-modello.md` §10).
+- **Soluzione proposta — stima a livelli (T-045), soggetta al parere di `privacy-compliance`:** ogni strada mostra il dato reale del livello più fine che raggiunge la soglia: zona di qualche isolato → quartiere → settore della città → intera città. Il livello "intera città" si raggiunge presto anche con pochi tester, quindi tutta la mappa riflette dati reali fin dall'inizio; il dettaglio cresce dove arrivano più contributi. Le differenze tra strade vicine vengono dalle caratteristiche fisse dei tratti.
+- **Onestà:** la scheda di ogni strada dice a quale livello si riferisce il dato ("questa zona", "questo quartiere", "tutta Milano").
+- **Rischio privacy nuovo:** pubblicare più livelli insieme permette di sottrarre un livello dall'altro. Va progettato e attaccato dal red team prima di essere attivato.
+- **Leva principale:** più tester. Fino al 2027 l'installazione diretta su Android non ha il limite di 20 dispositivi: il numero di tester dipende solo dal reclutamento, che spetta al fondatore.
+- **Missioni:** restano, per indirizzare i tester dove mancano dati, ma senza limitare l'area.

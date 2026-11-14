@@ -140,3 +140,5 @@ validation_holdout: 0.10 # share of mission outcomes never used for training or 
 Richiede codice in `parking_core/publish.py` e `privacy.py` (fuori da T-029) e revisione di `privacy-compliance`.
 
 **Cosa non sappiamo ancora:** quanti esiti a settimana fa davvero un tester; quante missioni esegue; se una cella res 8 (lato circa 530 m) è abbastanza utile per chi cerca; il comportamento del fine settimana. **Rischio privacy da verificare:** lo pseudonimo cambia ogni 28 giorni (C1), quindi oltre un'epoca la stessa persona conta due volte per k; la beta deve stare in un'epoca o il conteggio va corretto.
+
+> **Aggiornamento del 2026-11-14 (D-029):** il fondatore ha deciso che la beta copre tutto il Comune. La raccomandazione di concentrarla in un'area resta qui come analisi, ma non si applica: la via scelta è la stima a livelli (T-045).
