@@ -1,37 +1,29 @@
 # STATO
 
-Aggiornato: 2026-11-14 · Iterazione **1 — Dati e modello v0 (in corso)** · Lavoro autonomo (D-032): martedì e venerdì alle 03:41 in una sessione dedicata, procedura in `17-autonomia.md`.
+Aggiornato: 2026-11-14 · Iterazione **1 (in corso)** · Cicli autonomi: martedì e venerdì alle 03:41 in una sessione dedicata (D-032), procedura in `17-autonomia.md`.
 
 ## Ultimi fatti
-1. **Strade vere di Milano:** 30.727 tratti dal Database Topografico del Comune (D-027). Anteprima: https://claude.ai/artifact/VMEMf2xERBvgFQQ9Xz61F9.
-2. **Posti (D-030, D-031):** 3.090 aree di sosta mappate (circa 123.000 posti stimati) e 74 parcheggi in struttura (circa 29.000 posti); mancano sosta lungo il marciapiede, tariffe e orari (T-041).
-3. **Backend** in `backend/`: eventi, griglia live, stime per altri orari, in locale.
-4. **Privacy:** 5 falle trovate dal red team e chiuse da `privacy-engineer` (T-040); `make check` e `make reid` verdi (75 test). Serve la verifica indipendente (T-047) prima di distribuire.
-5. **Beta su tutto il Comune (D-029):** stima a livelli da costruire (T-045).
-6. **Marketing:** piano di reclutamento, ganci e nomi in `11-marketing.md` (bozze).
-7. Valutazioni degli agenti in `14-valutazione-agenti.md`.
-
-8. **Nome SostaMi e logo** (D-033, marchio da verificare in T-048); 6 schermate aggiornate più il logo in `16-grafica.md`.
-
-9. **Versione web di SostaMi** (D-035): mappa vera di Milano dai dati del Comune, ricerca vie, veicolo, sosta, segnalazioni sul dispositivo. Link: https://claude.ai/artifact/RCK6XaPgv7oTuTKun7Wk87. Comando: `scripts/build_webapp.py milano`.
-
-10. **Beta = sito web (D-036):** `site/` pronto; si pubblica da un repository pubblico separato, questo diventa privato (D-038): attende 4 azioni del fondatore. Modello matematico di occupazione in corso (T-049, D-037).
+1. **SostaMi versione web** (D-035, D-036): mappa vera di Milano dai dati del Comune, ricerca vie, veicolo, sosta salvata, segnalazioni sul dispositivo, "Dove sono". Privata: https://claude.ai/artifact/RCK6XaPgv7oTuTKun7Wk87. Sito pronto in `site/`, da pubblicare da un repository separato (D-038).
+2. **Modello di occupazione** (D-037, `09-modello.md` §11): posti totali, occupati, liberi e probabilità per zona e fascia, con intervalli; collegato alla mappa. **Non verificato e troppo ottimista in centro** (T-050).
+3. **Dati:** 30.727 tratti di strada, 3.090 aree di sosta, 74 parcheggi in struttura, edifici, verde, acqua (Database Topografico del Comune, CC BY). Capacità stimata: circa 386.000 posti auto (290.000–448.000).
+4. **Backend** in `backend/` (locale). **Privacy:** 5 falle chiuse (T-040), verifica indipendente da fare (T-047); 75+ test verdi.
+5. Nome SostaMi e logo (D-033, marchio da verificare T-048); grafica in `16-grafica.md`; marketing in `11-marketing.md`.
+6. Beta su tutto il Comune (D-029): stima a livelli da costruire (T-045).
 
 ## Cosa sappiamo
-- Nessuna fonte pubblica in tempo reale sulla sosta su strada a Milano: i dati reali sono solo i contributi dei tester.
-- OpenStreetMap non è raggiungibile dalla sessione anche con i siti abilitati; Milano non ne ha bisogno per le strade.
-- Mancano fonti verificate per tariffe, orari, lavaggio strade e stalli moto.
+- Nessuna fonte pubblica in tempo reale sulla sosta su strada; i dati di Google non si possono usare (D-004, D-037).
+- OpenStreetMap non raggiungibile dalla sessione; Milano usa i dati del Comune.
+- Mancano fonti per tariffe, orari, lavaggio strade, stalli moto reali.
 
 ## Proposte per il fondatore
-1. Reclutare molti più di 20 tester (fino al 2027 l'installazione diretta non ha limiti di dispositivi): costo zero in denaro, è la leva principale per il dettaglio su tutta la città.
-2. Usare gli strati `AC_VEI` e `AR_STR` del Database Topografico per stimare dove si può sostare: costo un ciclo di lavoro, toglie la dipendenza da OpenStreetMap.
-3. Mostrare in app, per ogni strada, "quanto è recente il dato" al posto della sola affidabilità: costo basso, rende onesto il ritardo imposto dalla privacy.
+1. Conteggi a campione delle auto in sosta su 20 strade (un'ora di lavoro di una persona): è il modo più rapido per verificare il modello.
+2. Collegare la versione web al servizio appena firmata la DPIA: le prime segnalazioni calibrano il modello.
+3. Mostrare l'intervallo di incertezza anche sulla mappa (colore più tenue dove il modello è incerto).
 
 ## Prossimi passi
-1. T-047 (verifica indipendente del red team), poi T-045 (stima a livelli).
-2. T-041 (attributi di sosta, moto), T-043 (app Android), T-044 (pagina interna sui dati del backend).
-3. T-030 (server gratuito), T-031 (contesto in tempo reale), T-004 (concorrenti).
+1. Azioni del fondatore per pubblicare il sito (D-038); poi copia di `site/` e verifica.
+2. T-050 (modello credibile), T-047 (red team), T-045 (stima a livelli), T-044 (web collegata al servizio).
+3. T-041 (sosta lungo il marciapiede, moto, tariffe), T-048 (marchio), T-030 (servizio online gratuito).
 
 ## Blocchi
-- T-042: testi di legge non raggiungibili.
-- Azioni del fondatore prima della beta: `17-autonomia.md` §5.
+- Pubblicazione del sito: 4 azioni del fondatore. T-042: testi di legge non raggiungibili.

@@ -142,3 +142,51 @@ Richiede codice in `parking_core/publish.py` e `privacy.py` (fuori da T-029) e r
 **Cosa non sappiamo ancora:** quanti esiti a settimana fa davvero un tester; quante missioni esegue; se una cella res 8 (lato circa 530 m) è abbastanza utile per chi cerca; il comportamento del fine settimana. **Rischio privacy da verificare:** lo pseudonimo cambia ogni 28 giorni (C1), quindi oltre un'epoca la stessa persona conta due volte per k; la beta deve stare in un'epoca o il conteggio va corretto.
 
 > **Aggiornamento del 2026-11-14 (D-029):** il fondatore ha deciso che la beta copre tutto il Comune. La raccomandazione di concentrarla in un'area resta qui come analisi, ma non si applica: la via scelta è la stima a livelli (T-045).
+
+## 11. Modello di occupazione (T-049)
+
+> **Stato:** stime del modello da dati aperti e parametri dichiarati, **NON verificate**. Senza esiti reali nessun numero qui va presentato come misura. Niente dati Google (D-004).
+
+**Codice:** `parking_core/occupancy.py` (solo libreria standard), `scripts/build_occupancy.py <città>` → `build/occupancy/<città>/occupancy.json`; parametri in `cities/milano/city.yaml` (`capacity:`, `occupancy:`); test in `tests/test_occupancy.py`.
+
+**Formule** (per cella H3, tipo di giorno, fascia di 30 minuti):
+- Capacità del marciapiede per tratto: `c = max(L − 2·arretramento, 0) · fattore_via · lati · quota_sostabile · (1 − quota_moto) / lunghezza_stallo`; più `(1 − sovrapposizione) ·` posti delle aree mappate (D-030). Stalli moto: `L_utile · lati · quota_sostabile · quota_moto / larghezza_stallo_moto`. Parcheggi in struttura esclusi (riportati a parte).
+- Auto dei residenti in strada: `N = residenti_cella · auto_per_residente · quota_in_strada`. Residenti del quartiere (NIL) ripartiti sulle celle in proporzione alla lunghezza delle strade.
+- Movimento: le partenze dei residenti e gli arrivi dei visitatori seguono il profilo a 30 minuti degli ingressi in Area C (forma 2016, totali per finestra e tipo di giorno 2023-24). Auto fuori casa e visitatori in sosta: carico offerto modificato `m(t+Δ) = m(t)·e^(−μΔ) + (λ/μ)(1 − e^(−μΔ))`, regime periodico.
+- Visitatori: arrivi giornalieri per cella `= quota_in_strada_cordone · ingressi_cordone / attrattori_cordone · attrattori_cella · (moltiplicatore fuori cordone)`, con attrattori = unità locali + peso · residenti. Due classi di sosta (lavoro, breve).
+- Carico offerto `a(t) = N·(1 − fuori_casa(t)) + visitatori(t)`; arrivi in cerca `λ(t) = rientri + arrivi visitatori`; `μ = λ/a` (Little).
+- Erlang B con `c` reale: `B = pmf_Poisson(c; a) / Q(c+1, a)` (gamma incompleta regolarizzata, stabile per migliaia di posti). Erlang C: `C = B / (1 − ρ(1 − B))`, `ρ = a/c`.
+- Attesa M/M/c: `P(W ≤ t) = 1 − C·e^(−(cμ − λ)t)`; se `λ ≥ cμ` non c'è regime: la funzione lo segnala e restituisce 0.
+- **Sovraccarico, trattamento usato nel calcolo:** coda M/M/c/(c+K) a pazienza finita, `K = ⌈cμ·pazienza⌉`: chi trova più di K auto già in cerca rinuncia (conta come "non trovato"). Stabile per ogni carico, continua attraverso ρ = 1, coincide con la formula M/M/c quando K → ∞ e ρ < 1 (testato). Ne derivano posti occupati attesi `E[min(n, c)]`, liberi `c − occupati`, `P(posto entro 5 minuti)`.
+- Incertezza: 40 estrazioni Monte Carlo (seme 49) dei parametri, triangolari su [minimo, massimo] con moda = valore centrale; intervallo 5°–95° percentile. I totali di città sommano per estrazione, poi i percentili.
+
+**Parametri principali** (tutti in `city.yaml`, valore centrale [min–max]):
+
+| Parametro | Valore | Dato / ipotesi | Fonte |
+|---|---|---|---|
+| Residenti per NIL | 1.399.079 (2025) | dato | ds27, ds964 |
+| Auto dei residenti | 684.613 (2022) | dato | ds1094 (2023 escluso: salto a 1,85 milioni), coincide con ds721 |
+| Ingressi auto in Area C, profilo | per giorno e fascia | dato | ds1072 (2023-24), ds818 (2016), varchi ds82 |
+| Unità locali per NIL | 182.833 (2010) | dato vecchio | ds201 |
+| Festivi | nazionali + 7 dicembre | dato | calendario |
+| Lunghezza stallo | 5,0 m [4,8–5,5] | ipotesi | — |
+| Lati con sosta | 1,5 [1,0–1,9] | ipotesi | nessuna larghezza delle strade |
+| Quota sostabile | 0,6 [0,45–0,75] | ipotesi | — |
+| Arretramento dagli incroci | 5 m | ipotesi (regola CdS non verificata alla fonte) | — |
+| Sovrapposizione aree mappate | 0,3 [0–0,6] | ipotesi | — |
+| Quota moto del marciapiede | 0,03 [0,01–0,05] | ipotesi | — |
+| Auto dei residenti in strada | 0,45 [0,3–0,6] | ipotesi | — |
+| Quota fuori casa al picco | feriale 0,4, sabato 0,3, festivo 0,2 | ipotesi | — |
+| Durata fuori casa | 7 h [4–9] | ipotesi | — |
+| Ingressi in cordone che sostano in strada | 0,3 [0,15–0,45] | ipotesi | — |
+| Moltiplicatore fuori cordone | 2 [1–4] | ipotesi | — |
+| Soste di lavoro / durate | 0,3; 8 h; breve 75 min | ipotesi | — |
+| Pazienza di ricerca | 10 min [5–20] | ipotesi | — |
+
+**Primo risultato (Milano, feriale, stima non verificata):** capacità 386.000 posti auto [290.000–448.000], 46.000 stalli moto [24.000–69.000]; occupati alle 10 circa 241.000 [199.000–273.000]. Controlli di plausibilità superati di poco: capacità/auto dei residenti 0,56; occupazione alle 3 di notte 0,62 (soglia 0,6); visitatori/auto fuori casa alle 10: 0,53.
+
+**Calibrazione con le segnalazioni:** per ogni zona un fattore di scala `s` della domanda (moltiplica carico e arrivi). Prior `log s ~ N(0; 0,5)`; verosimiglianza Bernoulli degli esiti "trovato entro 5 minuti" con `P(s)` del modello; posteriore su griglia (`calibrate_demand_scale`). Su esiti sintetici con s = 1,5 noto il codice lo recupera: verifica del codice, **non** dell'accuratezza. Su esiti reali il fattore si stima con dati tenuti da parte (§6) e la calibrazione si misura come in §6.
+
+**Limiti dichiarati:** auto per residente uniforme in città (il centro ne ha meno); flotte aziendali forse incluse nel parco; unità locali del 2010 su confini NIL di oggi; profilo di Area C applicato a tutta la città; partenze dei residenti modellate con lo stesso profilo degli ingressi (anche serali); pendolari da fuori città rappresentati solo dal moltiplicatore; regole di sosta, tariffe, strisce gialle e lavaggio strade assenti (T-041); un giorno tipo ripetuto (nessun effetto venerdì → sabato); `μ = λ/a` è esatto solo a regime; la coda FIFO approssima una ricerca che in strada è disordinata.
+
+**Cosa non sappiamo ancora:** la quota di auto dei residenti che dorme in strada (pesa più di tutto); la larghezza delle strade e quindi i lati con sosta; quanti visitatori arrivano fuori dal cordone; se l'occupazione notturna del 62% è troppo bassa (l'esperienza nei quartieri semicentrali suggerisce di sì). Servono esiti reali per cella e fascia, e conteggi a campione di auto in sosta su alcuni tratti (bozza di protocollo da preparare con `qa-tester`).

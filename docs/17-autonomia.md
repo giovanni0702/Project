@@ -33,6 +33,7 @@ La beta è valida quando tutte le voci sono vere. Stato al 2026-11-14 tra parent
 - [x] Parcheggi in struttura: 74 con posti (D-031). [ ] Tariffe e orari.
 - [ ] Regole di sosta per strada: ambiti, orari, tariffe (ambiti scaricati; tariffe e orari senza fonte verificata).
 - [x] Modello con componente "adesso", stime per altri orari, correzione per veicolo (valori provvisori).
+- [ ] Posti totali, occupati e liberi per zona: modello fatto (D-037), da rendere credibile e verificare (T-050).
 - [ ] Stalli e regole per le moto.
 - [ ] Dato reale visibile su tutto il Comune tramite la stima a livelli (D-029, T-045).
 

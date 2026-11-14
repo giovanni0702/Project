@@ -14,6 +14,10 @@ Decisa il 2026-11-14: repository privato e sito da un repository separato (D-038
 
 ## Iterazione 1 — in corso
 
+### T-050 — Rendere credibile il modello di occupazione prima di mostrarlo ai tester
+data-scientist | Backlog | alta | M | —
+Criteri: [ ] il centro risulta troppo facile (es. Brera "almeno 9 su 10" in pieno giorno) e l'occupazione notturna è solo 0,62: rivedere quota di auto dei residenti in strada, lati parcheggiabili, visitatori · [ ] confronto con almeno una fonte esterna (studi, dati AMAT, rilevazioni pubblicate) · [ ] conteggi a campione di auto in sosta su alcune strade (chi li fa: da decidere con il fondatore) · [ ] calibrazione con le prime segnalazioni reali · [ ] nell'app la stima resta marcata "non verificata" finché questi punti non sono chiusi
+
 ### T-048 — Verifica del nome SostaMi
 legal-analyst | Backlog | alta | S | —
 Criteri: [ ] ricerca nei registri UIBM ed EUIPO (classi per software e servizi di mobilità) · [ ] app con nome uguale o simile su Google Play e App Store · [ ] domini liberi · [ ] esito con rischio e alternative; nessuna registrazione, che spetta al fondatore

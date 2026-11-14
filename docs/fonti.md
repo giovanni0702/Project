@@ -51,3 +51,8 @@ Stato: **letta** (pagina ufficiale aperta) · **parziale** (troncata o solo tito
 | Norme | eur-lex.europa.eu CELEX:32016R0679 (IT/EN, 3 varianti) · garanteprivacy.it docweb 9355574 | 2026-11-14 | bloccata | Pagine vuote: artt. 4, 6, 7, 11, 25, 35, 36 GDPR non letti |
 | Norme | garanteprivacy.it docweb 9042678 (Codice, art. 122) | 2026-11-14 | bloccata | Pagina dinamica, senza testo |
 | Norme | edpb.europa.eu Linee guida 1/2020 | 2026-11-14 | bloccata | "Page not found" all'URL tentato; non lette |
+| Dati | dati.comune.milano.it ds964 (NIL PGT 2030, GeoJSON) | 2026-11-14 | letta | 88 quartieri, CC BY 4.0; usato da T-049 |
+| Dati | dati.comune.milano.it ds27 (residenti per quartiere 1999-2025) | 2026-11-14 | letta | 2025: 1.399.079 residenti in 87 NIL, CC BY 4.0 |
+| Dati | dati.comune.milano.it ds1094 e ds721 (parco veicolare) | 2026-11-14 | letta | Auto 2022: 684.613 (uguali nei due); 2023 ds1094: 1.848.869, rottura di serie, escluso |
+| Dati | dati.comune.milano.it ds1072, ds818, ds82 (Area C: giornalieri, a 30 minuti 2016, varchi) | 2026-11-14 | letta | Giornalieri 2023-12 / 2024-11 con auto per finestra; 42 varchi; CC BY 4.0 |
+| Dati | dati.comune.milano.it ds201 (unità locali per NIL) | 2026-11-14 | letta | Solo anno 2010: 182.833 unità locali, CC BY 4.0 |

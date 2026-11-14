@@ -63,9 +63,23 @@ KIND_LABEL = {"garage": "Autorimessa convenzionata", "public": "Parcheggio pubbl
               "public_residents": "Parcheggio pubblico e residenti", "park_and_ride": "Parcheggio di interscambio"}
 car_parks = [[qx(c["lon"]), qy(c["lat"]), c["name"], KIND_LABEL[c["kind"]], c["spaces"], c.get("address", ""), c.get("note", "")]
              for c in parking["car_parks"]]
+# Occupancy model (D-037): per cell, capacity and per day type the 48 half-hour values of
+# P(space within 5 minutes) and expected occupied cars. MODEL ESTIMATE, not validated.
+model = None
+occupancy_file = ROOT / "build" / "occupancy" / city["id"] / "occupancy.json"
+if occupancy_file.exists():
+    occupancy = json.loads(occupancy_file.read_text(encoding="utf-8"))
+    ordered = sorted(cell_index, key=cell_index.get)
+    empty = {"cap": [0, 0, 0]}
+    model = {"cap": [occupancy["cells"].get(c, empty)["cap"] for c in ordered], "days": {}}
+    for day in ("weekday", "saturday", "holiday"):
+        model["days"][day] = {
+            "p": [occupancy["cells"][c][day]["p"][0] if c in occupancy["cells"] else None for c in ordered],
+            "occ": [occupancy["cells"][c][day]["occ"][0] if c in occupancy["cells"] else None for c in ordered],
+        }
 center = [sum(c[0] for c in cells) / len(cells), sum(c[1] for c in cells) / len(cells)]
 data = {"city": city["name"], "bbox": [west, south, east, north], "q": Q, "names": names, "cells": cells, "pieces": out,
-        "stalls": stalls, "carParks": car_parks, "layers": layers, "odds": city["vehicles"]["odds"],
+        "stalls": stalls, "carParks": car_parks, "model": model, "layers": layers, "odds": city["vehicles"]["odds"],
         "thresholds": city["display"]["thresholds"], "center": center, "attribution": adapter.ATTRIBUTION}
 html = (ROOT / "web" / "app_template.html").read_text(encoding="utf-8")
 html = html.replace("/*DATA*/null", json.dumps(data, separators=(",", ":"), ensure_ascii=False))

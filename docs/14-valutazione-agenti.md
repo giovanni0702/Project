@@ -27,6 +27,12 @@ Si aggiorna a ogni chiusura di iterazione (`ceo-orchestrator`). Voto da 1 a 5 su
 
 Lezione del ciclo: il red team va lanciato **dopo** ogni nuovo flusso di dati, non in parallelo, così attacca anche il codice appena scritto.
 
+## Ciclo 3 — 2026-11-14
+
+| Agente | Voto | Motivo |
+|---|---|---|
+| data-scientist (occupazione) | 4 | Modello completo, formule corrette e testate, incertezza dichiarata, ipotesi elencate; risultato però poco plausibile in centro e costo alto (124.000 token) |
+
 ## Problemi di sistema (e correzioni applicate)
 1. **Ricerche lanciate prima di controllare la rete.** Il primo giro (5 incarichi, circa 213.000 token) ha prodotto risultati parziali perché i siti ufficiali erano bloccati. *Errore di chi ha delegato, non degli agenti.* Correzione: prima di ogni ricerca si prova un sito con `scripts/fetch_text.py`.
 2. **Lo strumento di lettura web degli agenti non raggiunge siti che lo script raggiunge.** Correzione: `privacy-compliance` e `competitor-analyst` ora possono usare Bash, solo per `scripts/fetch_text.py` e `make check`.

@@ -116,7 +116,6 @@ select.chip { appearance: none; }
       <option value="moto">Moto o scooter</option><option value="small">Auto piccola</option>
       <option value="medium">Auto media</option><option value="large">Auto grande</option>
     </select>
-    <button type="button" class="chip" id="example" aria-pressed="false">Mostra esempio</button>
   </div>
   <div class="card when" id="when" hidden>
     <div class="days" id="days" role="group" aria-label="Giorno"></div>
@@ -134,7 +133,7 @@ select.chip { appearance: none; }
 
 <div class="card legend" aria-label="Legenda">
   <span><i style="background:var(--high)"></i>Facile</span><span><i style="background:var(--mid)"></i>Possibile</span>
-  <span><i style="background:var(--low)"></i>Difficile</span><span><i style="background:var(--unknown)"></i>Nessun dato</span>
+  <span><i style="background:var(--low)"></i>Difficile</span><span><i style="background:var(--unknown)"></i>Nessuna stima</span>
   <span><i style="background:var(--accent);width:12px;height:12px;border-radius:6px"></i>Parcheggio in struttura</span>
   <span><i style="background:var(--parking);width:14px;height:10px;border:1px solid var(--line)"></i>Area di sosta</span>
   <span class="credit" id="credit"></span>
@@ -150,7 +149,7 @@ const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n
 const [W, S, E, N] = DATA.bbox, Q = DATA.q;
 const kx = Math.cos((S + N) / 2 * Math.PI / 180) * (E - W) / (N - S);
 const metresPerUnit = (N - S) * 111320 / Q;
-const VERDICT = { high: 'Facile trovare posto', mid: 'Posto possibile', low: 'Difficile trovare posto', unknown: 'Nessun dato reale' };
+const VERDICT = { high: 'Facile trovare posto', mid: 'Posto possibile', low: 'Difficile trovare posto', unknown: 'Nessuna stima' };
 const VEHICLE = { moto: 'moto o scooter', small: 'auto piccola', medium: 'auto media', large: 'auto grande' };
 const DAYS = ['Oggi', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'];
 
@@ -159,7 +158,7 @@ const KEY = 'sostami.v1';
 let store = { vehicle: 'medium', parked: null, outcomes: [] };
 try { store = Object.assign(store, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch (e) {}
 const save = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) {} };
-let example = false, live = true, day = 0, slot = 37, tab = 'map', selected = -1, selectedPark = -1, confirmWipe = false;
+let live = true, day = 0, slot = 37, tab = 'map', selected = -1, selectedPark = -1, confirmWipe = false;
 let view = { cx: DATA.center[0], cy: DATA.center[1], scale: 0 }, me = null, notice = '';
 
 // ---- decode geometry
@@ -176,19 +175,21 @@ const lower = DATA.names.map((n) => n.toLowerCase());
 // ---- estimates
 function hash(i) { let h = (i + 1) * 2654435761 >>> 0; h ^= h >>> 15; return (h % 1000) / 1000; }
 function nowSlot() { const t = new Date(); return t.getHours() * 2 + (t.getMinutes() >= 30 ? 1 : 0); }
-function exampleProbability(cell) {            // EXAMPLE ONLY: plausible shape, no real observations
-  const [x, y] = DATA.cells[cell];
-  const d = Math.hypot((x - DATA.center[0]) * kx, y - DATA.center[1]) / Q;
-  const hour = (live ? nowSlot() : slot) / 2;
-  const weekend = !live && day >= 6 ? 0.55 : 1;
-  const busy = weekend * (Math.exp(-((hour - 10) ** 2) / 8) + 1.1 * Math.exp(-((hour - 19) ** 2) / 6) + 0.45 * Math.exp(-((hour - 13.5) ** 2) / 5));
-  const night = hour < 6 || hour > 23 ? 0.12 : 0;
-  return Math.min(0.95, Math.max(0.05, 0.45 + 2.2 * d - 0.32 * busy * Math.max(0, 1 - 3 * d) - night + 0.3 * (hash(cell) - 0.5)));
+function dayType() {                              // weekday | saturday | holiday
+  const d = live || day === 0 ? new Date().getDay() : day % 7;   // DAYS index 1..7 = Mon..Sun -> 1..6, 0
+  return d === 0 ? 'holiday' : d === 6 ? 'saturday' : 'weekday';
+}
+const currentSlot = () => (live ? nowSlot() : slot);
+function estimate(cell) {                         // MODEL ESTIMATE, not validated on real outcomes
+  const m = DATA.model; if (!m) return null;
+  const p = m.days[dayType()].p[cell]; if (!p) return null;
+  const s = currentSlot(), cap = m.cap[cell], occ = m.days[dayType()].occ[cell][s];
+  const base = Math.min(0.99, Math.max(0.01, p[s] / 100)), o = base / (1 - base) * DATA.odds[store.vehicle];
+  return { p: o / (1 + o), cap, occ: Math.min(occ, cap[1]), free: Math.max(0, cap[1] - occ) };
 }
 function levelOf(cell) {
-  if (!example) return 'unknown';
-  const p = exampleProbability(cell), o = p / (1 - p) * DATA.odds[store.vehicle], q = o / (1 + o);
-  return q >= DATA.thresholds.high ? 'high' : q <= DATA.thresholds.low ? 'low' : 'mid';
+  const e = estimate(cell); if (!e) return 'unknown';
+  return e.p >= DATA.thresholds.high ? 'high' : e.p <= DATA.thresholds.low ? 'low' : 'mid';
 }
 
 // ---- drawing
@@ -322,11 +323,15 @@ function render() {
       '<div><span>Tariffe e orari</span><span>non ancora disponibili</span></div></div>' + navLinks(c[0], c[1]);
   } else if (selected >= 0) {
     const g = pieces[selected], level = levelOf(g.cell), n = DATA.stalls[selected], [mx, my] = middle(g), name = DATA.names[g.name] || 'Strada senza nome';
-    html += '<span class="tag ' + (example ? '' : 'live') + '">' + (example ? 'Esempio · dati finti' : whenLabel()) + '</span><div class="name">' + esc(name) + '</div><h2>' + VERDICT[level] + '</h2>';
-    html += example ? '<p>Colore di esempio per ' + VEHICLE[store.vehicle] + ', ' + whenLabel().toLowerCase() + '. Non descrive la situazione vera di questa strada.</p>'
-      : '<p>Nessuno ha ancora segnalato com\'è la sosta qui. La mappa si colora quando arrivano i contributi di chi usa SostaMi.</p>';
-    html += '<div class="rows"><div><span>Aree di sosta mappate qui</span><span>' + (n ? 'circa ' + n.toLocaleString('it-IT') + ' posti' : 'nessuna') + '</span></div>' +
-      '<div><span>Posti lungo il marciapiede</span><span>non ancora censiti</span></div><div><span>Tariffa e orari</span><span>non ancora disponibili</span></div></div>' + navLinks(mx, my);
+    const e = estimate(g.cell), num = (v) => Math.round(v).toLocaleString('it-IT');
+    html += '<span class="tag">' + whenLabel() + ' · stima del modello</span><div class="name">' + esc(name) + '</div><h2>' + VERDICT[level] + '</h2>';
+    html += e ? '<p>Per ' + VEHICLE[store.vehicle] + ': posto entro 5 minuti ' + (e.p >= 0.9 ? 'almeno 9' : e.p <= 0.1 ? 'meno di 1' : 'circa ' + Math.round(e.p * 10)) + ' volte su 10. È una stima matematica <b>non ancora verificata</b> con segnalazioni reali.</p>'
+      : '<p>Per questa zona non c\'è ancora una stima.</p>';
+    if (e) html += '<div class="rows"><div><span>Posti in questa zona</span><span>circa ' + num(e.cap[1]) + ' (' + num(e.cap[0]) + '–' + num(e.cap[2]) + ')</span></div>' +
+      '<div><span>Occupati (stima)</span><span>circa ' + num(e.occ) + '</span></div><div><span>Liberi (stima)</span><span>circa ' + num(e.free) + '</span></div>' +
+      '<div><span>Aree di sosta mappate su questo tratto</span><span>' + (n ? 'circa ' + n.toLocaleString('it-IT') + ' posti' : 'nessuna') + '</span></div>' +
+      '<div><span>Tariffa e orari</span><span>non ancora disponibili</span></div></div><p>"Zona" è un\'area di circa 300 metri attorno al tratto.</p>';
+    html += navLinks(mx, my);
     html += '<p style="font-weight:600;color:var(--ink)">Hai cercato posto qui? Com\'è andata?</p><div class="outcomes">' +
       '<button type="button" class="btn" data-outcome="subito">Trovato subito</button><button type="button" class="btn" data-outcome="dopo">Dopo un po\'</button><button type="button" class="btn" data-outcome="no">Non c\'era posto</button></div>' +
       '<p id="saved" hidden>Segnato su questo dispositivo. Verrà inviato quando il servizio sarà attivo e avrai dato il consenso.</p>' +
@@ -351,9 +356,7 @@ function setTab(name) {
 }
 function setStatus() {
   $('status').classList.toggle('notice', !!notice);
-  $('status').textContent = notice ? notice : example ? 'Stai guardando un esempio: i colori sono finti, le strade e i parcheggi sono veri.'
-    : 'Strade e parcheggi veri di ' + DATA.city + '. Non ci sono ancora segnalazioni: le strade restano grigie.';
-  $('example').setAttribute('aria-pressed', example); $('example').textContent = example ? 'Nascondi esempio' : 'Mostra esempio';
+  $('status').textContent = notice ? notice : 'Colori da un modello matematico della sosta, non ancora verificato con segnalazioni reali.';
   $('live').setAttribute('aria-pressed', live); $('other').setAttribute('aria-pressed', !live); $('when').hidden = live;
   $('other').textContent = live ? 'Altro orario' : (day ? DAYS[day] : 'Oggi') + ' ' + clock(slot);
 }
@@ -410,7 +413,6 @@ $('locate').onclick = () => {
 };
 $('live').onclick = () => { live = true; setStatus(); render(); redraw(); };
 $('other').onclick = () => { live = false; setStatus(); render(); redraw(); };
-$('example').onclick = () => { example = !example; setStatus(); render(); redraw(); };
 $('vehicle').value = store.vehicle;
 $('vehicle').onchange = (e) => { store.vehicle = e.target.value; save(); render(); redraw(); };
 $('hour').oninput = (e) => { slot = +e.target.value; $('hour-out').textContent = clock(slot); setStatus(); render(); redraw(); };
@@ -421,7 +423,7 @@ $('credit').textContent = DATA.attribution;
 addEventListener('resize', resize);
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', redraw);
 new MutationObserver(redraw).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-setInterval(() => { if (tab === 'car' && store.parked && store.parked.until) render(); if (example && live) redraw(); }, 30000);
+setInterval(() => { if (tab === 'car' && store.parked && store.parked.until) render(); if (live) redraw(); }, 60000);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(redraw);
 setStatus(); resize();
 </script>

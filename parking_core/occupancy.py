@@ -34,7 +34,7 @@ def _log_gamma_q(s: float, x: float) -> float:
             if term < total * _EPS:
                 break
         lower = math.exp(prefactor) * total
-        return math.log1p(-lower) if lower < 1 else -745.0
+        return math.log1p(-lower) if lower < 1 else -math.inf
     tiny = 1e-300
     b = x + 1 - s
     c, d = 1 / tiny, 1 / b
