@@ -280,3 +280,15 @@ Formato: ogni decisione ha data, stato, contesto, scelta e conseguenze. Le decis
 - **Perché non Google Maps:** i termini letti alla fonte vietano di estrarre, conservare o usare i loro contenuti per crearne di propri (D-004); inoltre Google non espone posti liberi né auto in sosta. Usarli esporrebbe il progetto alla chiusura dell'accesso e a contestazioni, soprattutto in vista di una cessione del dato (D-013).
 - **Metodo:** (1) capacità per tratto = aree di sosta mappate + stima della sosta lungo il marciapiede dalla lunghezza dei tratti; (2) domanda dal movimento reale disponibile: residenti e auto per quartiere, ingressi in Area C, attività per quartiere; (3) teoria delle code: sistema a c posti con arrivi e durate di sosta variabili nel tempo (formule di Erlang B e C), da cui posti occupati, posti liberi e probabilità di trovare posto entro 5 minuti, ciascuno con intervallo di incertezza; (4) calibrazione bayesiana con le segnalazioni reali.
 - **Onestà:** finché mancano le segnalazioni, i numeri sono stime del modello non verificate e l'app lo dichiara.
+
+## D-038 — Repository privato, sito in un repository separato
+- **Data:** 2026-11-14
+- **Stato:** decisa dal fondatore
+- **Scelta:** il repository del progetto diventa privato; il sito si pubblica da un repository pubblico separato che contiene solo i file di `site/` (nessun documento, nessun codice del modello).
+- **Azioni del fondatore** (gli agenti non creano repository né cambiano la visibilità):
+  1. creare un repository pubblico vuoto, per esempio `sostami`;
+  2. in quel repository: Settings → Pages → Source: "GitHub Actions";
+  3. rendere privato `Project`: Settings → General → Danger Zone → Change visibility;
+  4. dare a Claude l'accesso al nuovo repository (impostazioni dell'app GitHub di Claude) e dirlo in chat.
+- **Poi fa il team:** copia `site/` nel nuovo repository (il flusso di pubblicazione è già in `site/.github/workflows/pages.yml`) e verifica che l'indirizzo risponda. Indirizzo atteso: `https://giovanni0702.github.io/sostami/`.
+- **Nota:** la cronologia pubblica già copiata o indicizzata da terzi non si può ritirare; rendere privato il repository vale da quel momento in poi.

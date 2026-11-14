@@ -7,11 +7,10 @@ Stati: Backlog · In corso (con nome del proprietario) · Bloccato · Fatto.
 
 ## Decisioni richieste al fondatore
 
-Decise il 2026-11-14: beta come sito web e pubblicazione (D-036), metodo per posti liberi e occupati (D-037).
+Decisa il 2026-11-14: repository privato e sito da un repository separato (D-038).
 
-1. **Attivare il sito (azione tua, 2 minuti):** repository → Settings → Pages → Source: "GitHub Actions". Poi dimmelo: verifico che l'indirizzo risponda.
-2. **Il repository è pubblico:** tutti i documenti del progetto sono già visibili a chiunque. A) lasciarlo pubblico; B) renderlo privato e pubblicare il sito da un repository separato. Raccomandazione: B prima di reclutare tester.
-3. **Durata della beta:** A) 6 settimane; B) 4. Raccomandazione: A.
+1. **Quattro azioni tue per mettere online il sito** (`docs/05-decisioni.md` D-038): creare il repository pubblico `sostami`; attivare Pages con "GitHub Actions"; rendere privato `Project`; dare a Claude l'accesso al nuovo repository. Poi dimmelo: copio il sito e verifico l'indirizzo.
+2. **Durata della beta:** A) 6 settimane; B) 4. Raccomandazione: A.
 
 ## Iterazione 1 — in corso
 

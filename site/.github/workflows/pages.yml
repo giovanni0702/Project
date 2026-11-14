@@ -1,9 +1,9 @@
 name: site
-# Publishes the static SostaMi web app from site/ to GitHub Pages.
+# Publishes the static SostaMi web app to GitHub Pages.
+# This file works once the contents of site/ are the root of the separate public repository (D-038).
 # Requires: repository Settings > Pages > Source = "GitHub Actions" (done by the founder).
 on:
   push:
-    paths: ["site/**", ".github/workflows/pages.yml"]
   workflow_dispatch:
 permissions:
   contents: read
@@ -22,6 +22,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: site
+          path: .
       - id: deployment
         uses: actions/deploy-pages@v4
