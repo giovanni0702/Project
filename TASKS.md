@@ -11,20 +11,31 @@ Decisa il 2026-11-14: repository privato e sito da un repository separato (D-038
 
 1. **Quattro azioni tue per mettere online il sito** (`docs/05-decisioni.md` D-038): creare il repository pubblico `sostami`; attivare Pages con "GitHub Actions"; rendere privato `Project`; dare a Claude l'accesso al nuovo repository. Poi dimmelo: copio il sito e verifico l'indirizzo.
 2. **Durata della beta:** A) 6 settimane; B) 4. Raccomandazione: A.
+3. **Conteggi a campione su 20 tratti** (protocollo in `reports/t050-occupazione.md`, circa un'ora): A) li fai tu o una persona di fiducia; B) si aspettano le prime segnalazioni dei tester. Raccomandazione: A, è l'unica verifica possibile prima della beta.
+4. **Residuo privacy sul "live"** (`reports/reid/2026-11-17.md`): A) i contributori già ammessi entrano solo ai passi di 30 minuti ("adesso" aggiornato ogni 30 minuti invece di 5); B) un cambio si pubblica solo con almeno 2 contributori nuovi nel passo. Raccomandazione: B se `privacy-engineer` conferma che regge (T-051), altrimenti A. Fino ad allora la raccolta live resta ferma.
 
 ## Iterazione 1 — in corso
 
 ### T-050 — Rendere credibile il modello di occupazione prima di mostrarlo ai tester
-data-scientist | Backlog | alta | M | —
-Criteri: [ ] il centro risulta troppo facile (es. Brera "almeno 9 su 10" in pieno giorno) e l'occupazione notturna è solo 0,62: rivedere quota di auto dei residenti in strada, lati parcheggiabili, visitatori · [ ] confronto con almeno una fonte esterna (studi, dati AMAT, rilevazioni pubblicate) · [ ] conteggi a campione di auto in sosta su alcune strade (chi li fa: da decidere con il fondatore) · [ ] calibrazione con le prime segnalazioni reali · [ ] nell'app la stima resta marcata "non verificata" finché questi punti non sono chiusi
+data-scientist | In corso (parte senza rete fatta il 2026-11-17) | alta | M | —
+Criteri: [x] centro non più facile (Brera feriale ore 11: da circa 100% a 45%; notte 0,62 → 0,69), ipotesi in `city.yaml`, 6 controlli di plausibilità · [ ] confronto con una fonte esterna (nessuna raggiungibile) · [ ] conteggi a campione (protocollo pronto, decisione 3) · [ ] calibrazione con le prime segnalazioni reali · [x] stima marcata "non verificata" nell'app
+Note: `reports/t050-occupazione.md`. Aperti: stalli gialli, semicentro più difficile di giorno che di notte.
+
+### T-053 — Riesecuzione indipendente delle metriche del modello di occupazione
+qa-tester | Backlog | alta | S | —
+Criteri: [ ] build ripetuta da zero e numeri di `09-modello.md` §11 confermati · [ ] controlli di plausibilità non aggirabili dalla configurazione · [ ] sensibilità alle 3 ipotesi nuove
+
+### T-051 — Chiudere il residuo "già ammessi entrano subito nel live"
+privacy-engineer | Backlog | alta | M | —
+Criteri: [ ] opzione scelta tra A e B (decisione 4) con motivazione · [ ] i test xfail del residuo in `tests/test_privacy.py` passano senza xfail · [ ] nuovo giro di `privacy-redteam` · [ ] parere di `privacy-compliance` sulla ripresa della raccolta live
+
+### T-052 — Ridurre l'impronta delle settimane di attività (attacchi D ed E)
+privacy-engineer | Backlog | media | M | T-051
+Criteri: [ ] il collegamento tra settimane dello stesso pseudonimo non riesce con attività rada · [ ] test xfail D ed E passano · [ ] attacco ripetuto su un campione più grande di 20 agenti
 
 ### T-048 — Verifica del nome SostaMi
-legal-analyst | Backlog | alta | S | —
+legal-analyst | Bloccato (UIBM ed EUIPO non raggiungibili il 2026-11-17) | alta | S | —
 Criteri: [ ] ricerca nei registri UIBM ed EUIPO (classi per software e servizi di mobilità) · [ ] app con nome uguale o simile su Google Play e App Store · [ ] domini liberi · [ ] esito con rischio e alternative; nessuna registrazione, che spetta al fondatore
-
-### T-047 — Verifica indipendente delle correzioni privacy
-privacy-redteam | Backlog | alta | M | —
-Criteri: [ ] i test adattati da `privacy-engineer` non sono stati indeboliti · [ ] attacchi ripetuti sul codice corretto, più D ed E della DPIA · [ ] attacco al residuo "già ammessi entrano subito nel live" · [ ] esito a `privacy-compliance`, che conferma o no lo stop alla raccolta delle ripartenze
 
 ### T-045 — Stima a livelli su tutto il Comune (D-029)
 data-scientist | Backlog | alta | L | T-040
@@ -43,7 +54,7 @@ mobile-engineer | Backlog | alta | L | T-040
 Criteri: [ ] Flutter e Android SDK installabili nell'ambiente (siti da abilitare elencati) · [ ] scheletro con mappa delle strade, vista live e altri orari, veicolo, contributi · [ ] contratto API dal backend · [ ] testi IT/EN · [ ] requisito: invio con ritardo casuale (C7)
 
 ### T-044 — Versione web collegata al servizio (D-035)
-backend-engineer | Backlog | alta | M | T-047
+backend-engineer | Backlog | alta | M | T-051
 Criteri: [ ] la web app legge la griglia pubblicata e invia le segnalazioni con consenso, pseudonimo per cella e ritardo casuale · [ ] GPS con consenso, ridotto a cella sul dispositivo · [ ] versione installabile sulla schermata Home · [ ] mappa di sfondo: dati del Comune o tasselli con licenza adatta · [ ] comando unico per avviare tutto in locale
 
 ### T-036 — Veicolo: taglie, moto, elenco modelli (D-023)
