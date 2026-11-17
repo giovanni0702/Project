@@ -49,6 +49,7 @@ Rivisti da `privacy-compliance` il 2026-11-14 (T-018, T-028). Motivi e condizion
 - [confermato] **Funzioni solo sul dispositivo** ("ricorda dove ho parcheggiato", timer, contatore dei contributi): nessun dato lascia il telefono.
 - [confermato] **Segnalazione dei crash** solo con consenso e senza posizione.
 - [corretto] **Test di re-identificazione** (`make reid`) prima di ogni build distribuita: specifica in [`15-dpia-bozza.md` §9](15-dpia-bozza.md#9-test-di-re-identificazione-prima-di-ogni-release). Se un attacco riesce, la release è bloccata.
+- **Verifica indipendente T-047 (2026-11-17):** le correzioni T-040 reggono (test non indeboliti), ma riescono 3 attacchi: D/E (impronta delle settimane, attività rada) e il residuo "già ammessi entrano subito nel live" (55/60). Release bloccata; stop alla raccolta live confermato dal red team. Dettagli: [`reports/reid/2026-11-17.md`](../reports/reid/2026-11-17.md).
 - Antiabuso e piano incidenti → [`12-sicurezza.md`](12-sicurezza.md).
 
 - **Veicolo (D-023):** il modello resta sul telefono; l'invio della taglia con i contributi è **in attesa di parere** (T-036). Nessun invio del tratto di strada senza parere (T-035).

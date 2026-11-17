@@ -381,3 +381,116 @@ def test_admission_interval_leaves_live_time_for_new_contributors():
     assert interval + delay < CITY["model"]["live_window_minutes"]
     assert interval % CITY["publish"]["interval_minutes"] == 0
     assert 1440 % interval == 0
+
+
+# ---------------------------------------------------------------------------
+# T-047: independent re-test of the T-040 fixes, attacks D and E of the DPIA (section 9)
+# and the residual "already admitted contributors enter the live estimate at once".
+# xfail(strict=True) = attack that SUCCEEDS today. Report: reports/reid/2026-11-17.md
+# ---------------------------------------------------------------------------
+def commuters(seed, n_agents, activity, days=20):
+    """Synthetic commuters through the real SqliteStore: work parked at slot 17, home parked at slot 36.
+    Returns (store, owner: pid -> agent, home: agent -> cell)."""
+    rng = random.Random(seed)
+    store, owner, home = SqliteStore(":memory:"), {}, {}
+    secrets = [f"t047-{seed}-{i}".encode() for i in range(n_agents)]
+    for agent in range(n_agents):
+        home[agent], work = CELLS[300 + agent], CELLS[500 + agent % 4]
+        for d in range(days):
+            if rng.random() > activity:
+                continue
+            day = date(2026, 11, 2) + timedelta(days=d)
+            for cell, slot in ((work, 17), (home[agent], 36)):
+                pid = pseudonym(secrets[agent], "parked", cell, d)
+                owner[pid] = agent
+                store.add_event({"type": "parked", "cell": cell, "slot_day_type": "weekday", "slot_index": slot,
+                                 "search_bucket": 1, "pid": pid, "app_version": "0.1"}, day)
+    return store, owner, home
+
+
+def pid_profiles(store):
+    """What the server holds per pseudonym: (cell, slots, set of weeks)."""
+    prof = {}
+    for e in store.events():
+        cell, slots_, weeks = prof.setdefault(e["pid"], (e["cell"], set(), set()))
+        slots_.add(e["slot_index"])
+        weeks.add(e["week"])
+    return prof
+
+
+SPARSE = [(1, 0.75), pytest.param(2, 0.25, marks=pytest.mark.xfail(strict=True, reason="T-047 attack D: with few active days the set of weeks is a quasi-identifier and joins work and home pseudonyms")),
+          pytest.param(3, 0.1, marks=pytest.mark.xfail(strict=True, reason="T-047 attack D/E: same, sparse activity"))]
+
+
+@pytest.mark.parametrize("seed,activity", SPARSE)
+def test_attack_d_home_cell_guess_is_not_better_than_chance(seed, activity):
+    """Attacker links each evening pseudonym (slot 36 = home) to the unique morning pseudonym (slot 17 = work)
+    of another cell with the same set of weeks, and so names a home for a person. Precision must not exceed
+    chance (1 / number of homes) + 5 points."""
+    store, owner, home = commuters(seed, n_agents=20, activity=activity)
+    prof = pid_profiles(store)
+    work = {p: v for p, v in prof.items() if 17 in v[1]}
+    tried = correct = 0
+    for pid_w, (cell_w, _, weeks_w) in work.items():
+        cand = [p for p, (c, s, w) in prof.items() if 36 in s and c != cell_w and w == weeks_w]
+        if len(cand) == 1:
+            tried += 1
+            correct += owner[cand[0]] == owner[pid_w]
+    chance = 1 / 20
+    assert tried == 0 or correct / tried <= chance + 0.05, f"home guessed right {correct}/{tried} (chance {chance:.0%})"
+
+
+@pytest.mark.parametrize("seed,activity", SPARSE)
+def test_attack_e_known_event_does_not_reveal_other_events_of_the_same_person(seed, activity):
+    """Attacker knows one event of a person (cell, slot, weeks, from a friend or a photo). Looking at every other
+    pseudonym of another cell whose weeks match, he must never end up with a single candidate that is the person."""
+    store, owner, _ = commuters(seed, n_agents=20, activity=activity)
+    prof = pid_profiles(store)
+    found = set()
+    for pid, (cell, _, weeks) in prof.items():
+        cand = [p for p, (c, _, w) in prof.items() if c != cell and w == weeks]
+        if len(cand) == 1 and owner[cand[0]] == owner[pid]:
+            found.add(owner[pid])
+    assert not found, f"{len(found)} of 20 persons: another event identified from one known event"
+
+
+def test_attack_e_pseudonym_never_spans_two_cells():
+    store, _, _ = commuters(1, 20, 0.75)
+    cells_per_pid = {}
+    for e in store.events():
+        cells_per_pid.setdefault(e["pid"], set()).add(e["cell"])
+    assert all(len(c) == 1 for c in cells_per_pid.values())
+
+
+def residual_diff(n_admitted, seed):
+    """Cell with `n_admitted` people admitted at an admission step. At the next 5-minute step (not an admission
+    step) one of them contributes a new report (a failure, against old successes). Returns (grid cell without
+    the report, grid cell with it)."""
+    rng = random.Random(seed)
+    people = [f"adm{i}" for i in range(n_admitted)]
+    old = [Outcome(TARGET, SLOT, rng.random() < 0.9, 0.5, p) for p in people]
+    result = []
+    for extra in (False, True):
+        admission, levels = Admission.from_config(CITY), {}
+        build_grid(CITY, old, now=NOW0, previous_levels=levels, admission=admission)     # admission step
+        later = NOW0 + timedelta(minutes=CITY["publish"]["interval_minutes"])
+        fresh = [Outcome(TARGET, SLOT, False, 0.0, people[0])] if extra else []
+        payload = build_grid(CITY, old + fresh, now=later, previous_levels=levels, admission=admission)
+        result.append(payload["cells"][TARGET])
+    return result
+
+
+@pytest.mark.xfail(strict=True, reason="T-047 residual 1: an already admitted contributor enters the live estimate "
+                   "at every 5-minute step, so one person can change a published cell (differencing)")
+def test_attack_residual_admitted_contributor_moves_live_grid_at_once():
+    changed = sum(a != b for a, b in (residual_diff(n, s) for n in (5, 6, 8) for s in range(20)))
+    assert changed == 0, f"{changed}/60 variants: one admitted person's report changed the published cell"
+
+
+def test_attack_residual_control_new_people_do_not_enter_outside_the_window():
+    """Control: unadmitted people reporting between admission steps change nothing (T-040 fix holds)."""
+    later = NOW0 + timedelta(minutes=CITY["publish"]["interval_minutes"])
+    people = [Outcome(TARGET, SLOT, False, 0.0, f"new{i}") for i in range(8)]
+    quiet = build_grid(CITY, [], now=later, admission=Admission.from_config(CITY))
+    loud = build_grid(CITY, people, now=later, admission=Admission.from_config(CITY))
+    assert loud["cells"] == quiet["cells"]
