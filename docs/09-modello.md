@@ -151,7 +151,7 @@ Richiede codice in `parking_core/publish.py` e `privacy.py` (fuori da T-029) e r
 
 **Formule** (per cella H3, tipo di giorno, fascia di 30 minuti):
 - Capacità del marciapiede per tratto: `c = max(L − 2·arretramento, 0) · fattore_via · lati · quota_sostabile · (1 − quota_moto) / lunghezza_stallo`; più `(1 − sovrapposizione) ·` posti delle aree mappate (D-030). Stalli moto: `L_utile · lati · quota_sostabile · quota_moto / larghezza_stallo_moto`. Parcheggi in struttura esclusi (riportati a parte).
-- Auto dei residenti in strada: `N = residenti_cella · auto_per_residente · quota_in_strada`. Residenti del quartiere (NIL) ripartiti sulle celle in proporzione alla lunghezza delle strade.
+- Veicoli dei residenti in strada: `N = residenti_cella · (auto_per_residente · fattore_non_intestate · quota_in_strada + autocarri_per_residente · quota_autocarri_in_strada)` (T-050). Nel cordone il cordolo è moltiplicato per `fattore_capacità_centro`. Residenti del quartiere (NIL) ripartiti sulle celle in proporzione alla lunghezza delle strade.
 - Movimento: le partenze dei residenti e gli arrivi dei visitatori seguono il profilo a 30 minuti degli ingressi in Area C (forma 2016, totali per finestra e tipo di giorno 2023-24). Auto fuori casa e visitatori in sosta: carico offerto modificato `m(t+Δ) = m(t)·e^(−μΔ) + (λ/μ)(1 − e^(−μΔ))`, regime periodico.
 - Visitatori: arrivi giornalieri per cella `= quota_in_strada_cordone · ingressi_cordone / attrattori_cordone · attrattori_cella · (moltiplicatore fuori cordone)`, con attrattori = unità locali + peso · residenti. Due classi di sosta (lavoro, breve).
 - Carico offerto `a(t) = N·(1 − fuori_casa(t)) + visitatori(t)`; arrivi in cerca `λ(t) = rientri + arrivi visitatori`; `μ = λ/a` (Little).
@@ -176,6 +176,9 @@ Richiede codice in `parking_core/publish.py` e `privacy.py` (fuori da T-029) e r
 | Sovrapposizione aree mappate | 0,3 [0–0,6] | ipotesi | — |
 | Quota moto del marciapiede | 0,03 [0,01–0,05] | ipotesi | — |
 | Auto dei residenti in strada | 0,45 [0,3–0,6] | ipotesi | — |
+| Auto tenute in città ma intestate altrove (T-050) | ×1,1 [1,0–1,3] | ipotesi | rottura di serie ds1094 2023, non quantificata |
+| Autocarri / quota in strada di notte (T-050) | 64.214 (2022); 0,5 [0,3–0,7] | dato; ipotesi | ds721 |
+| Cordolo sostabile nel cordone Area C (T-050) | 0,7 [0,55–0,85] | ipotesi | — |
 | Quota fuori casa al picco | feriale 0,4, sabato 0,3, festivo 0,2 | ipotesi | — |
 | Durata fuori casa | 7 h [4–9] | ipotesi | — |
 | Ingressi in cordone che sostano in strada | 0,3 [0,15–0,45] | ipotesi | — |
@@ -183,10 +186,12 @@ Richiede codice in `parking_core/publish.py` e `privacy.py` (fuori da T-029) e r
 | Soste di lavoro / durate | 0,3; 8 h; breve 75 min | ipotesi | — |
 | Pazienza di ricerca | 10 min [5–20] | ipotesi | — |
 
-**Primo risultato (Milano, feriale, stima non verificata):** capacità 386.000 posti auto [290.000–448.000], 46.000 stalli moto [24.000–69.000]; occupati alle 10 circa 241.000 [199.000–273.000]. Controlli di plausibilità superati di poco: capacità/auto dei residenti 0,56; occupazione alle 3 di notte 0,62 (soglia 0,6); visitatori/auto fuori casa alle 10: 0,53.
+**Risultato dopo T-050 (Milano, feriale, stima non verificata):** capacità 380.000 posti auto [292.000–437.000], 45.000 stalli moto [21.000–68.000]; occupati alle 3 circa 261.000 [198.000–296.000], alle 10 circa 260.000 [196.000–296.000]. Prima di T-050: 386.000 posti, occupazione notturna 0,62, Brera alle 11 P ≈ 100% ("almeno 9 su 10"); dopo: 0,69 e Brera 45% (Duomo 49%, Gratosoglio 99%). Diagnosi, tabella per 8 quartieri e protocollo dei conteggi: `reports/t050-occupazione.md`.
+
+**Controlli di plausibilità automatici** (stampati da `build_occupancy.py`, soglie in `occupancy_checks` di `city.yaml`; sono attese dichiarate, non misure): capacità/auto dei residenti in [0,3–1]; notte di città ≥ 0,6; notte nei quartieri residenziali densi ≥ 0,85; P alle 11 in centro ≤ 0,6; centro almeno 20 punti sotto la periferia; visitatori/auto fuori casa alle 10 in [0,3–3]. Superarli dice solo che l'output non è palesemente implausibile. L'app continua a mostrare "stima matematica non ancora verificata".
 
 **Calibrazione con le segnalazioni:** per ogni zona un fattore di scala `s` della domanda (moltiplica carico e arrivi). Prior `log s ~ N(0; 0,5)`; verosimiglianza Bernoulli degli esiti "trovato entro 5 minuti" con `P(s)` del modello; posteriore su griglia (`calibrate_demand_scale`). Su esiti sintetici con s = 1,5 noto il codice lo recupera: verifica del codice, **non** dell'accuratezza. Su esiti reali il fattore si stima con dati tenuti da parte (§6) e la calibrazione si misura come in §6.
 
 **Limiti dichiarati:** auto per residente uniforme in città (il centro ne ha meno); flotte aziendali forse incluse nel parco; unità locali del 2010 su confini NIL di oggi; profilo di Area C applicato a tutta la città; partenze dei residenti modellate con lo stesso profilo degli ingressi (anche serali); pendolari da fuori città rappresentati solo dal moltiplicatore; regole di sosta, tariffe, strisce gialle e lavaggio strade assenti (T-041); un giorno tipo ripetuto (nessun effetto venerdì → sabato); `μ = λ/a` è esatto solo a regime; la coda FIFO approssima una ricerca che in strada è disordinata.
 
-**Cosa non sappiamo ancora:** la quota di auto dei residenti che dorme in strada (pesa più di tutto); la larghezza delle strade e quindi i lati con sosta; quanti visitatori arrivano fuori dal cordone; se l'occupazione notturna del 62% è troppo bassa (l'esperienza nei quartieri semicentrali suggerisce di sì). Servono esiti reali per cella e fascia, e conteggi a campione di auto in sosta su alcuni tratti (bozza di protocollo da preparare con `qa-tester`).
+**Cosa non sappiamo ancora:** la quota di auto dei residenti che dorme in strada (pesa più di tutto); quante auto intestate altrove e quanti autocarri sostano in città; la capacità vera del centro (binari, ZTL, stalli riservati) e la larghezza delle strade; la quota di stalli gialli riservati ai residenti (non modellati: per un visitatore la capacità è minore); quanti visitatori arrivano fuori dal cordone (il semicentro denso risulta più difficile di giorno che di notte: da verificare). **Nessuna fonte esterna di confronto disponibile** tra quelle in `fonti.md`: criterio aperto. Servono conteggi a campione (protocollo in `reports/t050-occupazione.md`) ed esiti reali per cella e fascia.

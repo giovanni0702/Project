@@ -244,7 +244,8 @@ def _jump_free_latest(series: dict, max_jump: float) -> int:
 
 
 def vehicles() -> dict:
-    """Cars and motorcycles registered to residents (ds1094), cross-checked with ds721.
+    """Cars and motorcycles registered to residents (ds1094), cross-checked with ds721; goods vehicles
+    ("autocarri trasporto merci", vans and lorries) from ds721 for the same year.
 
     ds1094 jumps from 0.68 to 1.85 million cars in 2023 (series break, probably fleets): the latest
     year without a jump above 25% is used and the skipped year is reported.
@@ -266,10 +267,11 @@ def vehicles() -> dict:
     circulating = collections.OrderedDict()
     with open(OPEN / "vehicles_circulating.csv", encoding="utf-8-sig") as handle:
         for row in csv.DictReader(handle, delimiter=";"):
-            circulating[int(row["Anno"])] = int(row["AUTOVETTURE"])
+            circulating[int(row["Anno"])] = (int(row["AUTOVETTURE"]), int(row["AUTOCARRI TRASPORTO MERCI"]))
     return {"year": year, "cars": cars[year], "motorcycles": motos[year],
+            "goods_vehicles": circulating.get(year, (0, 0))[1],
             "skipped_years": [y for y in sorted(cars) if y > year],
-            "cross_check_cars": circulating.get(year)}
+            "cross_check_cars": circulating.get(year, (None, 0))[0]}
 
 
 def local_units() -> dict:

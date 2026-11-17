@@ -148,9 +148,17 @@ def prepare(city_id):
     cordon = {c for c in all_cells if inside(*reversed(h3.cell_to_latlng(c)), ring)}
     arrivals, cordon_meta = cordon_arrivals(adapter, occ_cfg, slots, slot_minutes)
     population = sum(pop["by_zone"].values())
-    return {"city": city, "adapter": adapter, "slots": slots, "slot_minutes": slot_minutes, "cells": all_cells,
+    cell_zone = {}
+    for zone_id, cells in by_zone_cell.items():
+        for cell, length in cells.items():
+            if zone_id is not None and length > cell_zone.get(cell, (None, 0.0))[1]:
+                cell_zone[cell] = (zone_id, length)
+    zone_names = {z["id"]: z["name"] for z in zones}
+    return {"cell_zone": {c: v[0] for c, v in cell_zone.items()}, "zone_names": zone_names,
+"city": city, "adapter": adapter, "slots": slots, "slot_minutes": slot_minutes, "cells": all_cells,
             "usable": usable, "mapped": mapped, "residents": residents, "workplaces": workplaces, "cordon": cordon,
             "arrivals": arrivals, "cars_per_resident": veh["cars"] / population,
+            "goods_per_resident": veh.get("goods_vehicles", 0) / population,
             "meta": {"residents_year": pop["year"], "residents": population, "residents_unassigned": round(lost),
                      "vehicles": veh, "local_units_year": units["year"], "local_units": sum(units["by_zone"].values()),
                      "cordon_cells": len(cordon), "cordon": cordon_meta,
@@ -179,14 +187,82 @@ def draw_profiles(ctx, p):
     return out
 
 
+def resident_vehicles(ctx, cell, p):
+    """Vehicles kept on the street by the residents of a cell: registered cars, scaled for cars kept
+    locally but registered elsewhere (leasing, company cars), plus goods vehicles (vans)."""
+    per_resident = ctx["cars_per_resident"] * p.get("unregistered_car_factor", 1.0) * p["on_street_share"] \
+        + ctx.get("goods_per_resident", 0.0) * p.get("goods_on_street_share", 0.0)
+    return ctx["residents"].get(cell, 0.0) * per_resident
+
+
+def zone_table(ctx, per_cell, zone_ids, hours):
+    """Central weekday values aggregated over the cells of each zone (capacity-weighted P)."""
+    slot = ctx["slot_minutes"]
+    sums = {z: {"cap": 0.0, "occ": collections.Counter(), "pcap": collections.Counter()} for z in zone_ids}
+    for cell, entry in per_cell.items():
+        z = ctx["cell_zone"].get(cell)
+        if z not in sums:
+            continue
+        cap = entry["cap"][1]
+        sums[z]["cap"] += cap
+        for h in hours:
+            i = h * 60 // slot
+            sums[z]["occ"][h] += entry["weekday"]["occ"][0][i]
+            sums[z]["pcap"][h] += entry["weekday"]["p"][0][i] * cap
+    table = {}
+    for z, v in sums.items():
+        cap = max(v["cap"], 1e-9)
+        table[z] = {"name": ctx["zone_names"].get(z, str(z)), "capacity": round(v["cap"]),
+                    "occupancy": {h: round(v["occ"][h] / cap, 2) for h in hours},
+                    "p_found_pct": {h: round(v["pcap"][h] / cap) for h in hours}}
+    return table
+
+
+def plausibility_checks(city_totals, table, resident_cars, rules, slot):
+    """Automatic plausibility checks: ranges are declared expectations (ipotesi), not measurements."""
+    wd, cap = city_totals["weekday"], city_totals["capacity"][1]
+    at = {h: h * 60 // slot for h in (3, 10)}
+
+    def mean(zones, key, hour):
+        rows = [table[z] for z in zones if z in table and table[z]["capacity"] > 0]
+        total = sum(r["capacity"] for r in rows)
+        scale = 100 if key == "p_found_pct" else 1
+        return round(sum(r[key][hour] * r["capacity"] for r in rows) / max(total, 1) / scale, 2)
+
+    day = rules["day_hour"]
+    checks = [
+        {"name": "capacity / resident cars", "value": round(cap / resident_cars, 2), "expected": [0.3, 1.0]},
+        {"name": "weekday 03:00 occupied / capacity (city)", "value": round(wd["occ"][at[3]][1] / cap, 2),
+         "expected": rules["city_night_occupancy"]},
+        {"name": "weekday 10:00 visitor stock / resident cars away", "value":
+            round(wd["visitors"][at[10]][1] / max(wd["away"][at[10]][1], 1), 2), "expected": [0.3, 3.0]},
+        {"name": "weekday 03:00 occupancy, dense residential zones", "value":
+            mean(rules["dense_residential_zones"], "occupancy", 3), "expected": rules["dense_night_occupancy"]},
+        {"name": f"weekday {day:02d}:00 P(found), centre zones", "value":
+            mean(rules["centre_zones"], "p_found_pct", day), "expected": rules["centre_day_p_found"]},
+        {"name": f"weekday {day:02d}:00 P(found), centre minus periphery", "value":
+            round(mean(rules["centre_zones"], "p_found_pct", day) - mean(rules["periphery_zones"], "p_found_pct", day), 2),
+         "expected": [-1.0, -rules["min_centre_periphery_gap"]]},
+    ]
+    for c in checks:
+        c["ok"] = c["expected"][0] <= c["value"] <= c["expected"][1]
+    return checks
+
+
 def cell_draw(ctx, cell, p, prof):
     cap_cfg = ctx["city"]["capacity"]
     u = ctx["usable"].get(cell, 0.0)
-    cap = capacity.kerbside_stalls(u, p["kerb_sides"], p["parkable_share"], p["stall_length_m"], p["moto_share"]) \
+    core = cell in ctx["cordon"]
+    # Inside the charged cordon a further share of the kerb is lost to tram tracks, pedestrian and
+    # restricted streets, loading, taxi, car-sharing and disabled bays (core_capacity_factor).
+    kerb_factor = p.get("core_capacity_factor", 1.0) if core else 1.0
+    cap = kerb_factor * capacity.kerbside_stalls(u, p["kerb_sides"], p["parkable_share"], p["stall_length_m"],
+                                                 p["moto_share"]) \
         + (1 - p["mapped_overlap"]) * ctx["mapped"].get(cell, 0.0)
-    moto = capacity.moto_stalls(u, p["kerb_sides"], p["parkable_share"], p["moto_share"], cap_cfg["moto_stall_width_m"])
-    cars = ctx["residents"].get(cell, 0.0) * ctx["cars_per_resident"] * p["on_street_share"]
-    mult = 1.0 if cell in ctx["cordon"] else p["outside_multiplier"]
+    moto = kerb_factor * capacity.moto_stalls(u, p["kerb_sides"], p["parkable_share"], p["moto_share"],
+                                              cap_cfg["moto_stall_width_m"])
+    cars = resident_vehicles(ctx, cell, p)
+    mult = 1.0 if core else p["outside_multiplier"]
     target, patience = ctx["city"]["model"]["target_minutes"], p["patience_min"]
     result = {"cap": cap, "moto": moto}
     for d in DAYS:
@@ -287,15 +363,10 @@ def main():
     resident_cars = ctx["meta"]["vehicles"]["cars"]
     at = {h: h * 60 // slot for h in (3, 10, 19)}
     wd = city_totals["weekday"]
-    cap = city_totals["capacity"][1]
-    checks = [
-        {"name": "capacity / resident cars", "value": round(cap / resident_cars, 2), "expected": [0.3, 1.0]},
-        {"name": "weekday 03:00 occupied / capacity", "value": round(wd["occ"][at[3]][1] / cap, 2), "expected": [0.6, 1.0]},
-        {"name": "weekday 10:00 visitor stock / resident cars away", "value":
-            round(wd["visitors"][at[10]][1] / max(wd["away"][at[10]][1], 1), 2), "expected": [0.3, 3.0]},
-    ]
-    for c in checks:
-        c["ok"] = c["expected"][0] <= c["value"] <= c["expected"][1]
+    rules = city["occupancy_checks"]
+    hours = sorted({3, 10, rules["day_hour"], 15, 19})
+    table = zone_table(ctx, per_cell, rules["reference_zones"], hours)
+    checks = plausibility_checks(city_totals, table, resident_cars, rules, slot)
     payload = {
         "city": city["id"], "status": "MODEL ESTIMATE, NOT VALIDATED on real outcomes",
         "method": "kerb geometry + mapped areas; residents and cordon entries -> modified offered load; "
@@ -306,7 +377,7 @@ def main():
                    "<day>.occ|free": "[central[slots], low[slots], high[slots]] expected cars / free spaces",
                    "<day>.p": "same layout, P(space within target_minutes) in percent"},
         "sources": list(getattr(ctx["adapter"], "OPEN_SOURCES", ())), "inputs": ctx["meta"], "params": spec,
-        "checks": checks, "totals": city_totals, "cells": per_cell}
+        "checks": checks, "reference_zones": table, "totals": city_totals, "cells": per_cell}
     out = ROOT / "build" / "occupancy" / city["id"] / "occupancy.json"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(payload, separators=(",", ":")), encoding="utf-8")
@@ -317,6 +388,8 @@ def main():
         summary[f"weekday_{h:02d}:00"] = {"occupied": wd["occ"][i], "free": wd["free"][i],
                                          "cells_p_below_50": wd["cells_p_below_50"][i]}
     print(json.dumps(summary))
+    for row in table.values():
+        print(f"zone {row['name'][:28]:28s} cap {row['capacity']:6d} occupancy {row['occupancy']} P% {row['p_found_pct']}")
     for c in checks:
         print(("OK   " if c["ok"] else "WARN ") + f"{c['name']}: {c['value']} (expected {c['expected'][0]}-{c['expected'][1]})")
 

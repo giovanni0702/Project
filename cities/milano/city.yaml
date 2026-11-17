@@ -66,6 +66,9 @@ capacity:
   mapped_overlap: [0.3, 0.0, 0.6]       # ipotesi: share of mapped parking areas already counted as kerb
   moto_share: [0.03, 0.01, 0.05]        # ipotesi: share of parkable kerb used by motorcycle stalls
   moto_stall_width_m: 1.0               # ipotesi
+  # ipotesi (T-050): kerb share left inside the charged cordon (Area C) after tram tracks, pedestrian
+  # and restricted streets, loading, taxi, car-sharing and disabled bays. No count available.
+  core_capacity_factor: [0.7, 0.55, 0.85]
   # ipotesi: street-type factor by first word of the street name (default 1.0)
   name_factors: {Cavalcavia: 0.0, Superstrada: 0.0, Strada_Senza_Nome: 0.3, Alzaia: 0.5}
 
@@ -73,6 +76,8 @@ occupancy:
   holidays: ["01-01", "01-06", "04-25", "05-01", "06-02", "08-15", "11-01", "12-07", "12-08", "12-25", "12-26"]  # dato: national holidays + patron saint (7 Dec)
   easter_monday: true                   # dato
   on_street_share: [0.45, 0.3, 0.6]     # ipotesi: share of residents' cars kept on the street (not in private garages)
+  unregistered_car_factor: [1.1, 1.0, 1.3]  # ipotesi (T-050): cars kept in the city but registered elsewhere (leasing, company cars); the 2023 ds1094 break hints at large fleets, not quantified
+  goods_on_street_share: [0.5, 0.3, 0.7]    # ipotesi (T-050): share of goods vehicles (ds721, dato) kept on the street overnight
   away_peak: {weekday: [0.4, 0.25, 0.55], saturday: [0.3, 0.15, 0.45], holiday: [0.2, 0.1, 0.35]}  # ipotesi: peak share of those cars away from home
   away_hours: [7.0, 4.0, 9.0]           # ipotesi: mean time a resident's car stays away
   cordon_on_street_share: [0.3, 0.15, 0.45]  # ipotesi: share of cordon car entries ending in an on-street stay inside the cordon
@@ -85,3 +90,17 @@ occupancy:
   draws: 40                             # Monte Carlo draws (plus the central run)
   seed: 49
   interval_pct: [5, 95]
+
+# T-050: automatic plausibility checks printed by scripts/build_occupancy.py. Zone ids = NIL (ds964).
+# Expected ranges are declared expectations (ipotesi), NOT measurements: they catch implausible
+# outputs, they do not validate the model.
+occupancy_checks:
+  reference_zones: [1, 2, 21, 69, 20, 58, 76, 41]   # Duomo, Brera, Buenos Aires, Sarpi, Loreto-NoLo, De Angeli, Quarto Oggiaro, Gratosoglio
+  centre_zones: [1, 2]                  # Duomo, Brera
+  dense_residential_zones: [21, 69, 20] # Buenos Aires - P.ta Venezia, Sarpi, Loreto - Casoretto - NoLo
+  periphery_zones: [76, 41]             # Quarto Oggiaro, Gratosoglio
+  day_hour: 11
+  city_night_occupancy: [0.6, 1.0]      # includes industrial and arterial kerb that stays empty at night
+  dense_night_occupancy: [0.85, 1.0]
+  centre_day_p_found: [0.0, 0.6]        # P(space within target minutes), capacity-weighted
+  min_centre_periphery_gap: 0.2         # centre P must be at least this much below periphery P
